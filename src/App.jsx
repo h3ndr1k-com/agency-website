@@ -309,10 +309,21 @@ const Capabilities = () => {
         setRevealCount(Math.floor((v / 100) * capabilities.length));
     });
 
+    const capPositions = [
+        { top: '15%', left: '8%' },
+        { top: '12%', right: '12%' },
+        { top: '38%', left: '5%' },
+        { top: '35%', right: '5%' },
+        { top: '62%', left: '10%' },
+        { top: '58%', right: '8%' },
+        { top: '80%', left: '15%' },
+        { top: '78%', right: '15%' },
+    ];
+
     return (
         <section className="relative overflow-hidden bg-[#0A0A0A]">
             {/* Cave image hero */}
-            <div className="relative w-full" style={{ aspectRatio: '16/9', maxHeight: '70vh' }}>
+            <div className="relative w-full" style={{ aspectRatio: '16/9', maxHeight: '75vh' }}>
                 <div className="absolute inset-0" style={{
                     backgroundImage: 'url(https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=85)',
                     backgroundSize: 'cover',
@@ -326,6 +337,24 @@ const Capabilities = () => {
                 <div className="absolute top-8 md:top-12 left-1/2 -translate-x-1/2 z-20">
                     <SectionLabel>AI Capabilities</SectionLabel>
                 </div>
+
+                {/* Floating capability labels scattered over image */}
+                {capabilities.map((cap, i) => (
+                    <div
+                        key={i}
+                        className="absolute z-20 pointer-events-none transition-all duration-700 ease-out hidden md:block"
+                        style={{
+                            ...capPositions[i],
+                            opacity: i < revealCount ? 1 : 0,
+                            transform: i < revealCount ? 'scale(1)' : 'scale(0.8)',
+                        }}
+                    >
+                        <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-sm border border-white/20 text-white text-[10px] md:text-xs font-ui uppercase tracking-[0.15em]">
+                            <span className="w-1.5 h-1.5 bg-amber-500 flex-shrink-0" />
+                            {cap}
+                        </span>
+                    </div>
+                ))}
 
                 {/* Reactor Knob centered over image */}
                 <div className="absolute inset-0 flex items-center justify-center z-10">
@@ -383,20 +412,13 @@ const Capabilities = () => {
                 </div>
             </div>
 
-            {/* Capabilities grid revealed by knob */}
-            <div className="max-w-[1400px] mx-auto px-6 py-16 md:py-24">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {/* Mobile-only capabilities list (floating labels need desktop space) */}
+            <div className="md:hidden max-w-[1400px] mx-auto px-6 py-12">
+                <div className="grid grid-cols-2 gap-4">
                     {capabilities.map((cap, i) => (
-                        <div
-                            key={i}
-                            className="flex items-start gap-3 transition-all duration-500"
-                            style={{
-                                opacity: i < revealCount ? 1 : 0.15,
-                                transform: i < revealCount ? 'translateY(0)' : 'translateY(8px)',
-                            }}
-                        >
-                            <div className={`w-2 h-2 mt-1.5 flex-shrink-0 transition-colors duration-300 ${i < revealCount ? 'bg-amber-500' : 'bg-zinc-800'}`} />
-                            <span className={`text-sm md:text-base font-medium transition-colors duration-300 ${i < revealCount ? 'text-white' : 'text-zinc-700'}`}>{cap}</span>
+                        <div key={i} className="flex items-start gap-2">
+                            <div className="w-1.5 h-1.5 bg-amber-500 mt-1.5 flex-shrink-0" />
+                            <span className="text-sm text-zinc-300 font-medium">{cap}</span>
                         </div>
                     ))}
                 </div>

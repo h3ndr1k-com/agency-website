@@ -36,9 +36,11 @@
         border-radius: 0 !important;
     }
 
-    /* Allow round elements (reactor knob) */
-    .allow-round, .allow-round *, .allow-round *::before, .allow-round *::after {
-        border-radius: revert !important;
+    .allow-round,
+    .allow-round *,
+    .allow-round *::before,
+    .allow-round *::after {
+        border-radius: 9999px !important;
     }
 
     body {

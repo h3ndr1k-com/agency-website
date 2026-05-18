@@ -7,14 +7,34 @@ import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent } 
 gsap.registerPlugin(ScrollTrigger);
 
 // ── Section Grid (decorative background grid for sections) ──
+const gridLineColor = 'rgba(255,255,255,0.08)';
+const gridPlusStyle = {
+    color: 'rgba(255,255,255,0.25)',
+    fontSize: 14,
+    fontFamily: 'Inter, sans-serif',
+    fontWeight: 300,
+    lineHeight: '0',
+    userSelect: 'none',
+    position: 'absolute',
+    transform: 'translate(-50%, -50%)',
+};
+const gridVPositions = ['left-6', 'left-1/3', 'left-2/3', 'right-6'];
+const gridHPositions = ['25%', '50%', '75%'];
+
 const SectionGrid = () => (
     <div className="absolute inset-0 pointer-events-none z-0" aria-hidden="true">
+        {/* Horizontal lines — full width */}
+        {gridHPositions.map((top, i) => (
+            <div key={`h-${i}`} className="absolute left-0 right-0 h-[1px]" style={{ background: gridLineColor, top }} />
+        ))}
+        {/* Vertical lines + plus markers at every intersection */}
         <div className="max-w-[1400px] mx-auto h-full px-6 relative">
-            {['left-6', 'left-1/3', 'left-2/3', 'right-6'].map((pos, i) => (
-                <div key={i} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: 'rgba(255,255,255,0.06)' }} />
-            ))}
-            {['25%', '50%', '75%'].map((top, i) => (
-                <div key={i} className="absolute left-6 right-6 h-[1px]" style={{ background: 'rgba(255,255,255,0.06)', top }} />
+            {gridVPositions.map((pos, i) => (
+                <div key={`v-${i}`} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: gridLineColor }}>
+                    {gridHPositions.map(top => (
+                        <span key={top} style={{ ...gridPlusStyle, top }}>+</span>
+                    ))}
+                </div>
             ))}
         </div>
     </div>
@@ -117,7 +137,7 @@ const Hero = () => {
             <GridOverlay />
 
             {/* Tags in top-right sky area */}
-            <div className="absolute top-24 md:top-28 right-6 md:right-[calc((100%-1400px)/2+24px)] z-40">
+            <div className="absolute top-36 md:top-44 right-6 md:right-[calc((100%-1400px)/2+24px)] z-40">
                 <div className="hero-el flex flex-col gap-2 items-end">
                     {tags.map(tag => (
                         <span key={tag} className="px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/20 bg-black/30 backdrop-blur-sm">
@@ -132,7 +152,7 @@ const Hero = () => {
                 <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase" style={{ WebkitTextStroke: '0' }}>
                     <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white">We Build</span></span>
                     <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white">AI Systems</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white/40">For Businesses</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-zinc-500">For Businesses</span></span>
                 </h1>
             </div>
 
@@ -1079,40 +1099,29 @@ const Footer = () => (
     </footer>
 );
 
-// ── Grid Overlay (hero only) ──
-const GridOverlay = () => {
-    const lineColor = 'rgba(255,255,255,0.14)';
-    const plusColor = 'rgba(255,255,255,0.22)';
-    const plusSize = 12;
-    const plusStyle = {
-        color: plusColor,
-        fontSize: plusSize,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: 300,
-        lineHeight: 1,
-        userSelect: 'none',
-    };
-    const vPositions = ['left-6', 'left-1/3', 'left-2/3', 'right-6'];
-    const showPlus = [true, false, false, true];
-    const hPositions = ['25%', '50%', '75%'];
-
-    return (
-        <div className="absolute inset-0 z-30 pointer-events-none" aria-hidden="true">
-            <div className="max-w-[1400px] mx-auto h-full px-6 relative">
-                {vPositions.map((pos, i) => (
-                    <div key={`v-${i}`} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: lineColor }}>
-                        {showPlus[i] && hPositions.map(top => (
-                            <span key={top} className="absolute -translate-x-1/2" style={{ ...plusStyle, top }}>+</span>
-                        ))}
-                    </div>
-                ))}
-                {hPositions.map((top, i) => (
-                    <div key={`h-${i}`} className="absolute left-6 right-6 h-[1px]" style={{ background: lineColor, top }} />
-                ))}
-            </div>
-        </div>
-    );
+// ── Grid Overlay (hero only, slightly brighter) ──
+const heroLineColor = 'rgba(255,255,255,0.14)';
+const heroPlusStyle = {
+    ...gridPlusStyle,
+    color: 'rgba(255,255,255,0.30)',
 };
+
+const GridOverlay = () => (
+    <div className="absolute inset-0 z-30 pointer-events-none" aria-hidden="true">
+        {gridHPositions.map((top, i) => (
+            <div key={`h-${i}`} className="absolute left-0 right-0 h-[1px]" style={{ background: heroLineColor, top }} />
+        ))}
+        <div className="max-w-[1400px] mx-auto h-full px-6 relative">
+            {gridVPositions.map((pos, i) => (
+                <div key={`v-${i}`} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: heroLineColor }}>
+                    {gridHPositions.map(top => (
+                        <span key={top} style={{ ...heroPlusStyle, top }}>+</span>
+                    ))}
+                </div>
+            ))}
+        </div>
+    </div>
+);
 
 // ── Main App ──
 function App() {

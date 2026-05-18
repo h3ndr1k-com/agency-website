@@ -32,6 +32,10 @@
         --color-footer: #050505;
     }
 
+    *, *::before, *::after {
+        border-radius: 0 !important;
+    }
+
     body {
         background-color: var(--color-bg);
         color: var(--color-primary);
@@ -61,6 +65,11 @@
 
 .animate-marquee {
     animation: marquee 25s linear infinite;
+}
+
+@keyframes cube-rotate {
+    0% { transform: rotateX(-20deg) rotateY(0deg); }
+    100% { transform: rotateX(-20deg) rotateY(360deg); }
 }
 
 .scrollbar-hide::-webkit-scrollbar { display: none; }

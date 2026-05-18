@@ -116,12 +116,23 @@ const Hero = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A] z-10 pointer-events-none" />
             <GridOverlay />
 
+            {/* Tags in top-right sky area */}
+            <div className="absolute top-24 md:top-28 right-6 md:right-[calc((100%-1400px)/2+24px)] z-40">
+                <div className="hero-el flex flex-col gap-2 items-end">
+                    {tags.map(tag => (
+                        <span key={tag} className="px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/20 bg-black/30 backdrop-blur-sm">
+                            {tag}
+                        </span>
+                    ))}
+                </div>
+            </div>
+
             {/* Hero heading — sits ABOVE the grid */}
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
-                <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase">
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">We Build</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">AI Systems</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] bg-gradient-to-r from-white/60 to-white/30 bg-clip-text text-transparent">For Businesses</span></span>
+                <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase" style={{ WebkitTextStroke: '0' }}>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white">We Build</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white">AI Systems</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white/40">For Businesses</span></span>
                 </h1>
             </div>
 
@@ -130,14 +141,7 @@ const Hero = () => {
                     <p className="hero-el max-w-xl text-zinc-400 text-sm md:text-base leading-relaxed">
                         Build real, production-ready AI systems that automate work, improve performance, and deliver measurable business results.
                     </p>
-                    <div className="hero-el flex flex-col items-start md:items-end gap-4">
-                        <div className="flex flex-wrap gap-2 md:justify-end">
-                            {tags.map(tag => (
-                                <span key={tag} className="px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-zinc-300 border border-zinc-700 bg-white/[0.02]">
-                                    {tag}
-                                </span>
-                            ))}
-                        </div>
+                    <div className="hero-el flex justify-end">
                         <CornerButton href="#process" filled>
                             How It Works <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                         </CornerButton>
@@ -666,8 +670,9 @@ const Testimonials = () => {
     const t = testimonials[active];
 
     return (
-        <section className="py-24 md:py-40">
-            <div className="max-w-5xl mx-auto px-6">
+        <section className="py-24 md:py-40 relative overflow-hidden">
+            <SectionGrid />
+            <div className="max-w-5xl mx-auto px-6 relative z-10">
                 <div className="mb-10"><SectionLabel>Client Voices</SectionLabel></div>
 
                 <div className="flex gap-2 mb-16">
@@ -856,20 +861,23 @@ const Team = () => {
                     Builders,<br />Engineers, and<br />Problem-Solvers First
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {members.map((m, i) => (
-                        <div key={i} className="team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden">
-                            <div className="relative aspect-[3/4] overflow-hidden">
+                <div className="flex flex-col md:flex-row gap-6 items-end justify-center">
+                    {members.map((m, i) => {
+                        const isCenter = i === 0;
+                        return (
+                        <div key={i} className={`team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden ${isCenter ? 'md:w-[38%] md:order-2' : 'md:w-[28%]'} ${i === 1 ? 'md:order-1' : ''} ${i === 2 ? 'md:order-3' : ''}`}>
+                            <div className={`relative overflow-hidden ${isCenter ? 'aspect-[3/4]' : 'aspect-[3/4] md:aspect-[2/3]'}`}>
                                 <img src={m.img} alt={m.name} className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
                                 <div className="absolute bottom-5 left-5 right-5">
-                                    <p className="text-white font-bold text-lg">{m.name}</p>
+                                    <p className={`text-white font-bold ${isCenter ? 'text-xl' : 'text-base'}`}>{m.name}</p>
                                     <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
                                     <p className="text-zinc-300 text-xs mt-2 leading-relaxed italic opacity-0 group-hover:opacity-100 transition-opacity duration-500">{m.quote}</p>
                                 </div>
                             </div>
                         </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 <div className="mt-16 text-center">
@@ -992,8 +1000,9 @@ const Contact = () => {
     }, []);
 
     return (
-        <section id="contact" ref={ref} className="py-24 md:py-40 bg-[#0A0A0A] border-y border-white/5">
-            <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16">
+        <section id="contact" ref={ref} className="py-24 md:py-40 bg-[#0A0A0A] border-y border-white/5 relative overflow-hidden">
+            <SectionGrid />
+            <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16 relative z-10">
                 <div>
                     <div className="contact-el mb-8"><SectionLabel>Talk To Us</SectionLabel></div>
                     <h2 className="contact-el text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] mb-8 leading-[0.95]">

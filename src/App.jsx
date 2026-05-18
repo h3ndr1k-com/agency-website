@@ -6,6 +6,20 @@ import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent } 
 
 gsap.registerPlugin(ScrollTrigger);
 
+// ── Section Grid (decorative background grid for sections) ──
+const SectionGrid = () => (
+    <div className="absolute inset-0 pointer-events-none z-0" aria-hidden="true">
+        <div className="max-w-[1400px] mx-auto h-full px-6 relative">
+            {['left-6', 'left-1/3', 'left-2/3', 'right-6'].map((pos, i) => (
+                <div key={i} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: 'rgba(255,255,255,0.06)' }} />
+            ))}
+            {['25%', '50%', '75%'].map((top, i) => (
+                <div key={i} className="absolute left-6 right-6 h-[1px]" style={{ background: 'rgba(255,255,255,0.06)', top }} />
+            ))}
+        </div>
+    </div>
+);
+
 // ── Corner-accent button ──
 const CornerButton = ({ href, children, filled, className = '' }) => {
     const base = filled
@@ -524,8 +538,9 @@ const Works = () => {
     };
 
     return (
-        <section id="works" ref={ref} className="py-24 md:py-32">
-            <div className="max-w-[1400px] mx-auto px-6 mb-16">
+        <section id="works" ref={ref} className="py-24 md:py-32 relative overflow-hidden">
+            <SectionGrid />
+            <div className="max-w-[1400px] mx-auto px-6 mb-16 relative z-10">
                 <div className="works-header mb-8"><SectionLabel>Case Studies</SectionLabel></div>
                 <div className="flex items-end justify-between flex-wrap gap-8">
                     <h2 className="works-header text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] leading-[0.95]">
@@ -541,7 +556,7 @@ const Works = () => {
                 </p>
             </div>
 
-            <div ref={scrollRef} className="flex gap-4 overflow-x-auto px-6 pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+            <div ref={scrollRef} className="relative z-10 flex gap-4 overflow-x-auto px-6 pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
                 {projects.map((proj, i) => (
                     <div key={i} className="work-card flex-shrink-0 w-[320px] md:w-[400px] snap-start group cursor-pointer">
                         <div className="relative aspect-[3/4] overflow-hidden mb-4">
@@ -827,28 +842,28 @@ const Team = () => {
     }, []);
 
     const members = [
-        { name: 'Your Name', role: 'Founder & CEO', quote: '"Building AI systems that actually ship and deliver results."', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=85' },
+        { name: 'Hendrik', role: 'Founder & CEO', quote: '"Building AI systems that actually ship and deliver results."', img: '/hendrik.jpg' },
         { name: 'Alex Chen', role: 'Lead ML Engineer', quote: '"If it can be automated, it should be automated. Humans deserve better work."', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=85' },
         { name: 'Sarah Kim', role: 'AI Product Designer', quote: '"Great AI feels invisible — it just works."', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=85' },
-        { name: 'Marcus Webb', role: 'Solutions Architect', quote: '"The best system is one the team actually adopts."', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&q=85' },
     ];
 
     return (
-        <section id="team" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A]">
-            <div className="max-w-[1400px] mx-auto px-6">
+        <section id="team" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A] relative overflow-hidden">
+            <SectionGrid />
+            <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 <div className="mb-8"><SectionLabel>Meet The Team</SectionLabel></div>
-                <h2 className="text-5xl md:text-8xl lg:text-[10rem] font-black text-white tracking-[-0.04em] leading-[0.85] uppercase mb-20">
+                <h2 className="text-5xl md:text-8xl lg:text-[10rem] font-display text-white tracking-tight leading-[0.85] uppercase mb-20">
                     Builders,<br />Engineers, and<br />Problem-Solvers First
                 </h2>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/5">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {members.map((m, i) => (
-                        <div key={i} className="team-card group relative bg-[#0A0A0A] overflow-hidden">
+                        <div key={i} className="team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden">
                             <div className="relative aspect-[3/4] overflow-hidden">
-                                <img src={m.img} alt={m.name} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
+                                <img src={m.img} alt={m.name} className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
                                 <div className="absolute bottom-5 left-5 right-5">
-                                    <p className="text-white font-bold text-base">{m.name}</p>
+                                    <p className="text-white font-bold text-lg">{m.name}</p>
                                     <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
                                     <p className="text-zinc-300 text-xs mt-2 leading-relaxed italic opacity-0 group-hover:opacity-100 transition-opacity duration-500">{m.quote}</p>
                                 </div>
@@ -880,8 +895,9 @@ const FAQ = () => {
     ];
 
     return (
-        <section className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/5">
-            <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16">
+        <section className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/5 relative overflow-hidden">
+            <SectionGrid />
+            <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16 relative z-10">
                 <div>
                     <div className="mb-8"><SectionLabel>FAQs</SectionLabel></div>
                     <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-6 leading-[1.05]">Everything You Need to Know Before We Build</h2>

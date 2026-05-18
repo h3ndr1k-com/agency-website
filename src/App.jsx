@@ -329,7 +329,7 @@ const Capabilities = () => {
 
                 {/* Reactor Knob centered over image */}
                 <div className="absolute inset-0 flex items-center justify-center z-10">
-                    <div className="relative w-52 h-52 md:w-64 md:h-64 select-none">
+                    <div className="relative w-52 h-52 md:w-64 md:h-64 select-none allow-round">
                         {/* Glow */}
                         <motion.div className="absolute inset-0 bg-orange-500 rounded-full blur-3xl" style={{ opacity: lightOpacity }} />
 
@@ -369,7 +369,8 @@ const Capabilities = () => {
                         </div>
 
                         {/* Digital readout */}
-                        <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none">
+                        <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none">
+                            <span className="text-[10px] text-zinc-400 font-ui tracking-[0.2em] mb-2 animate-pulse">SPIN ME</span>
                             <span className="text-[9px] text-zinc-600 font-ui tracking-[0.25em] mb-1">OUTPUT</span>
                             <KnobDisplay value={displayValue} />
                         </div>
@@ -434,7 +435,7 @@ const Process = () => {
             <div className="mb-20 overflow-hidden">
                 <div ref={marqueeRef} className="flex whitespace-nowrap">
                     {Array(6).fill(null).map((_, i) => (
-                        <span key={i} className="text-[10rem] md:text-[16rem] font-display uppercase tracking-tight text-white/[0.20] mx-2 select-none leading-none">
+                        <span key={i} className="text-[10rem] md:text-[16rem] font-display uppercase tracking-tight text-white mx-2 select-none leading-none">
                             OUR PROCESS &bull;
                         </span>
                     ))}

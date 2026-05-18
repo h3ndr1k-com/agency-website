@@ -36,6 +36,11 @@
         border-radius: 0 !important;
     }
 
+    /* Allow round elements (reactor knob) */
+    .allow-round, .allow-round *, .allow-round *::before, .allow-round *::after {
+        border-radius: revert !important;
+    }
+
     body {
         background-color: var(--color-bg);
         color: var(--color-primary);

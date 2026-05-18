@@ -103,11 +103,15 @@ const Hero = () => {
 
     return (
         <section ref={ref} className="relative min-h-screen flex flex-col justify-end pb-12 md:pb-20 overflow-hidden pt-32">
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A] via-[#0A0A0A]/30 to-[#0A0A0A] z-10" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/60 via-[#0A0A0A]/20 to-[#0A0A0A] z-10" />
+            <div className="absolute inset-0 z-[11] opacity-[0.12]" style={{
+                backgroundSize: '60px 60px',
+                backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px)'
+            }} />
             <img
-                src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1920&q=80"
+                src="https://images.unsplash.com/photo-1462275646964-a0e3c11f18a6?w=1920&q=80"
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale contrast-125"
+                className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale contrast-125"
             />
 
             <div className="absolute top-1/2 right-8 md:right-20 -translate-y-1/2 z-20 hidden lg:block hero-cube">
@@ -665,46 +669,65 @@ const WhyUs = () => {
 // ── Meet The Team ──
 const Team = () => {
     const ref = useRef(null);
+    const [hovered, setHovered] = useState(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.from('.team-el', {
+            gsap.from('.team-card', {
                 scrollTrigger: { trigger: ref.current, start: 'top 65%' },
-                y: 50, opacity: 0, duration: 1, stagger: 0.12, ease: 'power3.out'
+                y: 60, opacity: 0, duration: 0.9, stagger: 0.1, ease: 'power3.out'
             });
         }, ref);
         return () => ctx.revert();
     }, []);
 
+    const members = [
+        { name: 'Your Name', role: 'Founder & CEO', quote: '"Building AI systems that actually ship and deliver results."', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=85' },
+        { name: 'Alex Chen', role: 'Lead ML Engineer', quote: '"If it can be automated, it should be automated. Humans deserve better work."', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=85' },
+        { name: 'Sarah Kim', role: 'AI Product Designer', quote: '"Great AI feels invisible — it just works."', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=85' },
+        { name: 'Marcus Webb', role: 'Solutions Architect', quote: '"The best system is one the team actually adopts."', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&q=85' },
+    ];
+
     return (
-        <section id="team" ref={ref} className="relative">
-            <div className="max-w-[1400px] mx-auto px-6 pt-24 md:pt-32 pb-8">
-                <p className="team-el text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Meet The Team</p>
-                <h2 className="team-el text-5xl md:text-8xl lg:text-[10rem] font-black text-white tracking-[-0.04em] leading-[0.85] uppercase mb-8">
-                    Builders,<br />Engineers, and<br />Problem-Solvers<br />First
+        <section id="team" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A]">
+            <div className="max-w-[1400px] mx-auto px-6">
+                <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Meet The Team</p>
+                <h2 className="text-5xl md:text-8xl lg:text-[10rem] font-black text-white tracking-[-0.04em] leading-[0.85] uppercase mb-20">
+                    Builders,<br />Engineers, and<br />Problem-Solvers First
                 </h2>
-            </div>
 
-            <div className="relative w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden">
-                <img
-                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=85"
-                    alt="Team"
-                    className="absolute inset-0 w-full h-full object-cover grayscale contrast-125"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent opacity-70" />
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A] via-transparent to-transparent opacity-30" />
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/5">
+                    {members.map((m, i) => (
+                        <div
+                            key={i}
+                            className="team-card group relative bg-[#0A0A0A] overflow-hidden"
+                            onMouseEnter={() => setHovered(i)}
+                            onMouseLeave={() => setHovered(null)}
+                        >
+                            <div className="relative aspect-[3/4] overflow-hidden">
+                                <img src={m.img} alt={m.name} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent" />
 
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0A0A0A]/80 border border-white/10 backdrop-blur-sm p-6 min-w-[260px]">
-                    <p className="font-ui font-bold text-white text-sm uppercase tracking-[0.15em]">NOAH REED</p>
-                    <p className="text-zinc-500 text-xs font-ui tracking-wider mt-1">Lead Machine Learning Engineer</p>
-                    <p className="text-zinc-400 text-sm mt-4 leading-relaxed italic">"If it can be automated, it should be automated. Humans deserve better work."</p>
+                                <div className={`absolute inset-0 bg-[#0A0A0A]/70 backdrop-blur-sm flex flex-col justify-center p-6 transition-opacity duration-500 ${hovered === i ? 'opacity-100' : 'opacity-0'}`}>
+                                    <p className="font-ui font-bold text-white text-sm uppercase tracking-[0.15em]">{m.name}</p>
+                                    <p className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
+                                    <p className="text-zinc-300 text-sm mt-4 leading-relaxed italic">{m.quote}</p>
+                                </div>
+
+                                <div className={`absolute bottom-4 left-4 right-4 transition-opacity duration-500 ${hovered === i ? 'opacity-0' : 'opacity-100'}`}>
+                                    <p className="text-white font-bold text-base">{m.name}</p>
+                                    <p className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
-            </div>
 
-            <div className="max-w-[1400px] mx-auto px-6 py-10 text-center">
-                <a href="#contact" className="inline-flex items-center gap-3 px-7 py-4 border border-zinc-700 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors">
-                    About Us <ArrowUpRight size={14} />
-                </a>
+                <div className="mt-16 text-center">
+                    <a href="#contact" className="inline-flex items-center gap-3 px-7 py-4 border border-zinc-700 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors">
+                        About Us <ArrowUpRight size={14} />
+                    </a>
+                </div>
             </div>
         </section>
     );

@@ -5,48 +5,68 @@ import { ChevronRight, ChevronDown, ArrowUpRight, Mail, Phone, MapPin } from 'lu
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ── Rotating Cube (scroll-driven) ──
-const RotatingCube = ({ size = 180 }) => {
+// ── Rotating Cube (continuous spin) ──
+const RotatingCube = ({ size = 220 }) => {
     const cubeRef = useRef(null);
-    const wrapperRef = useRef(null);
 
     useEffect(() => {
         if (!cubeRef.current) return;
         const ctx = gsap.context(() => {
             gsap.to(cubeRef.current, {
-                rotateY: 360,
-                rotateX: -20,
-                scrollTrigger: {
-                    trigger: wrapperRef.current,
-                    start: 'top bottom',
-                    end: 'bottom top',
-                    scrub: 1,
-                },
+                rotateY: '+=360',
+                duration: 18,
+                repeat: -1,
+                ease: 'none',
             });
         });
         return () => ctx.revert();
     }, []);
 
     const half = size / 2;
-    const face = (transform) => ({
-        position: 'absolute', width: size, height: size,
-        border: '1px solid rgba(255,255,255,0.18)',
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))',
-        backdropFilter: 'blur(4px)',
-        transform,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: 'rgba(245,158,11,0.9)', fontWeight: 700, fontSize: size / 6,
-        letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: 'Plus Jakarta Sans'
-    });
+    const gridColor = 'rgba(255,255,255,0.22)';
+    const gridImage = `
+        linear-gradient(${gridColor} 1px, transparent 1px),
+        linear-gradient(90deg, ${gridColor} 1px, transparent 1px)
+    `;
+    const gridSize = `${size / 6}px ${size / 6}px`;
+
+    const face = (transform, label) => (
+        <div style={{
+            position: 'absolute', width: size, height: size,
+            border: '1.5px solid rgba(255,255,255,0.6)',
+            background: '#0A0A0A',
+            backgroundImage: gridImage,
+            backgroundSize: gridSize,
+            transform,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+            <span style={{
+                color: '#F59E0B',
+                fontWeight: 800,
+                fontSize: size / 7,
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                fontFamily: 'Plus Jakarta Sans',
+                textShadow: '0 0 12px rgba(0,0,0,0.6)',
+            }}>{label}</span>
+        </div>
+    );
+
     return (
-        <div ref={wrapperRef} style={{ width: size, height: size, perspective: 1000 }}>
-            <div ref={cubeRef} style={{ width: size, height: size, transformStyle: 'preserve-3d', position: 'relative', transform: 'rotateX(-20deg) rotateY(0deg)' }}>
-                <div style={face(`rotateY(0deg) translateZ(${half}px)`)}>AI</div>
-                <div style={face(`rotateY(90deg) translateZ(${half}px)`)}>SYS</div>
-                <div style={face(`rotateY(180deg) translateZ(${half}px)`)}>OPS</div>
-                <div style={face(`rotateY(-90deg) translateZ(${half}px)`)}>FIX</div>
-                <div style={face(`rotateX(90deg) translateZ(${half}px)`)}>+</div>
-                <div style={face(`rotateX(-90deg) translateZ(${half}px)`)}>+</div>
+        <div className="flex items-center justify-center" style={{ width: '100%', perspective: 1200 }}>
+            <div style={{ width: size, height: size, perspective: 1200 }}>
+                <div ref={cubeRef} style={{
+                    width: size, height: size, transformStyle: 'preserve-3d',
+                    position: 'relative',
+                    transform: 'rotateX(-22deg) rotateY(0deg)'
+                }}>
+                    {face(`rotateY(0deg) translateZ(${half}px)`, 'AI')}
+                    {face(`rotateY(90deg) translateZ(${half}px)`, 'SYS')}
+                    {face(`rotateY(180deg) translateZ(${half}px)`, 'OPS')}
+                    {face(`rotateY(-90deg) translateZ(${half}px)`, 'FIX')}
+                    {face(`rotateX(90deg) translateZ(${half}px)`, '+')}
+                    {face(`rotateX(-90deg) translateZ(${half}px)`, '+')}
+                </div>
             </div>
         </div>
     );
@@ -155,15 +175,26 @@ const Hero = () => {
 const LogoMarquee = () => {
     const partners = ['ACME CORP', 'TECHFLOW', 'NEXUS AI', 'DATASYNC', 'CLOUDWAVE', 'METRIX', 'QUANTLAB'];
     return (
-        <section className="py-16 border-y border-white/10 overflow-hidden bg-[#080808]">
-            <p className="text-center text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-400 mb-10">Our Trusted Partners</p>
-            <div className="relative">
-                <div className="flex animate-marquee whitespace-nowrap">
-                    {[...partners, ...partners, ...partners].map((name, i) => (
-                        <div key={i} className="mx-16 flex-shrink-0 text-white font-ui font-black text-2xl md:text-3xl tracking-[0.15em] uppercase opacity-60 hover:opacity-100 transition-opacity">
-                            {name}
+        <section className="py-20 bg-[#080808]">
+            <div className="max-w-[900px] mx-auto px-6">
+                <div className="flex justify-center mb-10">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 border border-white/40 text-white text-[10px] font-ui uppercase tracking-[0.3em]">
+                        <span className="w-1 h-1 bg-amber-500" />
+                        Our Trusted Partners
+                    </span>
+                </div>
+                <div className="border-y border-white/40 py-10 overflow-hidden">
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#080808] to-transparent z-10 pointer-events-none" />
+                        <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#080808] to-transparent z-10 pointer-events-none" />
+                        <div className="flex animate-marquee whitespace-nowrap">
+                            {[...partners, ...partners, ...partners].map((name, i) => (
+                                <div key={i} className="mx-12 flex-shrink-0 text-white font-ui font-black text-xl md:text-2xl tracking-[0.15em] uppercase opacity-70 hover:opacity-100 transition-opacity">
+                                    {name}
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    </div>
                 </div>
             </div>
         </section>
@@ -198,29 +229,34 @@ const Services = () => {
     return (
         <section id="services" ref={ref} className="py-24 md:py-40">
             <div className="max-w-[1400px] mx-auto px-6">
-                <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Our Services</p>
+                <div className="mb-10">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 border border-white/40 text-white text-[10px] font-ui uppercase tracking-[0.3em]">
+                        <span className="w-1 h-1 bg-amber-500" />
+                        Our Services
+                    </span>
+                </div>
                 <h2 className="svc-title text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-[-0.02em] max-w-5xl leading-[1.05] mb-8">
-                    End-to-end partnership from strategy to deployment &mdash; so AI actually <span className="text-zinc-600">ships, works, and delivers.</span>
+                    End-to-end partnership from strategy to deployment &mdash; so AI actually <span className="text-zinc-500">ships, works, and delivers.</span>
                 </h2>
-                <p className="svc-title text-zinc-500 mb-20 max-w-xl text-sm">End-to-end services covering strategy, build, and deployment.</p>
+                <p className="svc-title text-zinc-300 mb-20 max-w-xl text-sm">End-to-end services covering strategy, build, and deployment.</p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {services.map((svc, i) => (
-                        <div key={i} className="svc-card group p-8 md:p-10 bg-[#0A0A0A] hover:bg-[#111] transition-colors border-l-2 border-transparent hover:border-amber-500">
+                        <div key={i} className="svc-card group p-8 md:p-10 bg-[#0A0A0A] border border-white/40 hover:border-amber-500 hover:bg-[#111] transition-colors">
                             <div className="flex items-start gap-6">
                                 <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">{svc.num}</span>
                                 <div className="flex-1">
                                     <h3 className="text-xl md:text-2xl font-bold text-white mb-3">{svc.title}</h3>
-                                    <p className="text-zinc-500 text-sm leading-relaxed">{svc.desc}</p>
+                                    <p className="text-zinc-300 text-sm leading-relaxed">{svc.desc}</p>
                                 </div>
-                                <ArrowUpRight size={20} className="text-zinc-700 group-hover:text-amber-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />
+                                <ArrowUpRight size={20} className="text-zinc-500 group-hover:text-amber-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />
                             </div>
                         </div>
                     ))}
                 </div>
 
-                <div className="mt-12 p-8 md:p-12 bg-[#111] border border-white/5 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
-                    <p className="text-zinc-300 text-base md:text-lg max-w-2xl">Start with a conversation. Tell us about your business, your goals, and the problems you want solved.</p>
+                <div className="mt-12 p-8 md:p-12 bg-[#111] border border-white/40 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
+                    <p className="text-zinc-200 text-base md:text-lg max-w-2xl">Start with a conversation. Tell us about your business, your goals, and the problems you want solved.</p>
                     <a href="#contact" className="inline-flex items-center gap-3 px-7 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors group whitespace-nowrap">
                         Talk To Us <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                     </a>
@@ -315,32 +351,39 @@ const Process = () => {
     ];
 
     return (
-        <section id="process" ref={ref} className="py-24 md:py-32 overflow-hidden border-y border-white/5">
+        <section id="process" ref={ref} className="py-24 md:py-32 overflow-hidden border-y border-white/20">
             <div className="mb-20 overflow-hidden">
                 <div ref={marqueeRef} className="flex whitespace-nowrap">
                     {Array(6).fill(null).map((_, i) => (
-                        <span key={i} className="text-[10rem] md:text-[16rem] font-black uppercase tracking-tighter text-white/[0.04] mx-2 select-none leading-none">
+                        <span key={i} className="text-[10rem] md:text-[16rem] font-display uppercase tracking-tight text-white/[0.12] mx-2 select-none leading-none">
                             OUR PROCESS &bull;
                         </span>
                     ))}
                 </div>
             </div>
 
-            <div className="proc-grid max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5">
+            <div className="max-w-[1400px] mx-auto px-6 mb-12">
+                <span className="inline-flex items-center gap-2 px-4 py-2 border border-white/40 text-white text-[10px] font-ui uppercase tracking-[0.3em]">
+                    <span className="w-1 h-1 bg-amber-500" />
+                    Our Process
+                </span>
+            </div>
+
+            <div className="proc-grid max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 {steps.map((step, i) => (
-                    <div key={i} className="proc-step p-8 md:p-10 bg-[#0A0A0A] hover:bg-[#111] transition-colors group">
+                    <div key={i} className="proc-step p-8 md:p-10 bg-[#0A0A0A] border border-white/40 hover:border-amber-500 hover:bg-[#111] transition-colors group">
                         <div className="flex items-start justify-between mb-6">
                             <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">&mdash; {step.num}</span>
-                            <span className="text-xs font-ui text-zinc-700 group-hover:text-zinc-500 transition-colors">Step</span>
+                            <span className="text-xs font-ui text-zinc-300 group-hover:text-white transition-colors">Step</span>
                         </div>
                         <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">{step.title}</h3>
-                        <p className="text-zinc-500 text-sm leading-relaxed max-w-md">{step.desc}</p>
+                        <p className="text-zinc-300 text-sm leading-relaxed max-w-md">{step.desc}</p>
                     </div>
                 ))}
             </div>
 
             <div className="max-w-[1400px] mx-auto px-6 mt-16 text-center">
-                <p className="text-zinc-500 text-sm mb-6 max-w-xl mx-auto">See How These Solutions Translate Into Measurable Impact.</p>
+                <p className="text-zinc-300 text-sm mb-6 max-w-xl mx-auto">See How These Solutions Translate Into Measurable Impact.</p>
                 <a href="#pricing" className="inline-flex items-center gap-3 px-7 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors group">
                     Start Your AI Journey <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                 </a>
@@ -914,9 +957,9 @@ const Footer = () => (
 
 // ── Grid Overlay ──
 const GridOverlay = () => {
-    const lineColor = 'rgba(255,255,255,0.06)';
-    const plusColor = 'rgba(255,255,255,0.10)';
-    const plusSize = 10;
+    const lineColor = 'rgba(255,255,255,0.14)';
+    const plusColor = 'rgba(255,255,255,0.22)';
+    const plusSize = 12;
     const plusStyle = {
         color: plusColor,
         fontSize: plusSize,

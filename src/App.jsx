@@ -75,19 +75,19 @@ const Navbar = () => {
 
     return (
         <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/30 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-[#0A0A0A]/40 backdrop-blur-md'}`}>
-            <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
-                <a href="#" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2">
-                    <svg viewBox="0 0 32 32" className="w-5 h-5"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
+            <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
+                <a href="#" className="font-ui font-black tracking-[0.18em] text-white text-lg flex items-center gap-3">
+                    <svg viewBox="0 0 32 32" className="w-7 h-7"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
                     COREFIX&reg;
                 </a>
-                <div className="hidden md:flex items-center gap-8 text-[11px] font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
+                <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
                     <a href="#services" className="hover:text-white transition-colors">Services</a>
                     <a href="#process" className="hover:text-white transition-colors">Process</a>
                     <a href="#works" className="hover:text-white transition-colors">Case Studies</a>
                     <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
                     <a href="#contact" className="hover:text-white transition-colors">Contact</a>
                 </div>
-                <a href="#contact" className="hidden md:inline-flex relative items-center px-5 py-2.5 bg-white text-black font-semibold text-[11px] font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
+                <a href="#contact" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
                     <span className="absolute -top-[2px] -left-[2px] w-2.5 h-2.5 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     <span className="absolute -bottom-[2px] -right-[2px] w-2.5 h-2.5 border-b-2 border-r-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     Talk To Us
@@ -137,7 +137,7 @@ const Hero = () => {
             <GridOverlay />
 
             {/* Tags in top-right sky area */}
-            <div className="absolute top-36 md:top-44 right-6 md:right-[calc((100%-1400px)/2+24px)] z-40">
+            <div className="absolute top-40 md:top-52 right-6 md:right-[calc((100%-1400px)/2+24px)] z-40">
                 <div className="hero-el flex flex-col gap-2 items-end">
                     {tags.map(tag => (
                         <span key={tag} className="px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/20 bg-black/30 backdrop-blur-sm">
@@ -158,7 +158,7 @@ const Hero = () => {
 
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
                 <div className="grid md:grid-cols-2 gap-8 mt-10 md:mt-14 items-end">
-                    <p className="hero-el max-w-xl text-zinc-400 text-sm md:text-base leading-relaxed">
+                    <p className="hero-el max-w-xl text-zinc-400 text-sm md:text-base leading-relaxed pl-2">
                         Build real, production-ready AI systems that automate work, improve performance, and deliver measurable business results.
                     </p>
                     <div className="hero-el flex justify-end">
@@ -691,7 +691,7 @@ const Testimonials = () => {
 
     return (
         <section className="py-24 md:py-40 relative overflow-hidden">
-            <SectionGrid />
+            <BrightGrid />
             <div className="max-w-5xl mx-auto px-6 relative z-10">
                 <div className="mb-10"><SectionLabel>Client Voices</SectionLabel></div>
 
@@ -924,7 +924,7 @@ const FAQ = () => {
 
     return (
         <section className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/5 relative overflow-hidden">
-            <SectionGrid />
+            <BrightGrid />
             <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16 relative z-10">
                 <div>
                     <div className="mb-8"><SectionLabel>FAQs</SectionLabel></div>
@@ -1099,15 +1099,15 @@ const Footer = () => (
     </footer>
 );
 
-// ── Grid Overlay (hero only, slightly brighter) ──
+// ── Bright Grid (hero-style, reusable) ──
 const heroLineColor = 'rgba(255,255,255,0.14)';
 const heroPlusStyle = {
     ...gridPlusStyle,
     color: 'rgba(255,255,255,0.30)',
 };
 
-const GridOverlay = () => (
-    <div className="absolute inset-0 z-30 pointer-events-none" aria-hidden="true">
+const BrightGrid = ({ z = 'z-0' }) => (
+    <div className={`absolute inset-0 ${z} pointer-events-none`} aria-hidden="true">
         {gridHPositions.map((top, i) => (
             <div key={`h-${i}`} className="absolute left-0 right-0 h-[1px]" style={{ background: heroLineColor, top }} />
         ))}
@@ -1122,6 +1122,8 @@ const GridOverlay = () => (
         </div>
     </div>
 );
+
+const GridOverlay = () => <BrightGrid z="z-30" />;
 
 // ── Main App ──
 function App() {

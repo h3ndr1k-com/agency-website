@@ -104,10 +104,7 @@ const Hero = () => {
     return (
         <section ref={ref} className="relative min-h-screen flex flex-col justify-end pb-12 md:pb-20 overflow-hidden pt-32">
             <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/60 via-[#0A0A0A]/20 to-[#0A0A0A] z-10" />
-            <div className="absolute inset-0 z-[11] opacity-[0.12]" style={{
-                backgroundSize: '60px 60px',
-                backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px)'
-            }} />
+            {/* Grid lines handled by global GridOverlay */}
             <img
                 src="https://images.unsplash.com/photo-1462275646964-a0e3c11f18a6?w=1920&q=80"
                 alt=""
@@ -156,11 +153,11 @@ const LogoMarquee = () => {
     const partners = ['ACME CORP', 'TECHFLOW', 'NEXUS AI', 'DATASYNC', 'CLOUDWAVE', 'METRIX', 'QUANTLAB'];
     return (
         <section className="py-16 border-y border-white/10 overflow-hidden bg-[#080808]">
-            <p className="text-center text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-600 mb-10">Our Trusted Partners</p>
+            <p className="text-center text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-400 mb-10">Our Trusted Partners</p>
             <div className="relative">
                 <div className="flex animate-marquee whitespace-nowrap">
                     {[...partners, ...partners, ...partners].map((name, i) => (
-                        <div key={i} className="mx-16 flex-shrink-0 text-zinc-500 font-ui font-black text-2xl md:text-3xl tracking-[0.15em] uppercase opacity-50 hover:opacity-100 transition-opacity">
+                        <div key={i} className="mx-16 flex-shrink-0 text-white font-ui font-black text-2xl md:text-3xl tracking-[0.15em] uppercase opacity-60 hover:opacity-100 transition-opacity">
                             {name}
                         </div>
                     ))}
@@ -924,10 +921,31 @@ const Footer = () => (
     </footer>
 );
 
+// ── Grid Overlay ──
+const GridOverlay = () => (
+    <div className="fixed inset-0 z-40 pointer-events-none" aria-hidden="true">
+        <div className="max-w-[1400px] mx-auto h-full px-6 relative">
+            <div className="absolute inset-y-0 left-6 w-px bg-white/[0.06]">
+                <div className="sticky top-0 -ml-[3px] text-white/20 text-[10px] leading-none select-none" style={{ top: '50vh' }}>+</div>
+            </div>
+            <div className="absolute inset-y-0 left-1/3 w-px bg-white/[0.06]">
+                <div className="sticky top-0 -ml-[3px] text-white/20 text-[10px] leading-none select-none" style={{ top: '50vh' }}>+</div>
+            </div>
+            <div className="absolute inset-y-0 left-2/3 w-px bg-white/[0.06]">
+                <div className="sticky top-0 -ml-[3px] text-white/20 text-[10px] leading-none select-none" style={{ top: '50vh' }}>+</div>
+            </div>
+            <div className="absolute inset-y-0 right-6 w-px bg-white/[0.06]">
+                <div className="sticky top-0 -ml-[3px] text-white/20 text-[10px] leading-none select-none" style={{ top: '50vh' }}>+</div>
+            </div>
+        </div>
+    </div>
+);
+
 // ── Main App ──
 function App() {
     return (
         <div className="w-full min-h-screen font-sans bg-[#0A0A0A] text-white selection:bg-amber-500 selection:text-black relative">
+            <GridOverlay />
             <Navbar />
             <Hero />
             <LogoMarquee />

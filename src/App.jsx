@@ -1,43 +1,46 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronRight, ChevronDown, ArrowUpRight, Mail, Phone, MapPin } from 'lucide-react';
+import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ── Rotating Cube ──
-const RotatingCube = ({ size = 180 }) => {
-    const wrapperStyle = { width: size, height: size, perspective: 1000 };
-    const cubeStyle = {
-        width: size, height: size,
-        transformStyle: 'preserve-3d',
-        animation: 'cube-rotate 18s linear infinite',
-        position: 'relative'
-    };
-    const half = size / 2;
-    const face = (transform) => ({
-        position: 'absolute', width: size, height: size,
-        border: '1px solid rgba(255,255,255,0.18)',
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))',
-        backdropFilter: 'blur(4px)',
-        transform,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: 'rgba(245,158,11,0.9)', fontWeight: 700, fontSize: size / 6,
-        letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: 'Plus Jakarta Sans'
-    });
-    return (
-        <div style={wrapperStyle}>
-            <div style={cubeStyle}>
-                <div style={face(`rotateY(0deg) translateZ(${half}px)`)}>AI</div>
-                <div style={face(`rotateY(90deg) translateZ(${half}px)`)}>SYS</div>
-                <div style={face(`rotateY(180deg) translateZ(${half}px)`)}>OPS</div>
-                <div style={face(`rotateY(-90deg) translateZ(${half}px)`)}>FIX</div>
-                <div style={face(`rotateX(90deg) translateZ(${half}px)`)}>+</div>
-                <div style={face(`rotateX(-90deg) translateZ(${half}px)`)}>+</div>
-            </div>
+// ── Section Grid (decorative background grid for sections) ──
+const SectionGrid = () => (
+    <div className="absolute inset-0 pointer-events-none z-0" aria-hidden="true">
+        <div className="max-w-[1400px] mx-auto h-full px-6 relative">
+            {['left-6', 'left-1/3', 'left-2/3', 'right-6'].map((pos, i) => (
+                <div key={i} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: 'rgba(255,255,255,0.06)' }} />
+            ))}
+            {['25%', '50%', '75%'].map((top, i) => (
+                <div key={i} className="absolute left-6 right-6 h-[1px]" style={{ background: 'rgba(255,255,255,0.06)', top }} />
+            ))}
         </div>
+    </div>
+);
+
+// ── Corner-accent button ──
+const CornerButton = ({ href, children, filled, className = '' }) => {
+    const base = filled
+        ? 'bg-white text-black hover:bg-amber-500'
+        : 'bg-transparent text-white border border-white/60 hover:bg-white hover:text-black';
+    return (
+        <a href={href} className={`relative inline-flex items-center gap-3 px-7 py-4 font-bold text-[11px] font-ui uppercase tracking-[0.2em] transition-all duration-200 group ${base} ${className}`}>
+            <span className="absolute -top-[3px] -left-[3px] w-3 h-3 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            <span className="absolute -bottom-[3px] -right-[3px] w-3 h-3 border-b-2 border-r-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            {children}
+        </a>
     );
 };
+
+// ── Section label pill ──
+const SectionLabel = ({ children }) => (
+    <span className="inline-flex items-center gap-2.5 px-5 py-2.5 border border-white/40 text-white text-xs font-ui uppercase tracking-[0.25em]">
+        <span className="w-1.5 h-1.5 bg-amber-500" />
+        {children}
+    </span>
+);
 
 // ── Navbar ──
 const Navbar = () => {
@@ -51,10 +54,10 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/5' : 'bg-transparent'}`}>
+        <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/30 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-[#0A0A0A]/40 backdrop-blur-md'}`}>
             <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
                 <a href="#" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2">
-                    <svg viewBox="0 0 32 32" className="w-5 h-5"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="#F59E0B"/></svg>
+                    <svg viewBox="0 0 32 32" className="w-5 h-5"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
                     COREFIX&reg;
                 </a>
                 <div className="hidden md:flex items-center gap-8 text-[11px] font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
@@ -64,7 +67,9 @@ const Navbar = () => {
                     <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
                     <a href="#contact" className="hover:text-white transition-colors">Contact</a>
                 </div>
-                <a href="#contact" className="hidden md:inline-flex px-5 py-2.5 bg-white text-black font-semibold text-[11px] font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-colors">
+                <a href="#contact" className="hidden md:inline-flex relative items-center px-5 py-2.5 bg-white text-black font-semibold text-[11px] font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
+                    <span className="absolute -top-[2px] -left-[2px] w-2.5 h-2.5 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <span className="absolute -bottom-[2px] -right-[2px] w-2.5 h-2.5 border-b-2 border-r-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     Talk To Us
                 </a>
                 <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-white">
@@ -94,7 +99,6 @@ const Hero = () => {
         const ctx = gsap.context(() => {
             gsap.from('.hero-line', { y: 80, opacity: 0, duration: 1.2, stagger: 0.08, ease: 'power3.out', delay: 0.2 });
             gsap.from('.hero-el', { y: 30, opacity: 0, duration: 0.9, stagger: 0.1, ease: 'power2.out', delay: 0.9 });
-            gsap.from('.hero-cube', { scale: 0.5, opacity: 0, duration: 1.4, ease: 'power3.out', delay: 0.5 });
         }, ref);
         return () => ctx.revert();
     }, []);
@@ -103,45 +107,41 @@ const Hero = () => {
 
     return (
         <section ref={ref} className="relative min-h-screen flex flex-col justify-end pb-12 md:pb-20 overflow-hidden pt-32">
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/60 via-[#0A0A0A]/20 to-[#0A0A0A] z-10" />
-            {/* Grid lines handled by global GridOverlay */}
-            <img
-                src="https://images.unsplash.com/photo-1462275646964-a0e3c11f18a6?w=1920&q=80"
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale contrast-125"
-            />
+            <div className="absolute inset-0 z-0" style={{
+                backgroundImage: 'url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80&auto=format)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                filter: 'grayscale(100%) contrast(1.1)'
+            }} />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A] z-10 pointer-events-none" />
+            <GridOverlay />
 
-            <div className="absolute top-1/2 right-8 md:right-20 -translate-y-1/2 z-20 hidden lg:block hero-cube">
-                <RotatingCube size={220} />
+            {/* Hero heading — sits ABOVE the grid */}
+            <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
+                <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase">
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">We Build</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">AI Systems</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] bg-gradient-to-r from-white/60 to-white/30 bg-clip-text text-transparent">For Businesses</span></span>
+                </h1>
             </div>
 
-            <div className="relative z-20 max-w-[1400px] mx-auto px-6 w-full">
-                <div className="overflow-hidden mb-2">
-                    <p className="hero-line text-xs md:text-sm font-ui uppercase tracking-[0.25em] text-zinc-500">
-                        AI Consulting &amp; Implementation &mdash;
-                    </p>
-                </div>
-                <h1 className="font-bold leading-[0.85] tracking-[-0.04em] text-white uppercase">
-                    <span className="block overflow-hidden"><span className="hero-line block text-[18vw] md:text-[11vw] lg:text-[9.5vw]">We Build</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[18vw] md:text-[11vw] lg:text-[9.5vw]">AI Systems</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[18vw] md:text-[11vw] lg:text-[9.5vw] text-zinc-600">For Business</span></span>
-                </h1>
+            <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
                 <div className="grid md:grid-cols-2 gap-8 mt-10 md:mt-14 items-end">
                     <p className="hero-el max-w-xl text-zinc-400 text-sm md:text-base leading-relaxed">
                         Build real, production-ready AI systems that automate work, improve performance, and deliver measurable business results.
                     </p>
-                    <div className="hero-el flex flex-wrap gap-2 md:justify-end">
-                        {tags.map(tag => (
-                            <span key={tag} className="px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-zinc-300 border border-zinc-700 bg-white/[0.02]">
-                                {tag}
-                            </span>
-                        ))}
+                    <div className="hero-el flex flex-col items-start md:items-end gap-4">
+                        <div className="flex flex-wrap gap-2 md:justify-end">
+                            {tags.map(tag => (
+                                <span key={tag} className="px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-zinc-300 border border-zinc-700 bg-white/[0.02]">
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+                        <CornerButton href="#process" filled>
+                            How It Works <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                        </CornerButton>
                     </div>
-                </div>
-                <div className="hero-el mt-10">
-                    <a href="#process" className="inline-flex items-center gap-3 px-7 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors group">
-                        How It Works <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                    </a>
                 </div>
             </div>
         </section>
@@ -152,15 +152,23 @@ const Hero = () => {
 const LogoMarquee = () => {
     const partners = ['ACME CORP', 'TECHFLOW', 'NEXUS AI', 'DATASYNC', 'CLOUDWAVE', 'METRIX', 'QUANTLAB'];
     return (
-        <section className="py-16 border-y border-white/10 overflow-hidden bg-[#080808]">
-            <p className="text-center text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-400 mb-10">Our Trusted Partners</p>
-            <div className="relative">
-                <div className="flex animate-marquee whitespace-nowrap">
-                    {[...partners, ...partners, ...partners].map((name, i) => (
-                        <div key={i} className="mx-16 flex-shrink-0 text-white font-ui font-black text-2xl md:text-3xl tracking-[0.15em] uppercase opacity-60 hover:opacity-100 transition-opacity">
-                            {name}
+        <section className="py-20 bg-[#080808]">
+            <div className="max-w-[900px] mx-auto px-6">
+                <div className="flex justify-center mb-10">
+                    <SectionLabel>Our Trusted Partners</SectionLabel>
+                </div>
+                <div className="border-y border-white/40 py-10 overflow-hidden">
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#080808] to-transparent z-10 pointer-events-none" />
+                        <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#080808] to-transparent z-10 pointer-events-none" />
+                        <div className="flex animate-marquee whitespace-nowrap">
+                            {[...partners, ...partners, ...partners].map((name, i) => (
+                                <div key={i} className="mx-12 flex-shrink-0 text-white font-ui font-black text-xl md:text-2xl tracking-[0.15em] uppercase opacity-70 hover:opacity-100 transition-opacity">
+                                    {name}
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    </div>
                 </div>
             </div>
         </section>
@@ -195,87 +203,238 @@ const Services = () => {
     return (
         <section id="services" ref={ref} className="py-24 md:py-40">
             <div className="max-w-[1400px] mx-auto px-6">
-                <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Our Services</p>
+                <div className="mb-10">
+                    <SectionLabel>Our Services</SectionLabel>
+                </div>
                 <h2 className="svc-title text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-[-0.02em] max-w-5xl leading-[1.05] mb-8">
-                    End-to-end partnership from strategy to deployment &mdash; so AI actually <span className="text-zinc-600">ships, works, and delivers.</span>
+                    End-to-end partnership from strategy to deployment &mdash; so AI actually <span className="text-zinc-500">ships, works, and delivers.</span>
                 </h2>
-                <p className="svc-title text-zinc-500 mb-20 max-w-xl text-sm">End-to-end services covering strategy, build, and deployment.</p>
+                <p className="svc-title text-zinc-300 mb-20 max-w-xl text-sm">End-to-end services covering strategy, build, and deployment.</p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {services.map((svc, i) => (
-                        <div key={i} className="svc-card group p-8 md:p-10 bg-[#0A0A0A] hover:bg-[#111] transition-colors border-l-2 border-transparent hover:border-amber-500">
+                        <div key={i} className="svc-card group p-8 md:p-10 bg-[#0A0A0A] border border-white/40 hover:border-amber-500 hover:bg-[#111] transition-colors">
                             <div className="flex items-start gap-6">
                                 <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">{svc.num}</span>
                                 <div className="flex-1">
                                     <h3 className="text-xl md:text-2xl font-bold text-white mb-3">{svc.title}</h3>
-                                    <p className="text-zinc-500 text-sm leading-relaxed">{svc.desc}</p>
+                                    <p className="text-zinc-300 text-sm leading-relaxed">{svc.desc}</p>
                                 </div>
-                                <ArrowUpRight size={20} className="text-zinc-700 group-hover:text-amber-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />
+                                <ArrowUpRight size={20} className="text-zinc-500 group-hover:text-amber-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />
                             </div>
                         </div>
                     ))}
                 </div>
 
-                <div className="mt-12 p-8 md:p-12 bg-[#111] border border-white/5 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
-                    <p className="text-zinc-300 text-base md:text-lg max-w-2xl">Start with a conversation. Tell us about your business, your goals, and the problems you want solved.</p>
-                    <a href="#contact" className="inline-flex items-center gap-3 px-7 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors group whitespace-nowrap">
+                <div className="mt-12 p-8 md:p-12 bg-[#111] border border-white/40 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
+                    <p className="text-zinc-200 text-base md:text-lg max-w-2xl">Start with a conversation. Tell us about your business, your goals, and the problems you want solved.</p>
+                    <CornerButton href="#contact" filled className="whitespace-nowrap">
                         Talk To Us <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
-                    </a>
+                    </CornerButton>
                 </div>
             </div>
         </section>
     );
 };
 
-// ── Capabilities ──
+// ── Reactor Knob Tick ──
+const KnobTick = ({ currentRotation, angle }) => {
+    const opacity = useTransform(currentRotation, (r) => r >= angle ? 1 : 0.2);
+    const color = useTransform(currentRotation, (r) => r >= angle ? '#f97316' : '#404040');
+    const shadow = useTransform(currentRotation, (r) => r >= angle ? '0 0 8px rgba(249,115,22,0.6)' : 'none');
+    return <motion.div style={{ backgroundColor: color, opacity, boxShadow: shadow }} className="w-1 h-2.5" />;
+};
+
+// ── Reactor Knob Display ──
+const KnobDisplay = ({ value }) => {
+    const [display, setDisplay] = useState(0);
+    useMotionValueEvent(value, 'change', (v) => setDisplay(Math.round(v)));
+    return (
+        <div className="relative">
+            <span className="absolute inset-0 blur-sm text-orange-500/50 font-ui text-2xl font-black tabular-nums tracking-widest">
+                {display.toString().padStart(3, '0')}
+            </span>
+            <span className="relative font-ui text-2xl text-orange-500 font-black tabular-nums tracking-widest">
+                {display.toString().padStart(3, '0')}
+                <span className="text-sm text-zinc-600 ml-1">%</span>
+            </span>
+        </div>
+    );
+};
+
+// ── Capabilities (Reactor Knob + Cave Image) ──
 const Capabilities = () => {
-    const ref = useRef(null);
     const capabilities = [
         'Conversational AI & Chatbots', 'Customer Support Automation', 'Voice & Call Agents',
         'Internal Ops & Admin Automation', 'Document & Data Intelligence', 'API & Tool Integrations',
         'Sales & Lead Qualification Agents', 'Fine-tuned LLM Systems'
     ];
 
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            gsap.from('.cap-item', {
-                scrollTrigger: { trigger: ref.current, start: 'top 70%' },
-                x: -50, opacity: 0, duration: 0.7, stagger: 0.07, ease: 'power3.out'
-            });
-            gsap.from('.cap-img', {
-                scrollTrigger: { trigger: ref.current, start: 'top 70%' },
-                scale: 1.1, opacity: 0, duration: 1.4, ease: 'power3.out'
-            });
-        }, ref);
-        return () => ctx.revert();
+    const MIN_DEG = -135;
+    const MAX_DEG = 135;
+    const TOTAL_TICKS = 40;
+    const DEGREES_PER_TICK = (MAX_DEG - MIN_DEG) / TOTAL_TICKS;
+
+    const [isDragging, setIsDragging] = useState(false);
+    const rawRotation = useMotionValue(MIN_DEG);
+    const snappedRotation = useMotionValue(MIN_DEG);
+    const smoothRotation = useSpring(snappedRotation, { stiffness: 400, damping: 35, mass: 0.8 });
+    const displayValue = useTransform(smoothRotation, [MIN_DEG, MAX_DEG], [0, 100]);
+    const lightOpacity = useTransform(rawRotation, [MIN_DEG, MAX_DEG], [0.02, 0.35]);
+    const knobRef = useRef(null);
+
+    const handlePointerDown = useCallback(() => {
+        setIsDragging(true);
+        document.body.style.cursor = 'grabbing';
+        document.body.style.userSelect = 'none';
     }, []);
 
+    useEffect(() => {
+        if (!isDragging) return;
+        const handlePointerMove = (e) => {
+            if (!knobRef.current) return;
+            const rect = knobRef.current.getBoundingClientRect();
+            const x = e.clientX - (rect.left + rect.width / 2);
+            const y = e.clientY - (rect.top + rect.height / 2);
+            let degs = Math.atan2(y, x) * (180 / Math.PI) + 90;
+            if (degs > 180) degs -= 360;
+            if (degs < MIN_DEG && degs > -180) degs = MIN_DEG;
+            if (degs > MAX_DEG) degs = MAX_DEG;
+            rawRotation.set(degs);
+            snappedRotation.set(Math.round(degs / DEGREES_PER_TICK) * DEGREES_PER_TICK);
+        };
+        const handlePointerUp = () => {
+            setIsDragging(false);
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        };
+        window.addEventListener('pointermove', handlePointerMove);
+        window.addEventListener('pointerup', handlePointerUp);
+        return () => {
+            window.removeEventListener('pointermove', handlePointerMove);
+            window.removeEventListener('pointerup', handlePointerUp);
+        };
+    }, [isDragging, rawRotation, snappedRotation, DEGREES_PER_TICK]);
+
+    const ticks = Array.from({ length: TOTAL_TICKS + 1 });
+
+    const [revealCount, setRevealCount] = useState(0);
+    useMotionValueEvent(displayValue, 'change', (v) => {
+        setRevealCount(Math.floor((v / 100) * capabilities.length));
+    });
+
+    const capPositions = [
+        { top: '15%', left: '8%' },
+        { top: '12%', right: '12%' },
+        { top: '38%', left: '5%' },
+        { top: '35%', right: '5%' },
+        { top: '62%', left: '10%' },
+        { top: '58%', right: '8%' },
+        { top: '80%', left: '15%' },
+        { top: '78%', right: '15%' },
+    ];
+
     return (
-        <section ref={ref} className="py-24 md:py-40 relative overflow-hidden bg-[#0A0A0A]">
-            <div className="relative z-10 max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-                <div>
-                    <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; AI Capabilities</p>
-                    <div className="space-y-1">
-                        {capabilities.map((cap, i) => (
-                            <div key={i} className="cap-item flex items-center gap-5 group cursor-default py-3 border-b border-white/5 last:border-0">
-                                <span className="text-[10px] font-ui text-zinc-700 group-hover:text-amber-500 transition-colors w-6">{String(i + 1).padStart(2, '0')}</span>
-                                <div className="w-1 h-1 bg-amber-500 group-hover:scale-[3] transition-transform" />
-                                <span className="text-zinc-300 text-base md:text-lg font-medium group-hover:text-white transition-colors">{cap}</span>
-                            </div>
-                        ))}
+        <section className="relative overflow-hidden bg-[#0A0A0A]">
+            {/* Cave image hero */}
+            <div className="relative w-full" style={{ aspectRatio: '16/9', maxHeight: '75vh' }}>
+                <div className="absolute inset-0" style={{
+                    backgroundImage: 'url(https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=85)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    filter: 'grayscale(100%) contrast(1.2) brightness(0.7)'
+                }} />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/40 via-transparent to-[#0A0A0A]" />
+                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
+
+                {/* Section label centered above knob */}
+                <div className="absolute top-8 md:top-12 left-1/2 -translate-x-1/2 z-20">
+                    <SectionLabel>AI Capabilities</SectionLabel>
+                </div>
+
+                {/* Floating capability labels scattered over image */}
+                {capabilities.map((cap, i) => (
+                    <div
+                        key={i}
+                        className="absolute z-20 pointer-events-none transition-all duration-700 ease-out hidden md:block"
+                        style={{
+                            ...capPositions[i],
+                            opacity: i < revealCount ? 1 : 0,
+                            transform: i < revealCount ? 'scale(1)' : 'scale(0.8)',
+                        }}
+                    >
+                        <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-sm border border-white/20 text-white text-[10px] md:text-xs font-ui uppercase tracking-[0.15em]">
+                            <span className="w-1.5 h-1.5 bg-amber-500 flex-shrink-0" />
+                            {cap}
+                        </span>
+                    </div>
+                ))}
+
+                {/* Reactor Knob centered over image */}
+                <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <div className="relative w-52 h-52 md:w-64 md:h-64 select-none allow-round">
+                        {/* Glow */}
+                        <motion.div className="absolute inset-0 bg-orange-500 rounded-full blur-3xl" style={{ opacity: lightOpacity }} />
+
+                        {/* Tick marks ring */}
+                        <div className="absolute inset-0 pointer-events-none">
+                            {ticks.map((_, i) => {
+                                const angle = (i / TOTAL_TICKS) * (MAX_DEG - MIN_DEG) + MIN_DEG;
+                                return (
+                                    <div key={i} className="absolute top-0 left-1/2 w-1 h-full -translate-x-1/2" style={{ transform: `rotate(${angle}deg)` }}>
+                                        <KnobTick currentRotation={smoothRotation} angle={angle} />
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* The knob */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40">
+                            <motion.div
+                                ref={knobRef}
+                                className={`relative w-full h-full rounded-full touch-none z-20 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                                style={{ rotate: smoothRotation }}
+                                onPointerDown={handlePointerDown}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                            >
+                                <div className="w-full h-full rounded-full bg-neutral-900 shadow-[0_10px_30px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-neutral-800 flex items-center justify-center relative overflow-hidden">
+                                    <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent_50%),conic-gradient(from_0deg,transparent_0deg,#000_360deg)]" />
+                                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full bg-neutral-950 shadow-[inset_0_2px_5px_rgba(0,0,0,1)] border border-neutral-800/50 flex items-center justify-center">
+                                        <motion.div
+                                            className="absolute top-3 w-1.5 h-5 bg-orange-500 rounded-full"
+                                            style={{ boxShadow: useTransform(rawRotation, (r) => `0 0 ${Math.max(5, (r + 135) / 10)}px orange`) }}
+                                        />
+                                        <span className="font-ui text-[9px] text-zinc-600 tracking-[0.25em] mt-4">LEVEL</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </div>
+
+                        {/* Digital readout */}
+                        <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none">
+                            <span className="text-[10px] text-zinc-400 font-ui tracking-[0.2em] mb-2 animate-pulse">SPIN ME</span>
+                            <span className="text-[9px] text-zinc-600 font-ui tracking-[0.25em] mb-1">OUTPUT</span>
+                            <KnobDisplay value={displayValue} />
+                        </div>
                     </div>
                 </div>
-                <div className="cap-img relative aspect-[3/4] overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=900&q=85" alt="" className="absolute inset-0 w-full h-full object-cover grayscale contrast-125" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
-                    <div className="absolute top-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
-                        <span>COREFIX&reg;</span>
-                        <span>2026</span>
-                    </div>
-                    <div className="absolute bottom-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
-                        <span>SYSTEMS ENGINEERED</span>
-                        <span>// 01</span>
-                    </div>
+
+                {/* COREFIX® label below knob */}
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+                    <span className="text-zinc-500 text-sm font-ui font-bold tracking-[0.2em]">COREFIX&reg;</span>
+                </div>
+            </div>
+
+            {/* Mobile-only capabilities list (floating labels need desktop space) */}
+            <div className="md:hidden max-w-[1400px] mx-auto px-6 py-12">
+                <div className="grid grid-cols-2 gap-4">
+                    {capabilities.map((cap, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                            <div className="w-1.5 h-1.5 bg-amber-500 mt-1.5 flex-shrink-0" />
+                            <span className="text-sm text-zinc-300 font-medium">{cap}</span>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>
@@ -308,35 +467,39 @@ const Process = () => {
     ];
 
     return (
-        <section id="process" ref={ref} className="py-24 md:py-32 overflow-hidden border-y border-white/5">
+        <section id="process" ref={ref} className="py-24 md:py-32 overflow-hidden border-y border-white/20">
             <div className="mb-20 overflow-hidden">
                 <div ref={marqueeRef} className="flex whitespace-nowrap">
                     {Array(6).fill(null).map((_, i) => (
-                        <span key={i} className="text-[10rem] md:text-[16rem] font-black uppercase tracking-tighter text-white/[0.04] mx-2 select-none leading-none">
+                        <span key={i} className="text-[10rem] md:text-[16rem] font-display uppercase tracking-tight text-white mx-2 select-none leading-none">
                             OUR PROCESS &bull;
                         </span>
                     ))}
                 </div>
             </div>
 
-            <div className="proc-grid max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5">
+            <div className="max-w-[1400px] mx-auto px-6 mb-12">
+                <SectionLabel>Our Process</SectionLabel>
+            </div>
+
+            <div className="proc-grid max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 {steps.map((step, i) => (
-                    <div key={i} className="proc-step p-8 md:p-10 bg-[#0A0A0A] hover:bg-[#111] transition-colors group">
+                    <div key={i} className="proc-step p-8 md:p-10 bg-[#0A0A0A] border border-white/40 hover:border-amber-500 hover:bg-[#111] transition-colors group">
                         <div className="flex items-start justify-between mb-6">
                             <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">&mdash; {step.num}</span>
-                            <span className="text-xs font-ui text-zinc-700 group-hover:text-zinc-500 transition-colors">Step</span>
+                            <span className="text-xs font-ui text-zinc-300 group-hover:text-white transition-colors">Step</span>
                         </div>
                         <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">{step.title}</h3>
-                        <p className="text-zinc-500 text-sm leading-relaxed max-w-md">{step.desc}</p>
+                        <p className="text-zinc-300 text-sm leading-relaxed max-w-md">{step.desc}</p>
                     </div>
                 ))}
             </div>
 
             <div className="max-w-[1400px] mx-auto px-6 mt-16 text-center">
-                <p className="text-zinc-500 text-sm mb-6 max-w-xl mx-auto">See How These Solutions Translate Into Measurable Impact.</p>
-                <a href="#pricing" className="inline-flex items-center gap-3 px-7 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors group">
+                <p className="text-zinc-300 text-sm mb-6 max-w-xl mx-auto">See How These Solutions Translate Into Measurable Impact.</p>
+                <CornerButton href="#pricing" filled>
                     Start Your AI Journey <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                </a>
+                </CornerButton>
             </div>
         </section>
     );
@@ -375,9 +538,10 @@ const Works = () => {
     };
 
     return (
-        <section id="works" ref={ref} className="py-24 md:py-32">
-            <div className="max-w-[1400px] mx-auto px-6 mb-16">
-                <p className="works-header text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Case Studies</p>
+        <section id="works" ref={ref} className="py-24 md:py-32 relative overflow-hidden">
+            <SectionGrid />
+            <div className="max-w-[1400px] mx-auto px-6 mb-16 relative z-10">
+                <div className="works-header mb-8"><SectionLabel>Case Studies</SectionLabel></div>
                 <div className="flex items-end justify-between flex-wrap gap-8">
                     <h2 className="works-header text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] leading-[0.95]">
                         Work That Speaks<br />in <span className="text-zinc-600">Results, Not Claims</span>
@@ -392,7 +556,7 @@ const Works = () => {
                 </p>
             </div>
 
-            <div ref={scrollRef} className="flex gap-4 overflow-x-auto px-6 pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+            <div ref={scrollRef} className="relative z-10 flex gap-4 overflow-x-auto px-6 pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
                 {projects.map((proj, i) => (
                     <div key={i} className="work-card flex-shrink-0 w-[320px] md:w-[400px] snap-start group cursor-pointer">
                         <div className="relative aspect-[3/4] overflow-hidden mb-4">
@@ -454,7 +618,7 @@ const CaseStudy = () => {
             <div className="max-w-[1400px] mx-auto px-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
-                        <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-amber-500 mb-6">&mdash; Featured Case Study</p>
+                        <div className="mb-6"><SectionLabel>Featured Case Study</SectionLabel></div>
                         <h3 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-8 leading-[1.05]">
                             We helped DigiTech Finance rebuild their digital experience and modernize their product storytelling.
                         </h3>
@@ -504,7 +668,7 @@ const Testimonials = () => {
     return (
         <section className="py-24 md:py-40">
             <div className="max-w-5xl mx-auto px-6">
-                <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-10">&mdash; Client Voices</p>
+                <div className="mb-10"><SectionLabel>Client Voices</SectionLabel></div>
 
                 <div className="flex gap-2 mb-16">
                     {testimonials.map((_, i) => (
@@ -545,7 +709,7 @@ const Pricing = () => {
     return (
         <section id="pricing" ref={ref} className="py-24 md:py-40 border-y border-white/5">
             <div className="max-w-[1400px] mx-auto px-6">
-                <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Pricing</p>
+                <div className="mb-8"><SectionLabel>Pricing</SectionLabel></div>
                 <div className="grid md:grid-cols-2 gap-8 mb-16 items-end">
                     <h2 className="text-4xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05]">
                         Flexible Pricing for Different <span className="text-zinc-600">Growth Stages</span>
@@ -634,7 +798,7 @@ const WhyUs = () => {
         <section ref={ref} className="py-24 md:py-40 relative overflow-hidden">
             <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
                 <div>
-                    <p className="why-el text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Why Us</p>
+                    <div className="why-el mb-8"><SectionLabel>Why Us</SectionLabel></div>
                     <h2 className="why-el text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-[-0.04em] mb-8 leading-[0.85] uppercase">
                         Why<br />Us?
                     </h2>
@@ -666,7 +830,6 @@ const WhyUs = () => {
 // ── Meet The Team ──
 const Team = () => {
     const ref = useRef(null);
-    const [hovered, setHovered] = useState(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -679,41 +842,30 @@ const Team = () => {
     }, []);
 
     const members = [
-        { name: 'Your Name', role: 'Founder & CEO', quote: '"Building AI systems that actually ship and deliver results."', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=85' },
+        { name: 'Hendrik', role: 'Founder & CEO', quote: '"Building AI systems that actually ship and deliver results."', img: '/hendrik.jpg' },
         { name: 'Alex Chen', role: 'Lead ML Engineer', quote: '"If it can be automated, it should be automated. Humans deserve better work."', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=85' },
         { name: 'Sarah Kim', role: 'AI Product Designer', quote: '"Great AI feels invisible — it just works."', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=85' },
-        { name: 'Marcus Webb', role: 'Solutions Architect', quote: '"The best system is one the team actually adopts."', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&q=85' },
     ];
 
     return (
-        <section id="team" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A]">
-            <div className="max-w-[1400px] mx-auto px-6">
-                <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Meet The Team</p>
-                <h2 className="text-5xl md:text-8xl lg:text-[10rem] font-black text-white tracking-[-0.04em] leading-[0.85] uppercase mb-20">
+        <section id="team" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A] relative overflow-hidden">
+            <SectionGrid />
+            <div className="max-w-[1400px] mx-auto px-6 relative z-10">
+                <div className="mb-8"><SectionLabel>Meet The Team</SectionLabel></div>
+                <h2 className="text-5xl md:text-8xl lg:text-[10rem] font-display text-white tracking-tight leading-[0.85] uppercase mb-20">
                     Builders,<br />Engineers, and<br />Problem-Solvers First
                 </h2>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/5">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {members.map((m, i) => (
-                        <div
-                            key={i}
-                            className="team-card group relative bg-[#0A0A0A] overflow-hidden"
-                            onMouseEnter={() => setHovered(i)}
-                            onMouseLeave={() => setHovered(null)}
-                        >
+                        <div key={i} className="team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden">
                             <div className="relative aspect-[3/4] overflow-hidden">
-                                <img src={m.img} alt={m.name} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent" />
-
-                                <div className={`absolute inset-0 bg-[#0A0A0A]/70 backdrop-blur-sm flex flex-col justify-center p-6 transition-opacity duration-500 ${hovered === i ? 'opacity-100' : 'opacity-0'}`}>
-                                    <p className="font-ui font-bold text-white text-sm uppercase tracking-[0.15em]">{m.name}</p>
-                                    <p className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
-                                    <p className="text-zinc-300 text-sm mt-4 leading-relaxed italic">{m.quote}</p>
-                                </div>
-
-                                <div className={`absolute bottom-4 left-4 right-4 transition-opacity duration-500 ${hovered === i ? 'opacity-0' : 'opacity-100'}`}>
-                                    <p className="text-white font-bold text-base">{m.name}</p>
-                                    <p className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
+                                <img src={m.img} alt={m.name} className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
+                                <div className="absolute bottom-5 left-5 right-5">
+                                    <p className="text-white font-bold text-lg">{m.name}</p>
+                                    <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
+                                    <p className="text-zinc-300 text-xs mt-2 leading-relaxed italic opacity-0 group-hover:opacity-100 transition-opacity duration-500">{m.quote}</p>
                                 </div>
                             </div>
                         </div>
@@ -721,9 +873,9 @@ const Team = () => {
                 </div>
 
                 <div className="mt-16 text-center">
-                    <a href="#contact" className="inline-flex items-center gap-3 px-7 py-4 border border-zinc-700 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors">
+                    <CornerButton href="#contact">
                         About Us <ArrowUpRight size={14} />
-                    </a>
+                    </CornerButton>
                 </div>
             </div>
         </section>
@@ -743,17 +895,18 @@ const FAQ = () => {
     ];
 
     return (
-        <section className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/5">
-            <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16">
+        <section className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/5 relative overflow-hidden">
+            <SectionGrid />
+            <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16 relative z-10">
                 <div>
-                    <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; FAQs</p>
+                    <div className="mb-8"><SectionLabel>FAQs</SectionLabel></div>
                     <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-6 leading-[1.05]">Everything You Need to Know Before We Build</h2>
                     <p className="text-zinc-500 text-sm mb-10 max-w-md">We don't sell AI concepts or recycled demos. We design and deploy production-ready AI systems grounded in your workflows, your data, and measurable business outcomes.</p>
                     <div>
                         <p className="text-white font-bold text-sm mb-4">Got more questions?</p>
-                        <a href="#contact" className="inline-flex items-center gap-3 px-7 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors group">
+                        <CornerButton href="#contact" filled>
                             Reach Us <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
-                        </a>
+                        </CornerButton>
                     </div>
                 </div>
                 <div className="space-y-px bg-white/5">
@@ -796,7 +949,7 @@ const Articles = () => {
     return (
         <section ref={ref} className="py-24 md:py-32">
             <div className="max-w-[1400px] mx-auto px-6">
-                <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Articles</p>
+                <div className="mb-8"><SectionLabel>Articles</SectionLabel></div>
                 <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-16 leading-[1.05]">
                     Insights & <span className="text-zinc-600">Field Notes</span>
                 </h2>
@@ -842,18 +995,18 @@ const Contact = () => {
         <section id="contact" ref={ref} className="py-24 md:py-40 bg-[#0A0A0A] border-y border-white/5">
             <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16">
                 <div>
-                    <p className="contact-el text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Talk To Us</p>
+                    <div className="contact-el mb-8"><SectionLabel>Talk To Us</SectionLabel></div>
                     <h2 className="contact-el text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] mb-8 leading-[0.95]">
                         Tell Us<br />What You Want<br /><span className="text-zinc-600">AI to Fix</span>
                     </h2>
                     <p className="contact-el text-zinc-500 text-sm md:text-base max-w-md">Share a bit about your business and we'll come back with a clear, no-fluff plan of attack.</p>
                 </div>
 
-                <form className="contact-el space-y-px bg-white/5" onSubmit={e => e.preventDefault()}>
-                    <input type="text" placeholder="Name" className="w-full px-5 py-5 bg-[#0A0A0A] text-white text-sm placeholder-zinc-600 focus:bg-[#111] focus:outline-none transition-colors font-ui uppercase tracking-wider" />
-                    <input type="email" placeholder="Work Email" className="w-full px-5 py-5 bg-[#0A0A0A] text-white text-sm placeholder-zinc-600 focus:bg-[#111] focus:outline-none transition-colors font-ui uppercase tracking-wider" />
-                    <input type="text" placeholder="Company" className="w-full px-5 py-5 bg-[#0A0A0A] text-white text-sm placeholder-zinc-600 focus:bg-[#111] focus:outline-none transition-colors font-ui uppercase tracking-wider" />
-                    <textarea placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#0A0A0A] text-white text-sm placeholder-zinc-600 focus:bg-[#111] focus:outline-none transition-colors resize-none font-ui uppercase tracking-wider" />
+                <form className="contact-el space-y-3" onSubmit={e => e.preventDefault()}>
+                    <input type="text" placeholder="Name" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                    <input type="email" placeholder="Work Email" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                    <input type="text" placeholder="Company" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                    <textarea placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors resize-none" />
                     <button type="submit" className="w-full px-8 py-6 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.3em] hover:bg-amber-500 transition-colors flex items-center justify-center gap-3 group">
                         Submit <ArrowUpRight size={16} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                     </button>
@@ -868,7 +1021,7 @@ const Footer = () => (
     <footer className="bg-[#050505] pt-24 pb-10 px-6">
         <div className="max-w-[1400px] mx-auto">
             <div className="mb-20">
-                <h2 className="text-[18vw] md:text-[15vw] font-black uppercase tracking-tighter text-white/[0.04] leading-none select-none">
+                <h2 className="text-[18vw] md:text-[15vw] font-black uppercase tracking-tighter text-white/[0.15] leading-none select-none">
                     COREFIX&reg;
                 </h2>
             </div>
@@ -876,19 +1029,15 @@ const Footer = () => (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/10">
                 <div className="md:col-span-2 max-w-md">
                     <h4 className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6">
-                        <img src="/logo.svg" alt="" className="w-6 h-6" /> COREFIX&reg;
+                        <svg viewBox="0 0 32 32" className="w-5 h-5"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
                     </h4>
                     <p className="text-zinc-400 text-sm leading-relaxed mb-8 max-w-sm">
                         We design, build, and deploy reliable AI systems and automation workflows.
                     </p>
                     <div className="space-y-3">
-                        <a href="mailto:hello@corefix.ai" className="block text-white font-bold text-base hover:text-amber-500 transition-colors">
-                            HELLO@COREFIX.AI
+                        <a href="mailto:hendrik@corefix.app" className="block text-white font-bold text-base hover:text-amber-500 transition-colors">
+                            HENDRIK@COREFIX.APP
                         </a>
-                        <a href="tel:+15125551234" className="block text-zinc-500 text-sm font-ui tracking-widest">
-                            (512) 555-1234
-                        </a>
-                        <p className="text-zinc-600 text-xs">2919 Main St, Austin, TX 78704</p>
                     </div>
                 </div>
 
@@ -921,31 +1070,45 @@ const Footer = () => (
     </footer>
 );
 
-// ── Grid Overlay ──
-const GridOverlay = () => (
-    <div className="fixed inset-0 z-40 pointer-events-none" aria-hidden="true">
-        <div className="max-w-[1400px] mx-auto h-full px-6 relative">
-            <div className="absolute inset-y-0 left-6 w-px bg-white/[0.06]">
-                <div className="sticky top-0 -ml-[3px] text-white/20 text-[10px] leading-none select-none" style={{ top: '50vh' }}>+</div>
-            </div>
-            <div className="absolute inset-y-0 left-1/3 w-px bg-white/[0.06]">
-                <div className="sticky top-0 -ml-[3px] text-white/20 text-[10px] leading-none select-none" style={{ top: '50vh' }}>+</div>
-            </div>
-            <div className="absolute inset-y-0 left-2/3 w-px bg-white/[0.06]">
-                <div className="sticky top-0 -ml-[3px] text-white/20 text-[10px] leading-none select-none" style={{ top: '50vh' }}>+</div>
-            </div>
-            <div className="absolute inset-y-0 right-6 w-px bg-white/[0.06]">
-                <div className="sticky top-0 -ml-[3px] text-white/20 text-[10px] leading-none select-none" style={{ top: '50vh' }}>+</div>
+// ── Grid Overlay (hero only) ──
+const GridOverlay = () => {
+    const lineColor = 'rgba(255,255,255,0.14)';
+    const plusColor = 'rgba(255,255,255,0.22)';
+    const plusSize = 12;
+    const plusStyle = {
+        color: plusColor,
+        fontSize: plusSize,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: 300,
+        lineHeight: 1,
+        userSelect: 'none',
+    };
+    const vPositions = ['left-6', 'left-1/3', 'left-2/3', 'right-6'];
+    const showPlus = [true, false, false, true];
+    const hPositions = ['25%', '50%', '75%'];
+
+    return (
+        <div className="absolute inset-0 z-30 pointer-events-none" aria-hidden="true">
+            <div className="max-w-[1400px] mx-auto h-full px-6 relative">
+                {vPositions.map((pos, i) => (
+                    <div key={`v-${i}`} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: lineColor }}>
+                        {showPlus[i] && hPositions.map(top => (
+                            <span key={top} className="absolute -translate-x-1/2" style={{ ...plusStyle, top }}>+</span>
+                        ))}
+                    </div>
+                ))}
+                {hPositions.map((top, i) => (
+                    <div key={`h-${i}`} className="absolute left-6 right-6 h-[1px]" style={{ background: lineColor, top }} />
+                ))}
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 // ── Main App ──
 function App() {
     return (
         <div className="w-full min-h-screen font-sans bg-[#0A0A0A] text-white selection:bg-amber-500 selection:text-black relative">
-            <GridOverlay />
             <Navbar />
             <Hero />
             <LogoMarquee />

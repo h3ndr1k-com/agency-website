@@ -36,6 +36,13 @@
         border-radius: 0 !important;
     }
 
+    .allow-round,
+    .allow-round *,
+    .allow-round *::before,
+    .allow-round *::after {
+        border-radius: 9999px !important;
+    }
+
     body {
         background-color: var(--color-bg);
         color: var(--color-primary);
@@ -67,10 +74,7 @@
     animation: marquee 25s linear infinite;
 }
 
-@keyframes cube-rotate {
-    0% { transform: rotateX(-20deg) rotateY(0deg); }
-    100% { transform: rotateX(-20deg) rotateY(360deg); }
-}
+/* cube rotation handled by GSAP ScrollTrigger */
 
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

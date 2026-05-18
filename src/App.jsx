@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronRight, ChevronDown, ArrowUpRight, Mail, Phone, MapPin } from 'lucide-react';
+import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,73 +27,6 @@ const SectionLabel = ({ children }) => (
         {children}
     </span>
 );
-
-// ── Rotating Cube (continuous spin) ──
-const RotatingCube = ({ size = 220 }) => {
-    const cubeRef = useRef(null);
-
-    useEffect(() => {
-        if (!cubeRef.current) return;
-        const ctx = gsap.context(() => {
-            gsap.to(cubeRef.current, {
-                rotateY: '+=360',
-                duration: 18,
-                repeat: -1,
-                ease: 'none',
-            });
-        });
-        return () => ctx.revert();
-    }, []);
-
-    const half = size / 2;
-    const gridColor = 'rgba(255,255,255,0.22)';
-    const gridImage = `
-        linear-gradient(${gridColor} 1px, transparent 1px),
-        linear-gradient(90deg, ${gridColor} 1px, transparent 1px)
-    `;
-    const gridSize = `${size / 6}px ${size / 6}px`;
-
-    const face = (transform, label) => (
-        <div style={{
-            position: 'absolute', width: size, height: size,
-            border: '1.5px solid rgba(255,255,255,0.6)',
-            background: '#0A0A0A',
-            backgroundImage: gridImage,
-            backgroundSize: gridSize,
-            transform,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-            <span style={{
-                color: '#F59E0B',
-                fontWeight: 800,
-                fontSize: size / 7,
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                fontFamily: 'Plus Jakarta Sans',
-                textShadow: '0 0 12px rgba(0,0,0,0.6)',
-            }}>{label}</span>
-        </div>
-    );
-
-    return (
-        <div className="flex items-center justify-center" style={{ width: '100%', perspective: 1200 }}>
-            <div style={{ width: size, height: size, perspective: 1200 }}>
-                <div ref={cubeRef} style={{
-                    width: size, height: size, transformStyle: 'preserve-3d',
-                    position: 'relative',
-                    transform: 'rotateX(-22deg) rotateY(0deg)'
-                }}>
-                    {face(`rotateY(0deg) translateZ(${half}px)`, 'AI')}
-                    {face(`rotateY(90deg) translateZ(${half}px)`, 'SYS')}
-                    {face(`rotateY(180deg) translateZ(${half}px)`, 'OPS')}
-                    {face(`rotateY(-90deg) translateZ(${half}px)`, 'FIX')}
-                    {face(`rotateX(90deg) translateZ(${half}px)`, '+')}
-                    {face(`rotateX(-90deg) translateZ(${half}px)`, '+')}
-                </div>
-            </div>
-        </div>
-    );
-};
 
 // ── Navbar ──
 const Navbar = () => {
@@ -289,59 +223,181 @@ const Services = () => {
     );
 };
 
-// ── Capabilities ──
+// ── Reactor Knob Tick ──
+const KnobTick = ({ currentRotation, angle }) => {
+    const opacity = useTransform(currentRotation, (r) => r >= angle ? 1 : 0.2);
+    const color = useTransform(currentRotation, (r) => r >= angle ? '#f97316' : '#404040');
+    const shadow = useTransform(currentRotation, (r) => r >= angle ? '0 0 8px rgba(249,115,22,0.6)' : 'none');
+    return <motion.div style={{ backgroundColor: color, opacity, boxShadow: shadow }} className="w-1 h-2.5" />;
+};
+
+// ── Reactor Knob Display ──
+const KnobDisplay = ({ value }) => {
+    const [display, setDisplay] = useState(0);
+    useMotionValueEvent(value, 'change', (v) => setDisplay(Math.round(v)));
+    return (
+        <div className="relative">
+            <span className="absolute inset-0 blur-sm text-orange-500/50 font-ui text-2xl font-black tabular-nums tracking-widest">
+                {display.toString().padStart(3, '0')}
+            </span>
+            <span className="relative font-ui text-2xl text-orange-500 font-black tabular-nums tracking-widest">
+                {display.toString().padStart(3, '0')}
+                <span className="text-sm text-zinc-600 ml-1">%</span>
+            </span>
+        </div>
+    );
+};
+
+// ── Capabilities (Reactor Knob + Cave Image) ──
 const Capabilities = () => {
-    const ref = useRef(null);
     const capabilities = [
         'Conversational AI & Chatbots', 'Customer Support Automation', 'Voice & Call Agents',
         'Internal Ops & Admin Automation', 'Document & Data Intelligence', 'API & Tool Integrations',
         'Sales & Lead Qualification Agents', 'Fine-tuned LLM Systems'
     ];
 
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            gsap.from('.cap-item', {
-                scrollTrigger: { trigger: ref.current, start: 'top 70%' },
-                x: -50, opacity: 0, duration: 0.7, stagger: 0.07, ease: 'power3.out'
-            });
-            gsap.from('.cap-img', {
-                scrollTrigger: { trigger: ref.current, start: 'top 70%' },
-                scale: 1.1, opacity: 0, duration: 1.4, ease: 'power3.out'
-            });
-        }, ref);
-        return () => ctx.revert();
+    const MIN_DEG = -135;
+    const MAX_DEG = 135;
+    const TOTAL_TICKS = 40;
+    const DEGREES_PER_TICK = (MAX_DEG - MIN_DEG) / TOTAL_TICKS;
+
+    const [isDragging, setIsDragging] = useState(false);
+    const rawRotation = useMotionValue(MIN_DEG);
+    const snappedRotation = useMotionValue(MIN_DEG);
+    const smoothRotation = useSpring(snappedRotation, { stiffness: 400, damping: 35, mass: 0.8 });
+    const displayValue = useTransform(smoothRotation, [MIN_DEG, MAX_DEG], [0, 100]);
+    const lightOpacity = useTransform(rawRotation, [MIN_DEG, MAX_DEG], [0.02, 0.35]);
+    const knobRef = useRef(null);
+
+    const handlePointerDown = useCallback(() => {
+        setIsDragging(true);
+        document.body.style.cursor = 'grabbing';
+        document.body.style.userSelect = 'none';
     }, []);
 
+    useEffect(() => {
+        if (!isDragging) return;
+        const handlePointerMove = (e) => {
+            if (!knobRef.current) return;
+            const rect = knobRef.current.getBoundingClientRect();
+            const x = e.clientX - (rect.left + rect.width / 2);
+            const y = e.clientY - (rect.top + rect.height / 2);
+            let degs = Math.atan2(y, x) * (180 / Math.PI) + 90;
+            if (degs > 180) degs -= 360;
+            if (degs < MIN_DEG && degs > -180) degs = MIN_DEG;
+            if (degs > MAX_DEG) degs = MAX_DEG;
+            rawRotation.set(degs);
+            snappedRotation.set(Math.round(degs / DEGREES_PER_TICK) * DEGREES_PER_TICK);
+        };
+        const handlePointerUp = () => {
+            setIsDragging(false);
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        };
+        window.addEventListener('pointermove', handlePointerMove);
+        window.addEventListener('pointerup', handlePointerUp);
+        return () => {
+            window.removeEventListener('pointermove', handlePointerMove);
+            window.removeEventListener('pointerup', handlePointerUp);
+        };
+    }, [isDragging, rawRotation, snappedRotation, DEGREES_PER_TICK]);
+
+    const ticks = Array.from({ length: TOTAL_TICKS + 1 });
+
+    const [revealCount, setRevealCount] = useState(0);
+    useMotionValueEvent(displayValue, 'change', (v) => {
+        setRevealCount(Math.floor((v / 100) * capabilities.length));
+    });
+
     return (
-        <section ref={ref} className="py-24 md:py-40 relative overflow-hidden bg-[#0A0A0A]">
-            <div className="relative z-10 max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-                <div>
-                    <div className="mb-8"><SectionLabel>AI Capabilities</SectionLabel></div>
-                    <p className="text-xl md:text-2xl text-zinc-400 font-medium mb-4">COREFIX&reg;</p>
-                    <div className="space-y-1">
-                        {capabilities.map((cap, i) => (
-                            <div key={i} className="cap-item flex items-center gap-5 group cursor-default py-3 border-b border-white/5 last:border-0">
-                                <span className="text-[10px] font-ui text-zinc-700 group-hover:text-amber-500 transition-colors w-6">{String(i + 1).padStart(2, '0')}</span>
-                                <div className="w-1 h-1 bg-amber-500 group-hover:scale-[3] transition-transform" />
-                                <span className="text-zinc-300 text-base md:text-lg font-medium group-hover:text-white transition-colors">{cap}</span>
-                            </div>
-                        ))}
+        <section className="relative overflow-hidden bg-[#0A0A0A]">
+            {/* Cave image hero */}
+            <div className="relative w-full" style={{ aspectRatio: '16/9', maxHeight: '70vh' }}>
+                <div className="absolute inset-0" style={{
+                    backgroundImage: 'url(https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=85)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    filter: 'grayscale(100%) contrast(1.2) brightness(0.7)'
+                }} />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/40 via-transparent to-[#0A0A0A]" />
+                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
+
+                {/* Section label centered above knob */}
+                <div className="absolute top-8 md:top-12 left-1/2 -translate-x-1/2 z-20">
+                    <SectionLabel>AI Capabilities</SectionLabel>
+                </div>
+
+                {/* Reactor Knob centered over image */}
+                <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <div className="relative w-52 h-52 md:w-64 md:h-64 select-none">
+                        {/* Glow */}
+                        <motion.div className="absolute inset-0 bg-orange-500 rounded-full blur-3xl" style={{ opacity: lightOpacity }} />
+
+                        {/* Tick marks ring */}
+                        <div className="absolute inset-0 pointer-events-none">
+                            {ticks.map((_, i) => {
+                                const angle = (i / TOTAL_TICKS) * (MAX_DEG - MIN_DEG) + MIN_DEG;
+                                return (
+                                    <div key={i} className="absolute top-0 left-1/2 w-1 h-full -translate-x-1/2" style={{ transform: `rotate(${angle}deg)` }}>
+                                        <KnobTick currentRotation={smoothRotation} angle={angle} />
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* The knob */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40">
+                            <motion.div
+                                ref={knobRef}
+                                className={`relative w-full h-full rounded-full touch-none z-20 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                                style={{ rotate: smoothRotation }}
+                                onPointerDown={handlePointerDown}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                            >
+                                <div className="w-full h-full rounded-full bg-neutral-900 shadow-[0_10px_30px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-neutral-800 flex items-center justify-center relative overflow-hidden">
+                                    <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent_50%),conic-gradient(from_0deg,transparent_0deg,#000_360deg)]" />
+                                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full bg-neutral-950 shadow-[inset_0_2px_5px_rgba(0,0,0,1)] border border-neutral-800/50 flex items-center justify-center">
+                                        <motion.div
+                                            className="absolute top-3 w-1.5 h-5 bg-orange-500 rounded-full"
+                                            style={{ boxShadow: useTransform(rawRotation, (r) => `0 0 ${Math.max(5, (r + 135) / 10)}px orange`) }}
+                                        />
+                                        <span className="font-ui text-[9px] text-zinc-600 tracking-[0.25em] mt-4">LEVEL</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </div>
+
+                        {/* Digital readout */}
+                        <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none">
+                            <span className="text-[9px] text-zinc-600 font-ui tracking-[0.25em] mb-1">OUTPUT</span>
+                            <KnobDisplay value={displayValue} />
+                        </div>
                     </div>
                 </div>
-                <div className="cap-img relative flex flex-col items-center gap-12">
-                    <RotatingCube size={220} />
-                    <div className="relative aspect-[3/4] w-full overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=900&q=85" alt="" className="absolute inset-0 w-full h-full object-cover grayscale contrast-125" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
-                        <div className="absolute top-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
-                            <span>COREFIX&reg;</span>
-                            <span>2026</span>
+
+                {/* COREFIX® label below knob */}
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+                    <span className="text-zinc-500 text-sm font-ui font-bold tracking-[0.2em]">COREFIX&reg;</span>
+                </div>
+            </div>
+
+            {/* Capabilities grid revealed by knob */}
+            <div className="max-w-[1400px] mx-auto px-6 py-16 md:py-24">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    {capabilities.map((cap, i) => (
+                        <div
+                            key={i}
+                            className="flex items-start gap-3 transition-all duration-500"
+                            style={{
+                                opacity: i < revealCount ? 1 : 0.15,
+                                transform: i < revealCount ? 'translateY(0)' : 'translateY(8px)',
+                            }}
+                        >
+                            <div className={`w-2 h-2 mt-1.5 flex-shrink-0 transition-colors duration-300 ${i < revealCount ? 'bg-amber-500' : 'bg-zinc-800'}`} />
+                            <span className={`text-sm md:text-base font-medium transition-colors duration-300 ${i < revealCount ? 'text-white' : 'text-zinc-700'}`}>{cap}</span>
                         </div>
-                        <div className="absolute bottom-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
-                            <span>SYSTEMS ENGINEERED</span>
-                            <span>// 01</span>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </div>
         </section>
@@ -378,7 +434,7 @@ const Process = () => {
             <div className="mb-20 overflow-hidden">
                 <div ref={marqueeRef} className="flex whitespace-nowrap">
                     {Array(6).fill(null).map((_, i) => (
-                        <span key={i} className="text-[10rem] md:text-[16rem] font-display uppercase tracking-tight text-white/[0.12] mx-2 select-none leading-none">
+                        <span key={i} className="text-[10rem] md:text-[16rem] font-display uppercase tracking-tight text-white/[0.20] mx-2 select-none leading-none">
                             OUR PROCESS &bull;
                         </span>
                     ))}

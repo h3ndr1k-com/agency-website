@@ -5,15 +5,28 @@ import { ChevronRight, ChevronDown, ArrowUpRight, Mail, Phone, MapPin } from 'lu
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ── Rotating Cube ──
+// ── Rotating Cube (scroll-driven) ──
 const RotatingCube = ({ size = 180 }) => {
-    const wrapperStyle = { width: size, height: size, perspective: 1000 };
-    const cubeStyle = {
-        width: size, height: size,
-        transformStyle: 'preserve-3d',
-        animation: 'cube-rotate 18s linear infinite',
-        position: 'relative'
-    };
+    const cubeRef = useRef(null);
+    const wrapperRef = useRef(null);
+
+    useEffect(() => {
+        if (!cubeRef.current) return;
+        const ctx = gsap.context(() => {
+            gsap.to(cubeRef.current, {
+                rotateY: 360,
+                rotateX: -20,
+                scrollTrigger: {
+                    trigger: wrapperRef.current,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 1,
+                },
+            });
+        });
+        return () => ctx.revert();
+    }, []);
+
     const half = size / 2;
     const face = (transform) => ({
         position: 'absolute', width: size, height: size,
@@ -26,8 +39,8 @@ const RotatingCube = ({ size = 180 }) => {
         letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: 'Plus Jakarta Sans'
     });
     return (
-        <div style={wrapperStyle}>
-            <div style={cubeStyle}>
+        <div ref={wrapperRef} style={{ width: size, height: size, perspective: 1000 }}>
+            <div ref={cubeRef} style={{ width: size, height: size, transformStyle: 'preserve-3d', position: 'relative', transform: 'rotateX(-20deg) rotateY(0deg)' }}>
                 <div style={face(`rotateY(0deg) translateZ(${half}px)`)}>AI</div>
                 <div style={face(`rotateY(90deg) translateZ(${half}px)`)}>SYS</div>
                 <div style={face(`rotateY(180deg) translateZ(${half}px)`)}>OPS</div>
@@ -51,10 +64,10 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/5' : 'bg-transparent'}`}>
+        <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/10 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-transparent'}`}>
             <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
                 <a href="#" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2">
-                    <svg viewBox="0 0 32 32" className="w-5 h-5"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="#F59E0B"/></svg>
+                    <svg viewBox="0 0 32 32" className="w-5 h-5"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
                     COREFIX&reg;
                 </a>
                 <div className="hidden md:flex items-center gap-8 text-[11px] font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
@@ -106,13 +119,13 @@ const Hero = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/60 via-[#0A0A0A]/20 to-[#0A0A0A] z-10" />
             {/* Grid lines handled by global GridOverlay */}
             <img
-                src="https://images.unsplash.com/photo-1462275646964-a0e3c11f18a6?w=1920&q=80"
+                src="https://images.unsplash.com/photo-1485841890310-6a055c88698a?w=1920&q=80"
                 alt=""
                 className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale contrast-125"
             />
 
-            <div className="absolute top-1/2 right-8 md:right-20 -translate-y-1/2 z-20 hidden lg:block hero-cube">
-                <RotatingCube size={220} />
+            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hero-cube">
+                <RotatingCube size={180} />
             </div>
 
             <div className="relative z-20 max-w-[1400px] mx-auto px-6 w-full">
@@ -666,7 +679,6 @@ const WhyUs = () => {
 // ── Meet The Team ──
 const Team = () => {
     const ref = useRef(null);
-    const [hovered, setHovered] = useState(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -695,25 +707,14 @@ const Team = () => {
 
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/5">
                     {members.map((m, i) => (
-                        <div
-                            key={i}
-                            className="team-card group relative bg-[#0A0A0A] overflow-hidden"
-                            onMouseEnter={() => setHovered(i)}
-                            onMouseLeave={() => setHovered(null)}
-                        >
+                        <div key={i} className="team-card group relative bg-[#0A0A0A] overflow-hidden">
                             <div className="relative aspect-[3/4] overflow-hidden">
-                                <img src={m.img} alt={m.name} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent" />
-
-                                <div className={`absolute inset-0 bg-[#0A0A0A]/70 backdrop-blur-sm flex flex-col justify-center p-6 transition-opacity duration-500 ${hovered === i ? 'opacity-100' : 'opacity-0'}`}>
-                                    <p className="font-ui font-bold text-white text-sm uppercase tracking-[0.15em]">{m.name}</p>
-                                    <p className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
-                                    <p className="text-zinc-300 text-sm mt-4 leading-relaxed italic">{m.quote}</p>
-                                </div>
-
-                                <div className={`absolute bottom-4 left-4 right-4 transition-opacity duration-500 ${hovered === i ? 'opacity-0' : 'opacity-100'}`}>
+                                <img src={m.img} alt={m.name} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
+                                <div className="absolute bottom-5 left-5 right-5">
                                     <p className="text-white font-bold text-base">{m.name}</p>
-                                    <p className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
+                                    <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
+                                    <p className="text-zinc-300 text-xs mt-2 leading-relaxed italic opacity-0 group-hover:opacity-100 transition-opacity duration-500">{m.quote}</p>
                                 </div>
                             </div>
                         </div>
@@ -849,11 +850,11 @@ const Contact = () => {
                     <p className="contact-el text-zinc-500 text-sm md:text-base max-w-md">Share a bit about your business and we'll come back with a clear, no-fluff plan of attack.</p>
                 </div>
 
-                <form className="contact-el space-y-px bg-white/5" onSubmit={e => e.preventDefault()}>
-                    <input type="text" placeholder="Name" className="w-full px-5 py-5 bg-[#0A0A0A] text-white text-sm placeholder-zinc-600 focus:bg-[#111] focus:outline-none transition-colors font-ui uppercase tracking-wider" />
-                    <input type="email" placeholder="Work Email" className="w-full px-5 py-5 bg-[#0A0A0A] text-white text-sm placeholder-zinc-600 focus:bg-[#111] focus:outline-none transition-colors font-ui uppercase tracking-wider" />
-                    <input type="text" placeholder="Company" className="w-full px-5 py-5 bg-[#0A0A0A] text-white text-sm placeholder-zinc-600 focus:bg-[#111] focus:outline-none transition-colors font-ui uppercase tracking-wider" />
-                    <textarea placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#0A0A0A] text-white text-sm placeholder-zinc-600 focus:bg-[#111] focus:outline-none transition-colors resize-none font-ui uppercase tracking-wider" />
+                <form className="contact-el space-y-3" onSubmit={e => e.preventDefault()}>
+                    <input type="text" placeholder="Name" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                    <input type="email" placeholder="Work Email" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                    <input type="text" placeholder="Company" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                    <textarea placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors resize-none" />
                     <button type="submit" className="w-full px-8 py-6 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.3em] hover:bg-amber-500 transition-colors flex items-center justify-center gap-3 group">
                         Submit <ArrowUpRight size={16} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                     </button>
@@ -868,7 +869,7 @@ const Footer = () => (
     <footer className="bg-[#050505] pt-24 pb-10 px-6">
         <div className="max-w-[1400px] mx-auto">
             <div className="mb-20">
-                <h2 className="text-[18vw] md:text-[15vw] font-black uppercase tracking-tighter text-white/[0.04] leading-none select-none">
+                <h2 className="text-[18vw] md:text-[15vw] font-black uppercase tracking-tighter text-white/[0.15] leading-none select-none">
                     COREFIX&reg;
                 </h2>
             </div>
@@ -876,19 +877,15 @@ const Footer = () => (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/10">
                 <div className="md:col-span-2 max-w-md">
                     <h4 className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6">
-                        <img src="/logo.svg" alt="" className="w-6 h-6" /> COREFIX&reg;
+                        <svg viewBox="0 0 32 32" className="w-5 h-5"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
                     </h4>
                     <p className="text-zinc-400 text-sm leading-relaxed mb-8 max-w-sm">
                         We design, build, and deploy reliable AI systems and automation workflows.
                     </p>
                     <div className="space-y-3">
-                        <a href="mailto:hello@corefix.ai" className="block text-white font-bold text-base hover:text-amber-500 transition-colors">
-                            HELLO@COREFIX.AI
+                        <a href="mailto:hendrik@corefix.app" className="block text-white font-bold text-base hover:text-amber-500 transition-colors">
+                            HENDRIK@COREFIX.APP
                         </a>
-                        <a href="tel:+15125551234" className="block text-zinc-500 text-sm font-ui tracking-widest">
-                            (512) 555-1234
-                        </a>
-                        <p className="text-zinc-600 text-xs">2919 Main St, Austin, TX 78704</p>
                     </div>
                 </div>
 

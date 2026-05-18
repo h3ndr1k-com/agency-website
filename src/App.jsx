@@ -7,14 +7,34 @@ import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent } 
 gsap.registerPlugin(ScrollTrigger);
 
 // ── Section Grid (decorative background grid for sections) ──
+const gridLineColor = 'rgba(255,255,255,0.08)';
+const gridPlusStyle = {
+    color: 'rgba(255,255,255,0.25)',
+    fontSize: 14,
+    fontFamily: 'Inter, sans-serif',
+    fontWeight: 300,
+    lineHeight: '0',
+    userSelect: 'none',
+    position: 'absolute',
+    transform: 'translate(-50%, -50%)',
+};
+const gridVPositions = ['left-6', 'left-1/3', 'left-2/3', 'right-6'];
+const gridHPositions = ['25%', '50%', '75%'];
+
 const SectionGrid = () => (
     <div className="absolute inset-0 pointer-events-none z-0" aria-hidden="true">
+        {/* Horizontal lines — full width */}
+        {gridHPositions.map((top, i) => (
+            <div key={`h-${i}`} className="absolute left-0 right-0 h-[1px]" style={{ background: gridLineColor, top }} />
+        ))}
+        {/* Vertical lines + plus markers at every intersection */}
         <div className="max-w-[1400px] mx-auto h-full px-6 relative">
-            {['left-6', 'left-1/3', 'left-2/3', 'right-6'].map((pos, i) => (
-                <div key={i} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: 'rgba(255,255,255,0.06)' }} />
-            ))}
-            {['25%', '50%', '75%'].map((top, i) => (
-                <div key={i} className="absolute left-6 right-6 h-[1px]" style={{ background: 'rgba(255,255,255,0.06)', top }} />
+            {gridVPositions.map((pos, i) => (
+                <div key={`v-${i}`} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: gridLineColor }}>
+                    {gridHPositions.map(top => (
+                        <span key={top} style={{ ...gridPlusStyle, top }}>+</span>
+                    ))}
+                </div>
             ))}
         </div>
     </div>
@@ -55,19 +75,19 @@ const Navbar = () => {
 
     return (
         <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/30 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-[#0A0A0A]/40 backdrop-blur-md'}`}>
-            <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
-                <a href="#" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2">
-                    <svg viewBox="0 0 32 32" className="w-5 h-5"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
+            <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
+                <a href="#" className="font-ui font-black tracking-[0.18em] text-white text-lg flex items-center gap-3">
+                    <svg viewBox="0 0 32 32" className="w-7 h-7"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
                     COREFIX&reg;
                 </a>
-                <div className="hidden md:flex items-center gap-8 text-[11px] font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
+                <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
                     <a href="#services" className="hover:text-white transition-colors">Services</a>
                     <a href="#process" className="hover:text-white transition-colors">Process</a>
                     <a href="#works" className="hover:text-white transition-colors">Case Studies</a>
                     <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
                     <a href="#contact" className="hover:text-white transition-colors">Contact</a>
                 </div>
-                <a href="#contact" className="hidden md:inline-flex relative items-center px-5 py-2.5 bg-white text-black font-semibold text-[11px] font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
+                <a href="#contact" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
                     <span className="absolute -top-[2px] -left-[2px] w-2.5 h-2.5 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     <span className="absolute -bottom-[2px] -right-[2px] w-2.5 h-2.5 border-b-2 border-r-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     Talk To Us
@@ -116,28 +136,32 @@ const Hero = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A] z-10 pointer-events-none" />
             <GridOverlay />
 
+            {/* Tags in top-right sky area */}
+            <div className="absolute top-40 md:top-52 right-6 md:right-[calc((100%-1400px)/2+24px)] z-40">
+                <div className="hero-el flex flex-col gap-2 items-end">
+                    {tags.map(tag => (
+                        <span key={tag} className="px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/20 bg-black/30 backdrop-blur-sm">
+                            {tag}
+                        </span>
+                    ))}
+                </div>
+            </div>
+
             {/* Hero heading — sits ABOVE the grid */}
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
-                <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase">
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">We Build</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">AI Systems</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] bg-gradient-to-r from-white/60 to-white/30 bg-clip-text text-transparent">For Businesses</span></span>
+                <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase" style={{ WebkitTextStroke: '0' }}>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white">We Build</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white">AI Systems</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-zinc-500">For Businesses</span></span>
                 </h1>
             </div>
 
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
                 <div className="grid md:grid-cols-2 gap-8 mt-10 md:mt-14 items-end">
-                    <p className="hero-el max-w-xl text-zinc-400 text-sm md:text-base leading-relaxed">
+                    <p className="hero-el max-w-xl text-zinc-400 text-sm md:text-base leading-relaxed pl-2">
                         Build real, production-ready AI systems that automate work, improve performance, and deliver measurable business results.
                     </p>
-                    <div className="hero-el flex flex-col items-start md:items-end gap-4">
-                        <div className="flex flex-wrap gap-2 md:justify-end">
-                            {tags.map(tag => (
-                                <span key={tag} className="px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-zinc-300 border border-zinc-700 bg-white/[0.02]">
-                                    {tag}
-                                </span>
-                            ))}
-                        </div>
+                    <div className="hero-el flex justify-end">
                         <CornerButton href="#process" filled>
                             How It Works <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                         </CornerButton>
@@ -666,8 +690,9 @@ const Testimonials = () => {
     const t = testimonials[active];
 
     return (
-        <section className="py-24 md:py-40">
-            <div className="max-w-5xl mx-auto px-6">
+        <section className="py-24 md:py-40 relative overflow-hidden">
+            <BrightGrid />
+            <div className="max-w-5xl mx-auto px-6 relative z-10">
                 <div className="mb-10"><SectionLabel>Client Voices</SectionLabel></div>
 
                 <div className="flex gap-2 mb-16">
@@ -842,7 +867,7 @@ const Team = () => {
     }, []);
 
     const members = [
-        { name: 'Hendrik', role: 'Founder & CEO', quote: '"Building AI systems that actually ship and deliver results."', img: '/hendrik.jpg' },
+        { name: 'Hendrik', role: 'Founder & CEO', quote: '"Building AI systems that actually ship and deliver results."', img: '/Hendrik.png' },
         { name: 'Alex Chen', role: 'Lead ML Engineer', quote: '"If it can be automated, it should be automated. Humans deserve better work."', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=85' },
         { name: 'Sarah Kim', role: 'AI Product Designer', quote: '"Great AI feels invisible — it just works."', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=85' },
     ];
@@ -856,20 +881,23 @@ const Team = () => {
                     Builders,<br />Engineers, and<br />Problem-Solvers First
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {members.map((m, i) => (
-                        <div key={i} className="team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden">
-                            <div className="relative aspect-[3/4] overflow-hidden">
+                <div className="flex flex-col md:flex-row gap-6 items-end justify-center">
+                    {members.map((m, i) => {
+                        const isCenter = i === 0;
+                        return (
+                        <div key={i} className={`team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden ${isCenter ? 'md:w-[38%] md:order-2' : 'md:w-[28%]'} ${i === 1 ? 'md:order-1' : ''} ${i === 2 ? 'md:order-3' : ''}`}>
+                            <div className={`relative overflow-hidden ${isCenter ? 'aspect-[3/4]' : 'aspect-[3/4] md:aspect-[2/3]'}`}>
                                 <img src={m.img} alt={m.name} className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
                                 <div className="absolute bottom-5 left-5 right-5">
-                                    <p className="text-white font-bold text-lg">{m.name}</p>
+                                    <p className={`text-white font-bold ${isCenter ? 'text-xl' : 'text-base'}`}>{m.name}</p>
                                     <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
                                     <p className="text-zinc-300 text-xs mt-2 leading-relaxed italic opacity-0 group-hover:opacity-100 transition-opacity duration-500">{m.quote}</p>
                                 </div>
                             </div>
                         </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 <div className="mt-16 text-center">
@@ -884,7 +912,7 @@ const Team = () => {
 
 // ── FAQ ──
 const FAQ = () => {
-    const [open, setOpen] = useState(0);
+    const [open, setOpen] = useState(null);
     const faqs = [
         { q: 'Do you build real AI systems or just proofs of concept?', a: 'We build production-ready systems. Every project is designed to ship, integrate with your workflows, and deliver measurable business outcomes from day one.' },
         { q: 'What types of companies do you typically work with?', a: 'We work with startups, scale-ups, and established businesses across SaaS, fintech, healthcare, and e-commerce that are ready to implement AI strategically.' },
@@ -895,32 +923,49 @@ const FAQ = () => {
     ];
 
     return (
-        <section className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/5 relative overflow-hidden">
-            <SectionGrid />
-            <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16 relative z-10">
-                <div>
-                    <div className="mb-8"><SectionLabel>FAQs</SectionLabel></div>
-                    <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-6 leading-[1.05]">Everything You Need to Know Before We Build</h2>
-                    <p className="text-zinc-500 text-sm mb-10 max-w-md">We don't sell AI concepts or recycled demos. We design and deploy production-ready AI systems grounded in your workflows, your data, and measurable business outcomes.</p>
-                    <div>
-                        <p className="text-white font-bold text-sm mb-4">Got more questions?</p>
-                        <CornerButton href="#contact" filled>
-                            Reach Us <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
-                        </CornerButton>
-                    </div>
-                </div>
-                <div className="space-y-px bg-white/5">
-                    {faqs.map((faq, i) => (
-                        <div key={i} className="bg-[#0A0A0A]">
-                            <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-6 text-left hover:bg-white/[0.02] transition-colors">
-                                <span className="text-white text-base font-medium pr-4">{faq.q}</span>
-                                <ChevronDown size={18} className={`text-zinc-500 flex-shrink-0 transition-transform ${open === i ? 'rotate-180 text-amber-500' : ''}`} />
-                            </button>
-                            <div className={`overflow-hidden transition-all duration-500 ${open === i ? 'max-h-40 pb-6' : 'max-h-0'}`}>
-                                <p className="px-6 text-zinc-400 text-sm leading-relaxed">{faq.a}</p>
-                            </div>
+        <section className="py-24 md:py-32 bg-[#0A0A0A] relative overflow-hidden">
+            <BrightGrid />
+            <div className="max-w-[1400px] mx-auto px-6 relative z-10">
+                <div className="grid md:grid-cols-2 gap-12 md:gap-6">
+                    {/* Left column */}
+                    <div className="flex flex-col justify-between">
+                        <div>
+                            <h2 className="text-4xl md:text-6xl lg:text-7xl font-display text-white tracking-tight leading-[0.95] uppercase mb-8">
+                                Everything You Need to Know Before We Build
+                            </h2>
+                            <p className="text-zinc-400 text-sm leading-relaxed max-w-md">
+                                We don't sell AI concepts or recycled demos. We design and deploy production-ready AI systems grounded in your workflows, your data, and measurable business outcomes.
+                            </p>
                         </div>
-                    ))}
+                        <div className="mt-10 flex items-center gap-6">
+                            <span className="text-white font-display text-2xl md:text-3xl uppercase">Got More Questions?</span>
+                            <CornerButton href="#contact" filled>
+                                Reach Us
+                            </CornerButton>
+                        </div>
+                    </div>
+
+                    {/* Right column — FAQ items */}
+                    <div>
+                        {faqs.map((faq, i) => (
+                            <div key={i} className="border-b border-white/10 last:border-0">
+                                <button
+                                    onClick={() => setOpen(open === i ? null : i)}
+                                    className="w-full flex items-center justify-between py-5 md:py-6 text-left group"
+                                >
+                                    <span className="text-white text-[11px] md:text-xs font-ui font-semibold uppercase tracking-[0.12em] pr-6 leading-snug">
+                                        {faq.q}
+                                    </span>
+                                    <span className={`text-lg flex-shrink-0 transition-transform duration-300 ${open === i ? 'text-amber-500 rotate-45' : 'text-zinc-500 group-hover:text-white'}`}>
+                                        +
+                                    </span>
+                                </button>
+                                <div className={`overflow-hidden transition-all duration-500 ${open === i ? 'max-h-40 pb-5' : 'max-h-0'}`}>
+                                    <p className="text-zinc-400 text-sm leading-relaxed pr-8">{faq.a}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>
@@ -992,8 +1037,9 @@ const Contact = () => {
     }, []);
 
     return (
-        <section id="contact" ref={ref} className="py-24 md:py-40 bg-[#0A0A0A] border-y border-white/5">
-            <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16">
+        <section id="contact" ref={ref} className="py-24 md:py-40 bg-[#0A0A0A] border-y border-white/5 relative overflow-hidden">
+            <SectionGrid />
+            <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16 relative z-10">
                 <div>
                     <div className="contact-el mb-8"><SectionLabel>Talk To Us</SectionLabel></div>
                     <h2 className="contact-el text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] mb-8 leading-[0.95]">
@@ -1070,40 +1116,31 @@ const Footer = () => (
     </footer>
 );
 
-// ── Grid Overlay (hero only) ──
-const GridOverlay = () => {
-    const lineColor = 'rgba(255,255,255,0.14)';
-    const plusColor = 'rgba(255,255,255,0.22)';
-    const plusSize = 12;
-    const plusStyle = {
-        color: plusColor,
-        fontSize: plusSize,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: 300,
-        lineHeight: 1,
-        userSelect: 'none',
-    };
-    const vPositions = ['left-6', 'left-1/3', 'left-2/3', 'right-6'];
-    const showPlus = [true, false, false, true];
-    const hPositions = ['25%', '50%', '75%'];
-
-    return (
-        <div className="absolute inset-0 z-30 pointer-events-none" aria-hidden="true">
-            <div className="max-w-[1400px] mx-auto h-full px-6 relative">
-                {vPositions.map((pos, i) => (
-                    <div key={`v-${i}`} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: lineColor }}>
-                        {showPlus[i] && hPositions.map(top => (
-                            <span key={top} className="absolute -translate-x-1/2" style={{ ...plusStyle, top }}>+</span>
-                        ))}
-                    </div>
-                ))}
-                {hPositions.map((top, i) => (
-                    <div key={`h-${i}`} className="absolute left-6 right-6 h-[1px]" style={{ background: lineColor, top }} />
-                ))}
-            </div>
-        </div>
-    );
+// ── Bright Grid (hero-style, reusable) ──
+const heroLineColor = 'rgba(255,255,255,0.14)';
+const heroPlusStyle = {
+    ...gridPlusStyle,
+    color: 'rgba(255,255,255,0.30)',
 };
+
+const BrightGrid = ({ z = 'z-0' }) => (
+    <div className={`absolute inset-0 ${z} pointer-events-none`} aria-hidden="true">
+        {gridHPositions.map((top, i) => (
+            <div key={`h-${i}`} className="absolute left-0 right-0 h-[1px]" style={{ background: heroLineColor, top }} />
+        ))}
+        <div className="max-w-[1400px] mx-auto h-full px-6 relative">
+            {gridVPositions.map((pos, i) => (
+                <div key={`v-${i}`} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: heroLineColor }}>
+                    {gridHPositions.map(top => (
+                        <span key={top} style={{ ...heroPlusStyle, top }}>+</span>
+                    ))}
+                </div>
+            ))}
+        </div>
+    </div>
+);
+
+const GridOverlay = () => <BrightGrid z="z-30" />;
 
 // ── Main App ──
 function App() {

@@ -116,14 +116,15 @@ const Hero = () => {
 
     return (
         <section ref={ref} className="relative min-h-screen flex flex-col justify-end pb-12 md:pb-20 overflow-hidden pt-32">
+            <div className="absolute inset-0 z-0" style={{
+                backgroundImage: 'url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80&auto=format)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                filter: 'grayscale(100%) contrast(1.1)'
+            }} />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A] z-10 pointer-events-none" />
-            <img
-                src="https://images.unsplash.com/photo-1465056836041-7f43ac27dcb5?w=1920&q=80"
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover grayscale"
-            />
 
-            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hero-cube">
+            <div className="absolute top-[35%] left-1/2 z-20 hero-cube" style={{ transform: 'translate(-50%, -50%)' }}>
                 <RotatingCube size={180} />
             </div>
 
@@ -921,10 +922,10 @@ const Footer = () => (
 const GridOverlay = () => (
     <div className="fixed inset-0 z-40 pointer-events-none" aria-hidden="true">
         <div className="max-w-[1400px] mx-auto h-full px-6 relative">
-            <div className="absolute inset-y-0 left-6 w-px bg-white/20" />
-            <div className="absolute inset-y-0 left-1/3 w-px bg-white/20" />
-            <div className="absolute inset-y-0 left-2/3 w-px bg-white/20" />
-            <div className="absolute inset-y-0 right-6 w-px bg-white/20" />
+            <div className="absolute inset-y-0 left-6 w-[1px]" style={{ background: 'rgba(255,255,255,0.45)' }} />
+            <div className="absolute inset-y-0 left-1/3 w-[1px]" style={{ background: 'rgba(255,255,255,0.45)' }} />
+            <div className="absolute inset-y-0 left-2/3 w-[1px]" style={{ background: 'rgba(255,255,255,0.45)' }} />
+            <div className="absolute inset-y-0 right-6 w-[1px]" style={{ background: 'rgba(255,255,255,0.45)' }} />
         </div>
     </div>
 );

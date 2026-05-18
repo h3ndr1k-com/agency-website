@@ -668,56 +668,43 @@ const Team = () => {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.from('.team-card', {
+            gsap.from('.team-el', {
                 scrollTrigger: { trigger: ref.current, start: 'top 65%' },
-                y: 60, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out'
+                y: 50, opacity: 0, duration: 1, stagger: 0.12, ease: 'power3.out'
             });
         }, ref);
         return () => ctx.revert();
     }, []);
 
-    const members = [
-        { name: 'Your Name', role: 'Founder & CEO', quote: '"Building AI systems that actually ship and deliver results."', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=85' },
-        { name: 'Alex Chen', role: 'Lead ML Engineer', quote: '"If it can be automated, it should be automated."', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=85' },
-        { name: 'Sarah Kim', role: 'AI Product Designer', quote: '"Great AI feels invisible — it just works."', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=85' },
-        { name: 'Marcus Webb', role: 'Solutions Architect', quote: '"The best system is one the team actually adopts."', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=85' },
-    ];
-
     return (
-        <section id="team" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A]">
-            <div className="max-w-[1400px] mx-auto px-6">
-                <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Meet The Team</p>
-                <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-[-0.02em] mb-20 max-w-4xl leading-[1.05]">
-                    Builders, Engineers, and <span className="text-zinc-600">Problem-Solvers First</span>
+        <section id="team" ref={ref} className="relative">
+            <div className="max-w-[1400px] mx-auto px-6 pt-24 md:pt-32 pb-8">
+                <p className="team-el text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Meet The Team</p>
+                <h2 className="team-el text-5xl md:text-8xl lg:text-[10rem] font-black text-white tracking-[-0.04em] leading-[0.85] uppercase mb-8">
+                    Builders,<br />Engineers, and<br />Problem-Solvers<br />First
                 </h2>
+            </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/5">
-                    {members.map((m, i) => (
-                        <div key={i} className="team-card group bg-[#0A0A0A] hover:bg-[#111] transition-colors p-2">
-                            <div className="relative aspect-[3/4] overflow-hidden mb-5">
-                                <img src={m.img} alt={m.name} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent opacity-60" />
-                                <div className="absolute top-4 left-4 right-4 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/80">
-                                    <span>{String(i + 1).padStart(2, '0')}</span>
-                                    <span>TEAM</span>
-                                </div>
-                                <div className="absolute bottom-4 left-4 right-4">
-                                    <p className="text-zinc-300 text-xs italic leading-relaxed">{m.quote}</p>
-                                </div>
-                            </div>
-                            <div className="px-2 pb-2">
-                                <h3 className="text-white font-bold text-base">{m.name}</h3>
-                                <p className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+            <div className="relative w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden">
+                <img
+                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=85"
+                    alt="Team"
+                    className="absolute inset-0 w-full h-full object-cover grayscale contrast-125"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent opacity-70" />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A] via-transparent to-transparent opacity-30" />
 
-                <div className="mt-16 text-center">
-                    <a href="#contact" className="inline-flex items-center gap-3 px-7 py-4 border border-zinc-700 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors">
-                        About Us <ArrowUpRight size={14} />
-                    </a>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0A0A0A]/80 border border-white/10 backdrop-blur-sm p-6 min-w-[260px]">
+                    <p className="font-ui font-bold text-white text-sm uppercase tracking-[0.15em]">NOAH REED</p>
+                    <p className="text-zinc-500 text-xs font-ui tracking-wider mt-1">Lead Machine Learning Engineer</p>
+                    <p className="text-zinc-400 text-sm mt-4 leading-relaxed italic">"If it can be automated, it should be automated. Humans deserve better work."</p>
                 </div>
+            </div>
+
+            <div className="max-w-[1400px] mx-auto px-6 py-10 text-center">
+                <a href="#contact" className="inline-flex items-center gap-3 px-7 py-4 border border-zinc-700 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors">
+                    About Us <ArrowUpRight size={14} />
+                </a>
             </div>
         </section>
     );

@@ -5,6 +5,28 @@ import { ChevronRight, ChevronDown, ArrowUpRight, Mail, Phone, MapPin } from 'lu
 
 gsap.registerPlugin(ScrollTrigger);
 
+// ── Corner-accent button ──
+const CornerButton = ({ href, children, filled, className = '' }) => {
+    const base = filled
+        ? 'bg-white text-black hover:bg-amber-500'
+        : 'bg-transparent text-white border border-white/60 hover:bg-white hover:text-black';
+    return (
+        <a href={href} className={`relative inline-flex items-center gap-3 px-7 py-4 font-bold text-[11px] font-ui uppercase tracking-[0.2em] transition-all duration-200 group ${base} ${className}`}>
+            <span className="absolute -top-[3px] -left-[3px] w-3 h-3 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            <span className="absolute -bottom-[3px] -right-[3px] w-3 h-3 border-b-2 border-r-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            {children}
+        </a>
+    );
+};
+
+// ── Section label pill ──
+const SectionLabel = ({ children }) => (
+    <span className="inline-flex items-center gap-2.5 px-5 py-2.5 border border-white/40 text-white text-xs font-ui uppercase tracking-[0.25em]">
+        <span className="w-1.5 h-1.5 bg-amber-500" />
+        {children}
+    </span>
+);
+
 // ── Rotating Cube (continuous spin) ──
 const RotatingCube = ({ size = 220 }) => {
     const cubeRef = useRef(null);
@@ -97,7 +119,9 @@ const Navbar = () => {
                     <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
                     <a href="#contact" className="hover:text-white transition-colors">Contact</a>
                 </div>
-                <a href="#contact" className="hidden md:inline-flex px-5 py-2.5 bg-white text-black font-semibold text-[11px] font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-colors">
+                <a href="#contact" className="hidden md:inline-flex relative items-center px-5 py-2.5 bg-white text-black font-semibold text-[11px] font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
+                    <span className="absolute -top-[2px] -left-[2px] w-2.5 h-2.5 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <span className="absolute -bottom-[2px] -right-[2px] w-2.5 h-2.5 border-b-2 border-r-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     Talk To Us
                 </a>
                 <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-white">
@@ -142,6 +166,7 @@ const Hero = () => {
                 filter: 'grayscale(100%) contrast(1.1)'
             }} />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A] z-10 pointer-events-none" />
+            <GridOverlay />
 
             <div className="relative z-20 max-w-[1400px] mx-auto px-6 w-full">
                 <h1 className="font-display leading-[0.9] tracking-[0.01em] text-white uppercase">
@@ -161,9 +186,9 @@ const Hero = () => {
                                 </span>
                             ))}
                         </div>
-                        <a href="#process" className="inline-flex items-center gap-3 px-7 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors group">
+                        <CornerButton href="#process" filled>
                             How It Works <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                        </a>
+                        </CornerButton>
                     </div>
                 </div>
             </div>
@@ -178,10 +203,7 @@ const LogoMarquee = () => {
         <section className="py-20 bg-[#080808]">
             <div className="max-w-[900px] mx-auto px-6">
                 <div className="flex justify-center mb-10">
-                    <span className="inline-flex items-center gap-2 px-4 py-2 border border-white/40 text-white text-[10px] font-ui uppercase tracking-[0.3em]">
-                        <span className="w-1 h-1 bg-amber-500" />
-                        Our Trusted Partners
-                    </span>
+                    <SectionLabel>Our Trusted Partners</SectionLabel>
                 </div>
                 <div className="border-y border-white/40 py-10 overflow-hidden">
                     <div className="relative">
@@ -230,10 +252,7 @@ const Services = () => {
         <section id="services" ref={ref} className="py-24 md:py-40">
             <div className="max-w-[1400px] mx-auto px-6">
                 <div className="mb-10">
-                    <span className="inline-flex items-center gap-2 px-4 py-2 border border-white/40 text-white text-[10px] font-ui uppercase tracking-[0.3em]">
-                        <span className="w-1 h-1 bg-amber-500" />
-                        Our Services
-                    </span>
+                    <SectionLabel>Our Services</SectionLabel>
                 </div>
                 <h2 className="svc-title text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-[-0.02em] max-w-5xl leading-[1.05] mb-8">
                     End-to-end partnership from strategy to deployment &mdash; so AI actually <span className="text-zinc-500">ships, works, and delivers.</span>
@@ -257,9 +276,9 @@ const Services = () => {
 
                 <div className="mt-12 p-8 md:p-12 bg-[#111] border border-white/40 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
                     <p className="text-zinc-200 text-base md:text-lg max-w-2xl">Start with a conversation. Tell us about your business, your goals, and the problems you want solved.</p>
-                    <a href="#contact" className="inline-flex items-center gap-3 px-7 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors group whitespace-nowrap">
+                    <CornerButton href="#contact" filled className="whitespace-nowrap">
                         Talk To Us <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
-                    </a>
+                    </CornerButton>
                 </div>
             </div>
         </section>
@@ -293,7 +312,7 @@ const Capabilities = () => {
         <section ref={ref} className="py-24 md:py-40 relative overflow-hidden bg-[#0A0A0A]">
             <div className="relative z-10 max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
                 <div>
-                    <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; AI Capabilities</p>
+                    <div className="mb-8"><SectionLabel>AI Capabilities</SectionLabel></div>
                     <p className="text-xl md:text-2xl text-zinc-400 font-medium mb-4">COREFIX&reg;</p>
                     <div className="space-y-1">
                         {capabilities.map((cap, i) => (
@@ -363,10 +382,7 @@ const Process = () => {
             </div>
 
             <div className="max-w-[1400px] mx-auto px-6 mb-12">
-                <span className="inline-flex items-center gap-2 px-4 py-2 border border-white/40 text-white text-[10px] font-ui uppercase tracking-[0.3em]">
-                    <span className="w-1 h-1 bg-amber-500" />
-                    Our Process
-                </span>
+                <SectionLabel>Our Process</SectionLabel>
             </div>
 
             <div className="proc-grid max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -384,9 +400,9 @@ const Process = () => {
 
             <div className="max-w-[1400px] mx-auto px-6 mt-16 text-center">
                 <p className="text-zinc-300 text-sm mb-6 max-w-xl mx-auto">See How These Solutions Translate Into Measurable Impact.</p>
-                <a href="#pricing" className="inline-flex items-center gap-3 px-7 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors group">
+                <CornerButton href="#pricing" filled>
                     Start Your AI Journey <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                </a>
+                </CornerButton>
             </div>
         </section>
     );
@@ -427,7 +443,7 @@ const Works = () => {
     return (
         <section id="works" ref={ref} className="py-24 md:py-32">
             <div className="max-w-[1400px] mx-auto px-6 mb-16">
-                <p className="works-header text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Case Studies</p>
+                <div className="works-header mb-8"><SectionLabel>Case Studies</SectionLabel></div>
                 <div className="flex items-end justify-between flex-wrap gap-8">
                     <h2 className="works-header text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] leading-[0.95]">
                         Work That Speaks<br />in <span className="text-zinc-600">Results, Not Claims</span>
@@ -504,7 +520,7 @@ const CaseStudy = () => {
             <div className="max-w-[1400px] mx-auto px-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
-                        <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-amber-500 mb-6">&mdash; Featured Case Study</p>
+                        <div className="mb-6"><SectionLabel>Featured Case Study</SectionLabel></div>
                         <h3 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-8 leading-[1.05]">
                             We helped DigiTech Finance rebuild their digital experience and modernize their product storytelling.
                         </h3>
@@ -554,7 +570,7 @@ const Testimonials = () => {
     return (
         <section className="py-24 md:py-40">
             <div className="max-w-5xl mx-auto px-6">
-                <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-10">&mdash; Client Voices</p>
+                <div className="mb-10"><SectionLabel>Client Voices</SectionLabel></div>
 
                 <div className="flex gap-2 mb-16">
                     {testimonials.map((_, i) => (
@@ -595,7 +611,7 @@ const Pricing = () => {
     return (
         <section id="pricing" ref={ref} className="py-24 md:py-40 border-y border-white/5">
             <div className="max-w-[1400px] mx-auto px-6">
-                <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Pricing</p>
+                <div className="mb-8"><SectionLabel>Pricing</SectionLabel></div>
                 <div className="grid md:grid-cols-2 gap-8 mb-16 items-end">
                     <h2 className="text-4xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05]">
                         Flexible Pricing for Different <span className="text-zinc-600">Growth Stages</span>
@@ -684,7 +700,7 @@ const WhyUs = () => {
         <section ref={ref} className="py-24 md:py-40 relative overflow-hidden">
             <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
                 <div>
-                    <p className="why-el text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Why Us</p>
+                    <div className="why-el mb-8"><SectionLabel>Why Us</SectionLabel></div>
                     <h2 className="why-el text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-[-0.04em] mb-8 leading-[0.85] uppercase">
                         Why<br />Us?
                     </h2>
@@ -737,7 +753,7 @@ const Team = () => {
     return (
         <section id="team" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A]">
             <div className="max-w-[1400px] mx-auto px-6">
-                <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Meet The Team</p>
+                <div className="mb-8"><SectionLabel>Meet The Team</SectionLabel></div>
                 <h2 className="text-5xl md:text-8xl lg:text-[10rem] font-black text-white tracking-[-0.04em] leading-[0.85] uppercase mb-20">
                     Builders,<br />Engineers, and<br />Problem-Solvers First
                 </h2>
@@ -759,9 +775,9 @@ const Team = () => {
                 </div>
 
                 <div className="mt-16 text-center">
-                    <a href="#contact" className="inline-flex items-center gap-3 px-7 py-4 border border-zinc-700 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors">
+                    <CornerButton href="#contact">
                         About Us <ArrowUpRight size={14} />
-                    </a>
+                    </CornerButton>
                 </div>
             </div>
         </section>
@@ -784,14 +800,14 @@ const FAQ = () => {
         <section className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/5">
             <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16">
                 <div>
-                    <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; FAQs</p>
+                    <div className="mb-8"><SectionLabel>FAQs</SectionLabel></div>
                     <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-6 leading-[1.05]">Everything You Need to Know Before We Build</h2>
                     <p className="text-zinc-500 text-sm mb-10 max-w-md">We don't sell AI concepts or recycled demos. We design and deploy production-ready AI systems grounded in your workflows, your data, and measurable business outcomes.</p>
                     <div>
                         <p className="text-white font-bold text-sm mb-4">Got more questions?</p>
-                        <a href="#contact" className="inline-flex items-center gap-3 px-7 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors group">
+                        <CornerButton href="#contact" filled>
                             Reach Us <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
-                        </a>
+                        </CornerButton>
                     </div>
                 </div>
                 <div className="space-y-px bg-white/5">
@@ -834,7 +850,7 @@ const Articles = () => {
     return (
         <section ref={ref} className="py-24 md:py-32">
             <div className="max-w-[1400px] mx-auto px-6">
-                <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Articles</p>
+                <div className="mb-8"><SectionLabel>Articles</SectionLabel></div>
                 <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-16 leading-[1.05]">
                     Insights & <span className="text-zinc-600">Field Notes</span>
                 </h2>
@@ -880,7 +896,7 @@ const Contact = () => {
         <section id="contact" ref={ref} className="py-24 md:py-40 bg-[#0A0A0A] border-y border-white/5">
             <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16">
                 <div>
-                    <p className="contact-el text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; Talk To Us</p>
+                    <div className="contact-el mb-8"><SectionLabel>Talk To Us</SectionLabel></div>
                     <h2 className="contact-el text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] mb-8 leading-[0.95]">
                         Tell Us<br />What You Want<br /><span className="text-zinc-600">AI to Fix</span>
                     </h2>
@@ -955,7 +971,7 @@ const Footer = () => (
     </footer>
 );
 
-// ── Grid Overlay ──
+// ── Grid Overlay (hero only) ──
 const GridOverlay = () => {
     const lineColor = 'rgba(255,255,255,0.14)';
     const plusColor = 'rgba(255,255,255,0.22)';
@@ -968,22 +984,22 @@ const GridOverlay = () => {
         lineHeight: 1,
         userSelect: 'none',
     };
-    const positions = ['left-6', 'left-1/3', 'left-2/3', 'right-6'];
+    const vPositions = ['left-6', 'left-1/3', 'left-2/3', 'right-6'];
     const showPlus = [true, false, false, true];
+    const hPositions = ['25%', '50%', '75%'];
 
     return (
-        <div className="fixed inset-0 z-40 pointer-events-none" aria-hidden="true">
+        <div className="absolute inset-0 z-30 pointer-events-none" aria-hidden="true">
             <div className="max-w-[1400px] mx-auto h-full px-6 relative">
-                {positions.map((pos, i) => (
-                    <div key={i} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: lineColor }}>
-                        {showPlus[i] && (
-                            <>
-                                <span className="absolute -translate-x-1/2" style={{ ...plusStyle, top: '25vh' }}>+</span>
-                                <span className="absolute -translate-x-1/2" style={{ ...plusStyle, top: '50vh' }}>+</span>
-                                <span className="absolute -translate-x-1/2" style={{ ...plusStyle, top: '75vh' }}>+</span>
-                            </>
-                        )}
+                {vPositions.map((pos, i) => (
+                    <div key={`v-${i}`} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: lineColor }}>
+                        {showPlus[i] && hPositions.map(top => (
+                            <span key={top} className="absolute -translate-x-1/2" style={{ ...plusStyle, top }}>+</span>
+                        ))}
                     </div>
+                ))}
+                {hPositions.map((top, i) => (
+                    <div key={`h-${i}`} className="absolute left-6 right-6 h-[1px]" style={{ background: lineColor, top }} />
                 ))}
             </div>
         </div>
@@ -994,7 +1010,6 @@ const GridOverlay = () => {
 function App() {
     return (
         <div className="w-full min-h-screen font-sans bg-[#0A0A0A] text-white selection:bg-amber-500 selection:text-black relative">
-            <GridOverlay />
             <Navbar />
             <Hero />
             <LogoMarquee />

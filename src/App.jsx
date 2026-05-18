@@ -107,7 +107,6 @@ const Hero = () => {
         const ctx = gsap.context(() => {
             gsap.from('.hero-line', { y: 80, opacity: 0, duration: 1.2, stagger: 0.08, ease: 'power3.out', delay: 0.2 });
             gsap.from('.hero-el', { y: 30, opacity: 0, duration: 0.9, stagger: 0.1, ease: 'power2.out', delay: 0.9 });
-            gsap.from('.hero-cube', { scale: 0.5, opacity: 0, duration: 1.4, ease: 'power3.out', delay: 0.5 });
         }, ref);
         return () => ctx.revert();
     }, []);
@@ -124,37 +123,28 @@ const Hero = () => {
             }} />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A] z-10 pointer-events-none" />
 
-            <div className="absolute top-[35%] left-1/2 z-20 hero-cube" style={{ transform: 'translate(-50%, -50%)' }}>
-                <RotatingCube size={180} />
-            </div>
-
             <div className="relative z-20 max-w-[1400px] mx-auto px-6 w-full">
-                <div className="overflow-hidden mb-2">
-                    <p className="hero-line text-xs md:text-sm font-ui uppercase tracking-[0.25em] text-zinc-500">
-                        AI Consulting &amp; Implementation &mdash;
-                    </p>
-                </div>
-                <h1 className="font-bold leading-[0.85] tracking-[-0.04em] text-white uppercase">
-                    <span className="block overflow-hidden"><span className="hero-line block text-[18vw] md:text-[11vw] lg:text-[9.5vw]">We Build</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[18vw] md:text-[11vw] lg:text-[9.5vw]">AI Systems</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[18vw] md:text-[11vw] lg:text-[9.5vw] text-zinc-600">For Business</span></span>
+                <h1 className="font-display leading-[0.9] tracking-[0.01em] text-white uppercase">
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw]">We Build</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw]">AI Systems</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-zinc-600">For Businesses</span></span>
                 </h1>
                 <div className="grid md:grid-cols-2 gap-8 mt-10 md:mt-14 items-end">
                     <p className="hero-el max-w-xl text-zinc-400 text-sm md:text-base leading-relaxed">
                         Build real, production-ready AI systems that automate work, improve performance, and deliver measurable business results.
                     </p>
-                    <div className="hero-el flex flex-wrap gap-2 md:justify-end">
-                        {tags.map(tag => (
-                            <span key={tag} className="px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-zinc-300 border border-zinc-700 bg-white/[0.02]">
-                                {tag}
-                            </span>
-                        ))}
+                    <div className="hero-el flex flex-col items-start md:items-end gap-4">
+                        <div className="flex flex-wrap gap-2 md:justify-end">
+                            {tags.map(tag => (
+                                <span key={tag} className="px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-zinc-300 border border-zinc-700 bg-white/[0.02]">
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+                        <a href="#process" className="inline-flex items-center gap-3 px-7 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors group">
+                            How It Works <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                        </a>
                     </div>
-                </div>
-                <div className="hero-el mt-10">
-                    <a href="#process" className="inline-flex items-center gap-3 px-7 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors group">
-                        How It Works <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                    </a>
                 </div>
             </div>
         </section>
@@ -268,6 +258,7 @@ const Capabilities = () => {
             <div className="relative z-10 max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
                 <div>
                     <p className="text-[10px] font-ui uppercase tracking-[0.3em] text-zinc-500 mb-8">&mdash; AI Capabilities</p>
+                    <p className="text-xl md:text-2xl text-zinc-400 font-medium mb-4">COREFIX&reg;</p>
                     <div className="space-y-1">
                         {capabilities.map((cap, i) => (
                             <div key={i} className="cap-item flex items-center gap-5 group cursor-default py-3 border-b border-white/5 last:border-0">
@@ -278,16 +269,19 @@ const Capabilities = () => {
                         ))}
                     </div>
                 </div>
-                <div className="cap-img relative aspect-[3/4] overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=900&q=85" alt="" className="absolute inset-0 w-full h-full object-cover grayscale contrast-125" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
-                    <div className="absolute top-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
-                        <span>COREFIX&reg;</span>
-                        <span>2026</span>
-                    </div>
-                    <div className="absolute bottom-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
-                        <span>SYSTEMS ENGINEERED</span>
-                        <span>// 01</span>
+                <div className="cap-img relative flex flex-col items-center gap-12">
+                    <RotatingCube size={220} />
+                    <div className="relative aspect-[3/4] w-full overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=900&q=85" alt="" className="absolute inset-0 w-full h-full object-cover grayscale contrast-125" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
+                        <div className="absolute top-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
+                            <span>COREFIX&reg;</span>
+                            <span>2026</span>
+                        </div>
+                        <div className="absolute bottom-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
+                            <span>SYSTEMS ENGINEERED</span>
+                            <span>// 01</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -919,16 +913,39 @@ const Footer = () => (
 );
 
 // ── Grid Overlay ──
-const GridOverlay = () => (
-    <div className="fixed inset-0 z-40 pointer-events-none" aria-hidden="true">
-        <div className="max-w-[1400px] mx-auto h-full px-6 relative">
-            <div className="absolute inset-y-0 left-6 w-[1px]" style={{ background: 'rgba(255,255,255,0.45)' }} />
-            <div className="absolute inset-y-0 left-1/3 w-[1px]" style={{ background: 'rgba(255,255,255,0.45)' }} />
-            <div className="absolute inset-y-0 left-2/3 w-[1px]" style={{ background: 'rgba(255,255,255,0.45)' }} />
-            <div className="absolute inset-y-0 right-6 w-[1px]" style={{ background: 'rgba(255,255,255,0.45)' }} />
+const GridOverlay = () => {
+    const lineColor = 'rgba(255,255,255,0.06)';
+    const plusColor = 'rgba(255,255,255,0.10)';
+    const plusSize = 10;
+    const plusStyle = {
+        color: plusColor,
+        fontSize: plusSize,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: 300,
+        lineHeight: 1,
+        userSelect: 'none',
+    };
+    const positions = ['left-6', 'left-1/3', 'left-2/3', 'right-6'];
+    const showPlus = [true, false, false, true];
+
+    return (
+        <div className="fixed inset-0 z-40 pointer-events-none" aria-hidden="true">
+            <div className="max-w-[1400px] mx-auto h-full px-6 relative">
+                {positions.map((pos, i) => (
+                    <div key={i} className={`absolute inset-y-0 ${pos} w-[1px]`} style={{ background: lineColor }}>
+                        {showPlus[i] && (
+                            <>
+                                <span className="absolute -translate-x-1/2" style={{ ...plusStyle, top: '25vh' }}>+</span>
+                                <span className="absolute -translate-x-1/2" style={{ ...plusStyle, top: '50vh' }}>+</span>
+                                <span className="absolute -translate-x-1/2" style={{ ...plusStyle, top: '75vh' }}>+</span>
+                            </>
+                        )}
+                    </div>
+                ))}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 // ── Main App ──
 function App() {

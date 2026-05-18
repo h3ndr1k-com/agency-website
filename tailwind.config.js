@@ -19,6 +19,7 @@ export default {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         ui: ['"Plus Jakarta Sans"', 'sans-serif'],
+        display: ['"Bebas Neue"', 'sans-serif'],
       },
     },
   },

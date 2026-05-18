@@ -64,7 +64,7 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/10 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-transparent'}`}>
+        <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/30 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-[#0A0A0A]/40 backdrop-blur-md'}`}>
             <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
                 <a href="#" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2">
                     <svg viewBox="0 0 32 32" className="w-5 h-5"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
@@ -116,12 +116,11 @@ const Hero = () => {
 
     return (
         <section ref={ref} className="relative min-h-screen flex flex-col justify-end pb-12 md:pb-20 overflow-hidden pt-32">
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/60 via-[#0A0A0A]/20 to-[#0A0A0A] z-10" />
-            {/* Grid lines handled by global GridOverlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A] z-10 pointer-events-none" />
             <img
-                src="https://images.unsplash.com/photo-1485841890310-6a055c88698a?w=1920&q=80"
+                src="https://images.unsplash.com/photo-1465056836041-7f43ac27dcb5?w=1920&q=80"
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale contrast-125"
+                className="absolute inset-0 w-full h-full object-cover grayscale"
             />
 
             <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hero-cube">
@@ -922,18 +921,10 @@ const Footer = () => (
 const GridOverlay = () => (
     <div className="fixed inset-0 z-40 pointer-events-none" aria-hidden="true">
         <div className="max-w-[1400px] mx-auto h-full px-6 relative">
-            <div className="absolute inset-y-0 left-6 w-px bg-white/[0.06]">
-                <div className="sticky top-0 -ml-[3px] text-white/20 text-[10px] leading-none select-none" style={{ top: '50vh' }}>+</div>
-            </div>
-            <div className="absolute inset-y-0 left-1/3 w-px bg-white/[0.06]">
-                <div className="sticky top-0 -ml-[3px] text-white/20 text-[10px] leading-none select-none" style={{ top: '50vh' }}>+</div>
-            </div>
-            <div className="absolute inset-y-0 left-2/3 w-px bg-white/[0.06]">
-                <div className="sticky top-0 -ml-[3px] text-white/20 text-[10px] leading-none select-none" style={{ top: '50vh' }}>+</div>
-            </div>
-            <div className="absolute inset-y-0 right-6 w-px bg-white/[0.06]">
-                <div className="sticky top-0 -ml-[3px] text-white/20 text-[10px] leading-none select-none" style={{ top: '50vh' }}>+</div>
-            </div>
+            <div className="absolute inset-y-0 left-6 w-px bg-white/20" />
+            <div className="absolute inset-y-0 left-1/3 w-px bg-white/20" />
+            <div className="absolute inset-y-0 left-2/3 w-px bg-white/20" />
+            <div className="absolute inset-y-0 right-6 w-px bg-white/20" />
         </div>
     </div>
 );

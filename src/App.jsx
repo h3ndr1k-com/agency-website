@@ -912,7 +912,7 @@ const Team = () => {
 
 // ── FAQ ──
 const FAQ = () => {
-    const [open, setOpen] = useState(0);
+    const [open, setOpen] = useState(null);
     const faqs = [
         { q: 'Do you build real AI systems or just proofs of concept?', a: 'We build production-ready systems. Every project is designed to ship, integrate with your workflows, and deliver measurable business outcomes from day one.' },
         { q: 'What types of companies do you typically work with?', a: 'We work with startups, scale-ups, and established businesses across SaaS, fintech, healthcare, and e-commerce that are ready to implement AI strategically.' },
@@ -923,32 +923,49 @@ const FAQ = () => {
     ];
 
     return (
-        <section className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/5 relative overflow-hidden">
+        <section className="py-24 md:py-32 bg-[#0A0A0A] relative overflow-hidden">
             <BrightGrid />
-            <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16 relative z-10">
-                <div>
-                    <div className="mb-8"><SectionLabel>FAQs</SectionLabel></div>
-                    <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-6 leading-[1.05]">Everything You Need to Know Before We Build</h2>
-                    <p className="text-zinc-500 text-sm mb-10 max-w-md">We don't sell AI concepts or recycled demos. We design and deploy production-ready AI systems grounded in your workflows, your data, and measurable business outcomes.</p>
-                    <div>
-                        <p className="text-white font-bold text-sm mb-4">Got more questions?</p>
-                        <CornerButton href="#contact" filled>
-                            Reach Us <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
-                        </CornerButton>
-                    </div>
-                </div>
-                <div className="space-y-px bg-white/5">
-                    {faqs.map((faq, i) => (
-                        <div key={i} className="bg-[#0A0A0A]">
-                            <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-6 text-left hover:bg-white/[0.02] transition-colors">
-                                <span className="text-white text-base font-medium pr-4">{faq.q}</span>
-                                <ChevronDown size={18} className={`text-zinc-500 flex-shrink-0 transition-transform ${open === i ? 'rotate-180 text-amber-500' : ''}`} />
-                            </button>
-                            <div className={`overflow-hidden transition-all duration-500 ${open === i ? 'max-h-40 pb-6' : 'max-h-0'}`}>
-                                <p className="px-6 text-zinc-400 text-sm leading-relaxed">{faq.a}</p>
-                            </div>
+            <div className="max-w-[1400px] mx-auto px-6 relative z-10">
+                <div className="grid md:grid-cols-2 gap-12 md:gap-6">
+                    {/* Left column */}
+                    <div className="flex flex-col justify-between">
+                        <div>
+                            <h2 className="text-4xl md:text-6xl lg:text-7xl font-display text-white tracking-tight leading-[0.95] uppercase mb-8">
+                                Everything You Need to Know Before We Build
+                            </h2>
+                            <p className="text-zinc-400 text-sm leading-relaxed max-w-md">
+                                We don't sell AI concepts or recycled demos. We design and deploy production-ready AI systems grounded in your workflows, your data, and measurable business outcomes.
+                            </p>
                         </div>
-                    ))}
+                        <div className="mt-10 flex items-center gap-6">
+                            <span className="text-white font-display text-2xl md:text-3xl uppercase">Got More Questions?</span>
+                            <CornerButton href="#contact" filled>
+                                Reach Us
+                            </CornerButton>
+                        </div>
+                    </div>
+
+                    {/* Right column — FAQ items */}
+                    <div>
+                        {faqs.map((faq, i) => (
+                            <div key={i} className="border-b border-white/10 last:border-0">
+                                <button
+                                    onClick={() => setOpen(open === i ? null : i)}
+                                    className="w-full flex items-center justify-between py-5 md:py-6 text-left group"
+                                >
+                                    <span className="text-white text-[11px] md:text-xs font-ui font-semibold uppercase tracking-[0.12em] pr-6 leading-snug">
+                                        {faq.q}
+                                    </span>
+                                    <span className={`text-lg flex-shrink-0 transition-transform duration-300 ${open === i ? 'text-amber-500 rotate-45' : 'text-zinc-500 group-hover:text-white'}`}>
+                                        +
+                                    </span>
+                                </button>
+                                <div className={`overflow-hidden transition-all duration-500 ${open === i ? 'max-h-40 pb-5' : 'max-h-0'}`}>
+                                    <p className="text-zinc-400 text-sm leading-relaxed pr-8">{faq.a}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

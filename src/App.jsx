@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ChevronRight, ChevronDown, ArrowUpRight, Mail, Phone, MapPin, Hexagon } from 'lucide-react';
+import { ChevronRight, ChevronDown, ArrowUpRight, Mail, Phone, MapPin } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -54,7 +54,7 @@ const Navbar = () => {
         <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/5' : 'bg-transparent'}`}>
             <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
                 <a href="#" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2">
-                    <Hexagon className="text-amber-500" size={20} strokeWidth={2.5} />
+                    <img src="/logo.svg" alt="" className="w-6 h-6" />
                     COREFIX&reg;
                 </a>
                 <div className="hidden md:flex items-center gap-8 text-[11px] font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
@@ -856,7 +856,7 @@ const Footer = () => (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/10">
                 <div className="md:col-span-2 max-w-md">
                     <h4 className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6">
-                        <Hexagon className="text-amber-500" size={20} strokeWidth={2.5} /> COREFIX&reg;
+                        <img src="/logo.svg" alt="" className="w-6 h-6" /> COREFIX&reg;
                     </h4>
                     <p className="text-zinc-400 text-sm leading-relaxed mb-8 max-w-sm">
                         We design, build, and deploy reliable AI systems and automation workflows.

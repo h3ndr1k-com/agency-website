@@ -168,12 +168,16 @@ const Hero = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A] z-10 pointer-events-none" />
             <GridOverlay />
 
-            <div className="relative z-20 max-w-[1400px] mx-auto px-6 w-full">
-                <h1 className="font-display leading-[0.9] tracking-[0.01em] text-white uppercase">
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw]">We Build</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw]">AI Systems</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-zinc-600">For Businesses</span></span>
+            {/* Hero heading — sits ABOVE the grid */}
+            <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
+                <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase">
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">We Build</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">AI Systems</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] bg-gradient-to-r from-white/60 to-white/30 bg-clip-text text-transparent">For Businesses</span></span>
                 </h1>
+            </div>
+
+            <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
                 <div className="grid md:grid-cols-2 gap-8 mt-10 md:mt-14 items-end">
                     <p className="hero-el max-w-xl text-zinc-400 text-sm md:text-base leading-relaxed">
                         Build real, production-ready AI systems that automate work, improve performance, and deliver measurable business results.

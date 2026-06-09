@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Corefix Brand Kit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0A0A0A;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      padding: 64px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 { font-family: 'Bebas Neue', sans-serif; font-size: 72px; letter-spacing: 2px; color: #fff; margin-bottom: 8px; }
+    .subtitle { color: #71717A; font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif; margin-bottom: 80px; }
+
+    section { margin-bottom: 80px; }
+    .section-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 20px;
+      font-size: 11px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 32px;
+    }
+    .section-label::before { content: ''; display: block; width: 6px; height: 6px; background: #F59E0B; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    /* ── Logo ── */
+    .logo-card {
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+    .logo-card.light { background: #fff; }
+    .logo-card.amber { background: #F59E0B; }
+
+    .logo-lockup {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-lockup svg { width: 36px; height: 36px; }
+    .logo-wordmark {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: 0.18em;
+    }
+    .logo-caption {
+      font-size: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #52525B;
+    }
+    .logo-card.light .logo-caption { color: #A1A1AA; }
+
+    /* ── Icon variants ── */
+    .icon-card {
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .icon-card.light { background: #fff; }
+    .icon-label {
+      font-size: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #52525B;
+    }
+
+    /* ── Colors ── */
+    .color-card {
+      border: 1px solid rgba(255,255,255,0.05);
+      overflow: hidden;
+    }
+    .color-swatch { height: 120px; }
+    .color-info { padding: 16px; }
+    .color-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .color-hex { font-family: monospace; font-size: 12px; color: #71717A; }
+    .color-usage { font-size: 11px; color: #52525B; margin-top: 6px; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    /* ── Typography ── */
+    .type-card {
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 32px;
+      background: #0D0D0D;
+    }
+    .type-sample-display { font-family: 'Bebas Neue', sans-serif; font-size: 64px; line-height: 1; letter-spacing: 1px; }
+    .type-sample-ui { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: 0.15em; text-transform: uppercase; }
+    .type-sample-body { font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; color: #A1A1AA; max-width: 480px; }
+    .type-meta { margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .type-name { font-size: 11px; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: 0.2em; text-transform: uppercase; color: #52525B; }
+    .type-spec { font-size: 11px; font-family: monospace; color: #71717A; margin-top: 4px; }
+
+    /* ── Buttons ── */
+    .button-card {
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 32px;
+      background: #0D0D0D;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      font-size: 11px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+    }
+    .btn-primary { background: #fff; color: #000; }
+    .btn-primary:hover { background: #F59E0B; }
+    .btn-outline { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.6); }
+    .btn-amber { background: #F59E0B; color: #000; }
+
+    /* ── Spacing / Usage notes ── */
+    .note {
+      font-size: 12px;
+      color: #52525B;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.6;
+      margin-top: 16px;
+    }
+
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 80px 0; }
+
+    /* download links */
+    .dl-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+    .dl-btn {
+      padding: 10px 20px;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 11px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #A1A1AA;
+      text-decoration: none;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .dl-btn:hover { color: #F59E0B; border-color: #F59E0B; }
+  </style>
+</head>
+<body>
+
+  <h1>COREFIX®</h1>
+  <p class="subtitle">Brand Kit — June 2026</p>
+
+  <!-- ── LOGO ─────────────────────────────────────── -->
+  <section>
+    <div class="section-label">Logo</div>
+    <div class="grid-2">
+
+      <!-- Dark (primary) -->
+      <div class="logo-card">
+        <div class="logo-lockup">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 2 L28.7 9.5 L28.7 24.5 L16 32 L3.3 24.5 L3.3 9.5 Z" stroke="#F59E0B" stroke-width="2.2"/>
+          </svg>
+          <span class="logo-wordmark" style="color:#fff;">COREFIX®</span>
+        </div>
+        <span class="logo-caption">Dark background — primary use</span>
+      </div>
+
+      <!-- Light -->
+      <div class="logo-card light">
+        <div class="logo-lockup">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 2 L28.7 9.5 L28.7 24.5 L16 32 L3.3 24.5 L3.3 9.5 Z" stroke="#F59E0B" stroke-width="2.2"/>
+          </svg>
+          <span class="logo-wordmark" style="color:#0A0A0A;">COREFIX®</span>
+        </div>
+        <span class="logo-caption">Light background use</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── ICON MARK ─────────────────────────────────── -->
+  <section>
+    <div class="section-label">Icon Mark</div>
+    <div class="grid-4">
+
+      <div class="icon-card">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4 L56.25 18 L56.25 46 L32 60 L7.75 46 L7.75 18 Z" stroke="#F59E0B" stroke-width="2.8"/>
+        </svg>
+        <span class="icon-label">Default (outline)</span>
+      </div>
+
+      <div class="icon-card" style="background:#111;">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4 L56.25 18 L56.25 46 L32 60 L7.75 46 L7.75 18 Z" stroke="#F59E0B" stroke-width="2.8"/>
+        </svg>
+        <span class="icon-label">On surface</span>
+      </div>
+
+      <div class="icon-card light">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4 L56.25 18 L56.25 46 L32 60 L7.75 46 L7.75 18 Z" stroke="#F59E0B" stroke-width="2.8"/>
+        </svg>
+        <span class="icon-label" style="color:#A1A1AA;">On white</span>
+      </div>
+
+      <div class="icon-card amber">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4 L56.25 18 L56.25 46 L32 60 L7.75 46 L7.75 18 Z" fill="#0A0A0A"/>
+        </svg>
+        <span class="icon-label" style="color:#92400E;">Filled on amber</span>
+      </div>
+
+    </div>
+
+    <div class="dl-row">
+      <a class="dl-btn" href="/brand/icon.svg" download>↓ icon.svg (outline)</a>
+      <a class="dl-btn" href="/brand/icon-filled.svg" download>↓ icon-filled.svg</a>
+      <a class="dl-btn" href="/brand/icon-amber.svg" download>↓ icon-amber.svg</a>
+      <a class="dl-btn" href="/favicon.svg" download>↓ favicon.svg (32px)</a>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ── COLORS ─────────────────────────────────────── -->
+  <section>
+    <div class="section-label">Color Palette</div>
+    <div class="grid-4">
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:#F59E0B;"></div>
+        <div class="color-info">
+          <div class="color-name">Amber</div>
+          <div class="color-hex">#F59E0B</div>
+          <div class="color-usage">Primary accent — CTAs, highlights, active states</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:#FFFFFF; border-bottom: 1px solid rgba(255,255,255,0.06);"></div>
+        <div class="color-info">
+          <div class="color-name">White</div>
+          <div class="color-hex">#FFFFFF</div>
+          <div class="color-usage">Primary text, headings, filled buttons</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:#0A0A0A; border: 1px solid rgba(255,255,255,0.06);"></div>
+        <div class="color-info">
+          <div class="color-name">Background</div>
+          <div class="color-hex">#0A0A0A</div>
+          <div class="color-usage">Page background, primary canvas</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:#121212;"></div>
+        <div class="color-info">
+          <div class="color-name">Surface</div>
+          <div class="color-hex">#121212</div>
+          <div class="color-usage">Cards, elevated surfaces</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:#71717A;"></div>
+        <div class="color-info">
+          <div class="color-name">Zinc 500</div>
+          <div class="color-hex">#71717A</div>
+          <div class="color-usage">Secondary text, muted labels</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:#3F3F46;"></div>
+        <div class="color-info">
+          <div class="color-name">Zinc 700</div>
+          <div class="color-hex">#3F3F46</div>
+          <div class="color-usage">Borders, dividers, inactive states</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:#f97316;"></div>
+        <div class="color-info">
+          <div class="color-name">Orange 500</div>
+          <div class="color-hex">#F97316</div>
+          <div class="color-usage">Reactor knob indicator, glow effects</div>
+        </div>
+      </div>
+
+      <div class="color-card">
+        <div class="color-swatch" style="background:#050505; border: 1px solid rgba(255,255,255,0.06);"></div>
+        <div class="color-info">
+          <div class="color-name">Footer</div>
+          <div class="color-hex">#050505</div>
+          <div class="color-usage">Footer, darkest surfaces</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ── TYPOGRAPHY ──────────────────────────────────── -->
+  <section>
+    <div class="section-label">Typography</div>
+    <div style="display:flex; flex-direction:column; gap:16px;">
+
+      <div class="type-card">
+        <div class="type-sample-display">COREFIX DISPLAY</div>
+        <div class="type-meta">
+          <div class="type-name">Display / Bebas Neue</div>
+          <div class="type-spec">font-family: 'Bebas Neue' · font-weight: 400 · class: font-display</div>
+          <div class="type-spec">Used for: hero headings, section titles, large marquee text</div>
+        </div>
+      </div>
+
+      <div class="type-card">
+        <div class="type-sample-ui">BUILDERS, ENGINEERS, PROBLEM-SOLVERS</div>
+        <div class="type-meta">
+          <div class="type-name">UI / Plus Jakarta Sans</div>
+          <div class="type-spec">font-family: 'Plus Jakarta Sans' · font-weight: 800 · class: font-ui</div>
+          <div class="type-spec">Used for: labels, buttons, nav, uppercase tracking text</div>
+        </div>
+      </div>
+
+      <div class="type-card">
+        <div class="type-sample-body">We design, build, and deploy reliable AI systems and automation workflows. Every agent ships production-ready and integrated into your real workflows from day one.</div>
+        <div class="type-meta">
+          <div class="type-name">Body / Inter</div>
+          <div class="type-spec">font-family: 'Inter' · font-weight: 400–700 · class: font-sans</div>
+          <div class="type-spec">Used for: body copy, descriptions, form fields</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ── BUTTONS ─────────────────────────────────────── -->
+  <section>
+    <div class="section-label">Buttons</div>
+    <div class="button-card">
+      <a href="#" class="btn btn-primary">Submit &nbsp;↗</a>
+      <a href="#" class="btn btn-outline">Learn More &nbsp;→</a>
+      <a href="#" class="btn btn-amber">Get Started &nbsp;→</a>
+    </div>
+    <p class="note">
+      Corner-accent variant: L-shaped bracket corners appear on :hover at ±3px offset from each corner edge. 2px border, matches button border color.
+    </p>
+  </section>
+
+  <hr>
+
+  <!-- ── VOICE ───────────────────────────────────────── -->
+  <section>
+    <div class="section-label">Brand Voice</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
+      <div style="border:1px solid rgba(255,255,255,0.05); padding:28px; background:#0D0D0D;">
+        <div style="color:#22C55E; font-size:11px; font-family:'Plus Jakarta Sans',sans-serif; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:16px;">✓ We say</div>
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; font-size:14px; color:#D4D4D8; line-height:1.5;">
+          <li>"An entire SDR team that runs on a $7 server"</li>
+          <li>"We find at least $50K in waste or we walk away"</li>
+          <li>"Your sales call ends. The proposal is in their inbox in 20 minutes."</li>
+          <li>"Production-ready. Not a proof of concept."</li>
+          <li>Concrete numbers. Specific outcomes.</li>
+        </ul>
+      </div>
+
+      <div style="border:1px solid rgba(255,255,255,0.05); padding:28px; background:#0D0D0D;">
+        <div style="color:#EF4444; font-size:11px; font-family:'Plus Jakarta Sans',sans-serif; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:16px;">✗ We don't say</div>
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; font-size:14px; color:#D4D4D8; line-height:1.5;">
+          <li>"Leverage cutting-edge AI solutions"</li>
+          <li>"Transformative digital journey"</li>
+          <li>"Unlock your potential"</li>
+          <li>"Seamless synergy"</li>
+          <li>Jargon without numbers behind it.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ── DESIGN RULES ────────────────────────────────── -->
+  <section>
+    <div class="section-label">Design Rules</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+
+      <div style="border:1px solid rgba(255,255,255,0.05); padding:24px; background:#0D0D0D;">
+        <div style="color:#F59E0B; font-size:11px; font-family:'Plus Jakarta Sans',sans-serif; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px;">Border Radius</div>
+        <p style="font-size:13px; color:#A1A1AA; line-height:1.6;">Zero. All elements are hard-edged squares and rectangles. The single exception is the reactor knob (circular by function).</p>
+      </div>
+
+      <div style="border:1px solid rgba(255,255,255,0.05); padding:24px; background:#0D0D0D;">
+        <div style="color:#F59E0B; font-size:11px; font-family:'Plus Jakarta Sans',sans-serif; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px;">Grid System</div>
+        <p style="font-size:13px; color:#A1A1AA; line-height:1.6;">4 vertical columns at left-6, left-1/3, left-2/3, right-6. Horizontal lines at 25%, 50%, 75%. "+" markers at every intersection.</p>
+      </div>
+
+      <div style="border:1px solid rgba(255,255,255,0.05); padding:24px; background:#0D0D0D;">
+        <div style="color:#F59E0B; font-size:11px; font-family:'Plus Jakarta Sans',sans-serif; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px;">Aesthetic</div>
+        <p style="font-size:13px; color:#A1A1AA; line-height:1.6;">Brutalist Signal / Technical Premium. Dark backgrounds, amber accent, geometric grid, noise texture overlay at 3% opacity.</p>
+      </div>
+
+    </div>
+  </section>
+
+</body>
+</html>

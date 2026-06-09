@@ -1037,8 +1037,11 @@ const Articles = () => {
 };
 
 // ── Contact ──
+const WEB3FORMS_KEY = 'd3b98449-cdb0-4a45-80f2-4e626c869780';
+
 const Contact = () => {
     const ref = useRef(null);
+    const [status, setStatus] = useState('idle');
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -1049,6 +1052,30 @@ const Contact = () => {
         }, ref);
         return () => ctx.revert();
     }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setStatus('sending');
+        const form = e.target;
+        const data = new FormData(form);
+        data.append('access_key', WEB3FORMS_KEY);
+        data.append('subject', 'New inquiry from corefix.app');
+        data.append('from_name', 'Corefix Website');
+        try {
+            const res = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: data,
+            });
+            if (res.ok) {
+                setStatus('success');
+                form.reset();
+            } else {
+                setStatus('error');
+            }
+        } catch {
+            setStatus('error');
+        }
+    };
 
     return (
         <section id="contact" ref={ref} className="py-24 md:py-40 bg-[#0A0A0A] border-y border-white/5 relative overflow-hidden">
@@ -1062,15 +1089,32 @@ const Contact = () => {
                     <p className="contact-el text-zinc-500 text-sm md:text-base max-w-md">Share a bit about your business and we'll come back with a clear, no-fluff plan of attack.</p>
                 </div>
 
-                <form className="contact-el space-y-3" onSubmit={e => e.preventDefault()}>
-                    <input type="text" placeholder="Name" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
-                    <input type="email" placeholder="Work Email" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
-                    <input type="text" placeholder="Company" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
-                    <textarea placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors resize-none" />
-                    <button type="submit" className="w-full px-8 py-6 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.3em] hover:bg-amber-500 transition-colors flex items-center justify-center gap-3 group">
-                        Submit <ArrowUpRight size={16} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                </form>
+                {status === 'success' ? (
+                    <div className="contact-el flex flex-col items-center justify-center text-center p-12 border border-amber-500/30 bg-amber-500/[0.03]">
+                        <div className="w-12 h-12 border-2 border-amber-500 flex items-center justify-center mb-6">
+                            <svg viewBox="0 0 24 24" className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 13l4 4L19 7" /></svg>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white mb-3">Message Sent</h3>
+                        <p className="text-zinc-400 text-sm mb-8">We'll get back to you within 24 hours with a clear plan of attack.</p>
+                        <button onClick={() => setStatus('idle')} className="text-amber-500 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors">
+                            Send Another Message
+                        </button>
+                    </div>
+                ) : (
+                    <form className="contact-el space-y-3" onSubmit={handleSubmit}>
+                        <input type="hidden" name="to_email" value="hendrik@corefix.app" />
+                        <input type="text" name="name" required placeholder="Name" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                        <input type="email" name="email" required placeholder="Work Email" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                        <input type="text" name="company" placeholder="Company" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                        <textarea name="message" required placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors resize-none" />
+                        <button type="submit" disabled={status === 'sending'} className="w-full px-8 py-6 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.3em] hover:bg-amber-500 transition-colors flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed">
+                            {status === 'sending' ? 'Sending...' : 'Submit'} {status !== 'sending' && <ArrowUpRight size={16} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />}
+                        </button>
+                        {status === 'error' && (
+                            <p className="text-red-400 text-xs font-ui text-center mt-2">Something went wrong. Try again or email hendrik@corefix.app directly.</p>
+                        )}
+                    </form>
+                )}
             </div>
         </section>
     );

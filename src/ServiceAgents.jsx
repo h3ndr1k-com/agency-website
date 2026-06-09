@@ -122,7 +122,7 @@ const TheProblem = () => {
     );
 };
 
-// ── Flagship: Speed-to-Heat ──
+// ── Flagship: Speed-to-Lead ──
 const Flagship = () => {
     const ref = useRef(null);
     const [step, setStep] = useState(0);
@@ -161,7 +161,7 @@ const Flagship = () => {
                 <div className="grid lg:grid-cols-2 gap-16 items-center">
                     <div>
                         <h2 className="flag-el text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05] mb-4">
-                            Speed-to-Heat
+                            Speed-to-Lead
                         </h2>
                         <p className="flag-el text-amber-500 font-ui text-sm uppercase tracking-[0.15em] font-bold mb-8">AI Proposal Generator</p>
 
@@ -170,7 +170,7 @@ const Flagship = () => {
                         </p>
 
                         <p className="flag-el text-zinc-400 text-sm md:text-base leading-relaxed mb-8">
-                            Most teams take 2–3 days to turn a call into a custom proposal. By then the prospect has cooled — or signed with whoever was faster. Speed-to-Heat listens to the call, pulls the details that matter, and generates a tailored proposal in roughly 20 minutes.
+                            Most teams take 2–3 days to turn a call into a custom proposal. By then the prospect has cooled — or signed with whoever was faster. Speed-to-Lead listens to the call, pulls the details that matter, and generates a tailored proposal in roughly 20 minutes.
                         </p>
 
                         <p className="flag-el text-zinc-600 text-xs font-ui italic">
@@ -179,7 +179,7 @@ const Flagship = () => {
 
                         <div className="flag-el mt-10">
                             <CornerButton href="#contact" filled>
-                                Get Speed-to-Heat <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+                                Get Speed-to-Lead <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                             </CornerButton>
                         </div>
                     </div>
@@ -295,7 +295,7 @@ const SalesAgents = () => {
             subtitle: 'Staffing Edition',
             icon: <Zap size={18} />,
             headline: 'For staffing & recruiting firms: turn a recorded call into a ready-to-send proposal.',
-            desc: 'A vertical-tuned version of Speed-to-Heat built around how staffing firms actually sell. Drop in the call recording, get back a proposal shaped for the role, the rates, and the client — same day.',
+            desc: 'A vertical-tuned version of Speed-to-Lead built around how staffing firms actually sell. Drop in the call recording, get back a proposal shaped for the role, the rates, and the client — same day.',
         },
     ];
 

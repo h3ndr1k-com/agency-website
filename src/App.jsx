@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ChevronRight, ChevronDown, ArrowUpRight, Mail, Phone, MapPin } from 'lucide-react';
+import { ChevronRight, ArrowUpRight } from 'lucide-react';
 import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -69,7 +69,7 @@ const Navbar = () => {
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 50);
-        window.addEventListener('scroll', onScroll);
+        window.addEventListener('scroll', onScroll, { passive: true });
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
@@ -305,6 +305,7 @@ const Capabilities = () => {
     const smoothRotation = useSpring(snappedRotation, { stiffness: 400, damping: 35, mass: 0.8 });
     const displayValue = useTransform(smoothRotation, [MIN_DEG, MAX_DEG], [0, 100]);
     const lightOpacity = useTransform(rawRotation, [MIN_DEG, MAX_DEG], [0.02, 0.35]);
+    const indicatorShadow = useTransform(rawRotation, (r) => `0 0 ${Math.max(5, (r + 135) / 10)}px orange`);
     const knobRef = useRef(null);
 
     const handlePointerDown = useCallback(() => {
@@ -380,7 +381,7 @@ const Capabilities = () => {
                 {capabilities.map((cap, i) => (
                     <div
                         key={i}
-                        className="absolute z-20 pointer-events-none transition-all duration-700 ease-out hidden md:block"
+                        className="absolute z-20 pointer-events-none transition-all duration-700 ease-out hidden lg:block"
                         style={{
                             ...capPositions[i],
                             opacity: i < revealCount ? 1 : 0,
@@ -427,7 +428,7 @@ const Capabilities = () => {
                                     <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full bg-neutral-950 shadow-[inset_0_2px_5px_rgba(0,0,0,1)] border border-neutral-800/50 flex items-center justify-center">
                                         <motion.div
                                             className="absolute top-3 w-1.5 h-5 bg-orange-500 rounded-full"
-                                            style={{ boxShadow: useTransform(rawRotation, (r) => `0 0 ${Math.max(5, (r + 135) / 10)}px orange`) }}
+                                            style={{ boxShadow: indicatorShadow }}
                                         />
                                         <span className="font-ui text-[9px] text-zinc-600 tracking-[0.25em] mt-4">LEVEL</span>
                                     </div>
@@ -451,7 +452,7 @@ const Capabilities = () => {
             </div>
 
             {/* Mobile-only capabilities list (floating labels need desktop space) */}
-            <div className="md:hidden max-w-[1400px] mx-auto px-6 py-12">
+            <div className="lg:hidden max-w-[1400px] mx-auto px-6 py-12">
                 <div className="grid grid-cols-2 gap-4">
                     {capabilities.map((cap, i) => (
                         <div key={i} className="flex items-start gap-2">
@@ -495,7 +496,7 @@ const Process = () => {
             <div className="mb-20 overflow-hidden">
                 <div ref={marqueeRef} className="flex whitespace-nowrap">
                     {Array(6).fill(null).map((_, i) => (
-                        <span key={i} className="text-[10rem] md:text-[16rem] font-display uppercase tracking-tight text-white mx-2 select-none leading-none">
+                        <span key={i} className="text-[6rem] md:text-[16rem] font-display uppercase tracking-tight text-white mx-2 select-none leading-none">
                             OUR PROCESS &bull;
                         </span>
                     ))}
@@ -584,7 +585,7 @@ const Works = () => {
                 {projects.map((proj, i) => (
                     <div key={i} className="work-card flex-shrink-0 w-[320px] md:w-[400px] snap-start group cursor-pointer">
                         <div className="relative aspect-[3/4] overflow-hidden mb-4">
-                            <img src={proj.img} alt={proj.name} className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
+                            <img src={proj.img} alt={proj.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
                             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/80 via-transparent to-transparent" />
                             <div className="absolute top-5 left-5 right-5 flex justify-between text-[10px] font-ui uppercase tracking-[0.2em] text-white/80">
                                 <span>{proj.tag}</span>
@@ -602,6 +603,23 @@ const Works = () => {
     );
 };
 
+// ── CountUp helper ──
+const CountUp = ({ target, visible }) => {
+    const [val, setVal] = useState(0);
+    useEffect(() => {
+        if (!visible) return;
+        let start = 0;
+        const step = () => {
+            start += Math.ceil(target / 40);
+            if (start >= target) { setVal(target); return; }
+            setVal(start);
+            requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+    }, [visible, target]);
+    return <span>{val}%</span>;
+};
+
 // ── Case Study Stats ──
 const CaseStudy = () => {
     const ref = useRef(null);
@@ -614,22 +632,6 @@ const CaseStudy = () => {
         if (ref.current) observer.observe(ref.current);
         return () => observer.disconnect();
     }, []);
-
-    const CountUp = ({ target }) => {
-        const [val, setVal] = useState(0);
-        useEffect(() => {
-            if (!visible) return;
-            let start = 0;
-            const step = () => {
-                start += Math.ceil(target / 40);
-                if (start >= target) { setVal(target); return; }
-                setVal(start);
-                requestAnimationFrame(step);
-            };
-            requestAnimationFrame(step);
-        }, [visible, target]);
-        return <span>{val}%</span>;
-    };
 
     const stats = [
         { value: 72, label: 'Qualified Conversions' },
@@ -653,14 +655,14 @@ const CaseStudy = () => {
                         <div className="grid grid-cols-3 gap-4 border-t border-white/10 pt-10">
                             {stats.map((stat, i) => (
                                 <div key={i}>
-                                    <div className="text-3xl md:text-5xl font-bold text-white tracking-tight"><CountUp target={stat.value} /></div>
+                                    <div className="text-3xl md:text-5xl font-bold text-white tracking-tight"><CountUp target={stat.value} visible={visible} /></div>
                                     <div className="text-zinc-500 text-[10px] mt-3 font-ui uppercase tracking-[0.2em]">{stat.label}</div>
                                 </div>
                             ))}
                         </div>
                     </div>
                     <div className="relative aspect-square overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=85" alt="" className="absolute inset-0 w-full h-full object-cover grayscale" />
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=85" alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover grayscale" />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
                         <div className="absolute bottom-6 left-6 right-6">
                             <span className="text-[10px] font-ui uppercase tracking-[0.25em] text-amber-500">DIGITECH FINANCE</span>
@@ -698,7 +700,9 @@ const Testimonials = () => {
                 <div className="flex gap-2 mb-16">
                     {testimonials.map((_, i) => (
                         <button key={i} onClick={() => setActive(i)}
-                            className={`h-[2px] transition-all ${i === active ? 'w-20 bg-amber-500' : 'w-10 bg-zinc-800'}`} />
+                            className={`h-[2px] transition-all relative ${i === active ? 'w-20 bg-amber-500' : 'w-10 bg-zinc-800'}`}>
+                            <span className="absolute -inset-x-0 -inset-y-5" />
+                        </button>
                     ))}
                 </div>
 
@@ -744,8 +748,8 @@ const Pricing = () => {
 
                 <div className="flex items-center gap-4 mb-12">
                     <span className={`text-xs font-ui uppercase tracking-[0.2em] ${!yearly ? 'text-white' : 'text-zinc-500'}`}>Monthly</span>
-                    <button onClick={() => setYearly(!yearly)} className="relative w-14 h-7 bg-zinc-900 border border-zinc-700">
-                        <div className={`absolute top-0.5 w-6 h-6 bg-amber-500 transition-transform ${yearly ? 'translate-x-7' : 'translate-x-0.5'}`} />
+                    <button onClick={() => setYearly(!yearly)} className="relative w-14 h-10 bg-zinc-900 border border-zinc-700">
+                        <div className={`absolute top-1.5 w-6 h-6 bg-amber-500 transition-transform ${yearly ? 'translate-x-7' : 'translate-x-0.5'}`} />
                     </button>
                     <span className={`text-xs font-ui uppercase tracking-[0.2em] ${yearly ? 'text-white' : 'text-zinc-500'}`}>Yearly</span>
                     {yearly && <span className="text-[10px] text-amber-500 font-bold font-ui uppercase tracking-widest">15% off</span>}
@@ -757,7 +761,7 @@ const Pricing = () => {
                         <p className="text-zinc-500 text-sm mb-10 max-w-sm">For teams taking AI seriously &mdash; and ready to implement something real.</p>
                         <div className="flex items-baseline gap-2 mb-10">
                             <span className="text-zinc-500 text-base">$</span>
-                            <span className="text-6xl md:text-7xl font-black text-white tracking-tight">{yearly ? '3,612' : '4,249'}</span>
+                            <span className="text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight">{yearly ? '3,612' : '4,249'}</span>
                             <span className="text-zinc-500 text-xs font-ui uppercase tracking-widest">USD/<br />Project</span>
                         </div>
                         <a href="#contact" className="block text-center w-full px-6 py-4 border border-zinc-700 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors mb-10">
@@ -840,7 +844,7 @@ const WhyUs = () => {
                 </div>
                 <div className="why-img relative">
                     <div className="aspect-[3/4] overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=85" alt="" className="w-full h-full object-cover grayscale contrast-125" />
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=85" alt="" loading="lazy" className="w-full h-full object-cover grayscale contrast-125" />
                     </div>
                     <div className="absolute top-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
                         <span>// IMPACT</span>
@@ -867,7 +871,7 @@ const Team = () => {
     }, []);
 
     const members = [
-        { name: 'Hendrik', role: 'Founder & CEO', quote: '"Building AI systems that actually ship and deliver results."', img: '/Hendrik.png' },
+        { name: 'Hendrik', role: 'Founder & CEO', quote: '"Building AI systems that actually ship and deliver results."', img: '/Hendrik.jpg' },
         { name: 'Alex Chen', role: 'Lead ML Engineer', quote: '"If it can be automated, it should be automated. Humans deserve better work."', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=85' },
         { name: 'Sarah Kim', role: 'AI Product Designer', quote: '"Great AI feels invisible — it just works."', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=85' },
     ];
@@ -887,7 +891,7 @@ const Team = () => {
                         return (
                         <div key={i} className={`team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden ${isCenter ? 'md:w-[38%] md:order-2' : 'md:w-[28%]'} ${i === 1 ? 'md:order-1' : ''} ${i === 2 ? 'md:order-3' : ''}`}>
                             <div className={`relative overflow-hidden ${isCenter ? 'aspect-[3/4]' : 'aspect-[3/4] md:aspect-[2/3]'}`}>
-                                <img src={m.img} alt={m.name} className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
+                                <img src={m.img} alt={m.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
                                 <div className="absolute bottom-5 left-5 right-5">
                                     <p className={`text-white font-bold ${isCenter ? 'text-xl' : 'text-base'}`}>{m.name}</p>
@@ -1002,7 +1006,7 @@ const Articles = () => {
                     {articles.map((a, i) => (
                         <a key={i} href="#" className="article-card group block bg-[#0A0A0A] hover:bg-[#111] transition-colors p-4">
                             <div className="relative aspect-[4/5] overflow-hidden mb-5">
-                                <img src={a.img} alt="" className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
+                                <img src={a.img} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/30 to-transparent" />
                             </div>
                             <div className="px-2 pb-2">
@@ -1066,7 +1070,7 @@ const Contact = () => {
 const Footer = () => (
     <footer className="bg-[#050505] pt-24 pb-10 px-6">
         <div className="max-w-[1400px] mx-auto">
-            <div className="mb-20">
+            <div className="mb-20 overflow-hidden">
                 <h2 className="text-[18vw] md:text-[15vw] font-black uppercase tracking-tighter text-white/[0.15] leading-none select-none">
                     COREFIX&reg;
                 </h2>
@@ -1090,13 +1094,13 @@ const Footer = () => (
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
                     {['Home', 'Services', 'Process', 'Case Studies', 'Pricing'].map(link => (
-                        <a key={link} href={`#${link.toLowerCase().replace(' ', '')}`} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider">{link}</a>
+                        <a key={link} href={`#${link.toLowerCase().replace(' ', '')}`} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
                     ))}
                 </div>
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
                     {['LinkedIn', 'X / Twitter', 'Instagram'].map(link => (
-                        <a key={link} href="#" className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider">{link}</a>
+                        <a key={link} href="#" className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
                     ))}
                 </div>
             </div>

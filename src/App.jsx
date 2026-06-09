@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronRight, ArrowUpRight } from 'lucide-react';
@@ -218,8 +219,8 @@ const Services = () => {
     }, []);
 
     const services = [
-        { num: '01', title: 'AI Strategy & Advisory', desc: 'Clear, execution-ready AI plans aligned with business goals.' },
-        { num: '02', title: 'Custom AI Agents', desc: 'Tailored agents designed to handle real operational tasks.' },
+        { num: '01', title: 'AI Strategy & Advisory', desc: 'Clear, execution-ready AI plans aligned with business goals.', link: '/services/ai-strategy' },
+        { num: '02', title: 'Custom AI Agents', desc: 'Tailored agents designed to handle real operational tasks.', link: '/services/custom-agents' },
         { num: '03', title: 'Workflow Automation', desc: 'Automations that connect tools, data, and teams seamlessly.' },
         { num: '04', title: 'AI Product Development', desc: 'Scalable AI-powered features, tools, and internal systems.' },
     ];
@@ -236,18 +237,27 @@ const Services = () => {
                 <p className="svc-title text-zinc-300 mb-20 max-w-xl text-sm">End-to-end services covering strategy, build, and deployment.</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {services.map((svc, i) => (
-                        <div key={i} className="svc-card group p-8 md:p-10 bg-[#0A0A0A] border border-white/40 hover:border-amber-500 hover:bg-[#111] transition-colors">
-                            <div className="flex items-start gap-6">
-                                <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">{svc.num}</span>
-                                <div className="flex-1">
-                                    <h3 className="text-xl md:text-2xl font-bold text-white mb-3">{svc.title}</h3>
-                                    <p className="text-zinc-300 text-sm leading-relaxed">{svc.desc}</p>
+                    {services.map((svc, i) => {
+                        const Card = svc.link ? Link : 'div';
+                        const cardProps = svc.link ? { to: svc.link } : {};
+                        return (
+                            <Card key={i} {...cardProps} className="svc-card group p-8 md:p-10 bg-[#0A0A0A] border border-white/40 hover:border-amber-500 hover:bg-[#111] transition-colors block cursor-pointer">
+                                <div className="flex items-start gap-6">
+                                    <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">{svc.num}</span>
+                                    <div className="flex-1">
+                                        <h3 className="text-xl md:text-2xl font-bold text-white mb-3">{svc.title}</h3>
+                                        <p className="text-zinc-300 text-sm leading-relaxed">{svc.desc}</p>
+                                        {svc.link && (
+                                            <span className="inline-flex items-center gap-1.5 mt-4 text-[10px] font-ui uppercase tracking-[0.2em] text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                Learn More <ChevronRight size={12} />
+                                            </span>
+                                        )}
+                                    </div>
+                                    <ArrowUpRight size={20} className="text-zinc-500 group-hover:text-amber-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />
                                 </div>
-                                <ArrowUpRight size={20} className="text-zinc-500 group-hover:text-amber-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />
-                            </div>
-                        </div>
-                    ))}
+                            </Card>
+                        );
+                    })}
                 </div>
 
                 <div className="mt-12 p-8 md:p-12 bg-[#111] border border-white/40 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">

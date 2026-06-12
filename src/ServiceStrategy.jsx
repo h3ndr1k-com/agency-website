@@ -205,7 +205,7 @@ const Framework = () => {
 
     return (
         <section id="framework" ref={ref} className="py-24 md:py-40 bg-[#050505] relative overflow-hidden">
-            <BrightGrid />
+            <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 <div className="fw-header mb-6"><SectionLabel>Our Framework</SectionLabel></div>
                 <h2 className="fw-header text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.02em] leading-[0.95] mb-6">
@@ -393,7 +393,7 @@ const Engagement = () => {
 
     return (
         <section ref={ref} className="py-24 md:py-40 relative overflow-hidden">
-            <BrightGrid />
+            <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 <div className="eng-el mb-6"><SectionLabel>Engagement</SectionLabel></div>
                 <h2 className="eng-el text-4xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05] mb-20">
@@ -545,7 +545,7 @@ const FinalCTA = () => {
 
     return (
         <section ref={ref} className="py-32 md:py-48 bg-[#050505] relative overflow-hidden border-t border-white/10">
-            <BrightGrid />
+            <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 text-center relative z-10">
                 <div className="cta-el mb-6 flex justify-center"><SectionLabel>Next Step</SectionLabel></div>
                 <h2 className="cta-el text-5xl md:text-7xl lg:text-8xl font-display text-white tracking-tight leading-[0.85] uppercase mb-8">

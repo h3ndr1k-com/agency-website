@@ -151,7 +151,7 @@ const Flagship = () => {
 
     return (
         <section id="flagship" ref={ref} className="py-24 md:py-40 bg-[#050505] relative overflow-hidden">
-            <BrightGrid />
+            <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 <div className="flag-el flex items-center gap-3 mb-6">
                     <SectionLabel>Flagship Agent</SectionLabel>
@@ -332,7 +332,7 @@ const OpsAgents = () => {
 
     return (
         <section ref={ref} className="py-24 md:py-40 bg-[#050505] border-y border-white/10 relative overflow-hidden">
-            <BrightGrid />
+            <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 <div className="ops-header mb-6"><SectionLabel>Operations &amp; Audit</SectionLabel></div>
                 <h2 className="ops-header text-4xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05] mb-6">
@@ -550,7 +550,7 @@ const OfferLadder = () => {
 
     return (
         <section ref={ref} className="py-24 md:py-40 bg-[#050505] relative overflow-hidden border-t border-white/10">
-            <BrightGrid />
+            <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 <div className="offer-el mb-6"><SectionLabel>How We Work Together</SectionLabel></div>
                 <h2 className="offer-el text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.02em] leading-[0.95] mb-6">

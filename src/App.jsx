@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronRight, ArrowUpRight } from 'lucide-react';
-import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
 // ── Section Grid (decorative background grid for sections) ──
-const gridLineColor = 'rgba(255,255,255,0.08)';
+const gridLineColor = 'rgba(255,255,255,0.05)';
 const gridPlusStyle = {
-    color: 'rgba(255,255,255,0.25)',
+    color: 'rgba(255,255,255,0.15)',
     fontSize: 14,
     fontFamily: 'Inter, sans-serif',
     fontWeight: 300,
@@ -103,8 +103,8 @@ const Navbar = () => {
             </div>
             {menuOpen && (
                 <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/5 px-6 py-8 flex flex-col gap-6">
-                    {['Services', 'Process', 'Case Studies', 'Pricing', 'Contact'].map(item => (
-                        <a key={item} href={`#${item.toLowerCase().replace(' ', '')}`} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</a>
+                    {[['Services', '#services'], ['Process', '#process'], ['Case Studies', '#works'], ['Pricing', '#pricing'], ['Contact', '#contact']].map(([item, href]) => (
+                        <a key={item} href={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</a>
                     ))}
                 </div>
             )}
@@ -480,6 +480,7 @@ const Capabilities = () => {
 const Process = () => {
     const ref = useRef(null);
     const marqueeRef = useRef(null);
+    const [activeStep, setActiveStep] = useState(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -495,10 +496,26 @@ const Process = () => {
     }, []);
 
     const steps = [
-        { num: '01', title: 'Diagnose', desc: 'We analyze workflows, data, and bottlenecks to identify high-impact opportunities.' },
-        { num: '02', title: 'Design', desc: 'We architect the right AI system and define clear success metrics.' },
-        { num: '03', title: 'Build', desc: 'We develop, test, and integrate the solution into real workflows.' },
-        { num: '04', title: 'Deploy & Improve', desc: 'We launch, monitor performance, and continuously optimize.' },
+        {
+            num: '01', title: 'Diagnose',
+            desc: 'We analyze workflows, data, and bottlenecks to identify high-impact opportunities.',
+            details: ['Workflow & process mapping', 'Data and tooling audit', 'Bottleneck & cost analysis', 'Opportunity shortlist with ROI estimates'],
+        },
+        {
+            num: '02', title: 'Design',
+            desc: 'We architect the right AI system and define clear success metrics.',
+            details: ['System architecture & data flows', 'Tool and model selection', 'Success metrics definition', 'Phased delivery plan'],
+        },
+        {
+            num: '03', title: 'Build',
+            desc: 'We develop, test, and integrate the solution into real workflows.',
+            details: ['Agent development & integration', 'Testing against real workflows', 'Team training & documentation', 'Staged rollout'],
+        },
+        {
+            num: '04', title: 'Deploy & Improve',
+            desc: 'We launch, monitor performance, and continuously optimize.',
+            details: ['Production launch & monitoring', 'Performance dashboards', 'Continuous tuning & retraining', 'Quarterly optimization reviews'],
+        },
     ];
 
     return (
@@ -517,16 +534,46 @@ const Process = () => {
                 <SectionLabel>Our Process</SectionLabel>
             </div>
 
-            <div className="proc-grid max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="proc-grid max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                 {steps.map((step, i) => (
-                    <div key={i} className="proc-step p-8 md:p-10 bg-[#0A0A0A] border border-white/40 hover:border-amber-500 hover:bg-[#111] transition-colors group">
+                    <button
+                        key={i}
+                        onClick={() => setActiveStep(activeStep === i ? null : i)}
+                        className={`proc-step text-left w-full p-8 md:p-10 bg-[#0A0A0A] border transition-colors group ${activeStep === i ? 'border-amber-500 bg-[#111]' : 'border-white/40 hover:border-amber-500 hover:bg-[#111]'}`}
+                    >
                         <div className="flex items-start justify-between mb-6">
                             <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">&mdash; {step.num}</span>
-                            <span className="text-xs font-ui text-zinc-300 group-hover:text-white transition-colors">Step</span>
+                            <span className={`text-xl leading-none transition-transform duration-300 ${activeStep === i ? 'text-amber-500 rotate-45' : 'text-zinc-500 group-hover:text-white'}`}>+</span>
                         </div>
                         <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">{step.title}</h3>
                         <p className="text-zinc-300 text-sm leading-relaxed max-w-md">{step.desc}</p>
-                    </div>
+                        <AnimatePresence>
+                            {activeStep === i && (
+                                <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.35, ease: 'easeOut' }}
+                                    className="overflow-hidden"
+                                >
+                                    <ul className="mt-6 pt-6 border-t border-white/10 space-y-3">
+                                        {step.details.map((d, j) => (
+                                            <motion.li
+                                                key={j}
+                                                initial={{ opacity: 0, x: -12 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: 0.1 + j * 0.07, duration: 0.3 }}
+                                                className="flex items-start gap-3 text-zinc-300 text-sm"
+                                            >
+                                                <span className="w-1 h-1 bg-amber-500 mt-2 flex-shrink-0" />
+                                                {d}
+                                            </motion.li>
+                                        ))}
+                                    </ul>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </button>
                 ))}
             </div>
 
@@ -703,7 +750,7 @@ const Testimonials = () => {
 
     return (
         <section className="py-24 md:py-40 relative overflow-hidden">
-            <BrightGrid />
+            <SectionGrid />
             <div className="max-w-5xl mx-auto px-6 relative z-10">
                 <div className="mb-10"><SectionLabel>Client Voices</SectionLabel></div>
 
@@ -938,7 +985,7 @@ const FAQ = () => {
 
     return (
         <section className="py-24 md:py-32 bg-[#0A0A0A] relative overflow-hidden">
-            <BrightGrid />
+            <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 <div className="grid md:grid-cols-2 gap-12 md:gap-6">
                     {/* Left column */}
@@ -1148,8 +1195,8 @@ const Footer = () => (
 
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
-                    {['Home', 'Services', 'Process', 'Case Studies', 'Pricing'].map(link => (
-                        <a key={link} href={`#${link.toLowerCase().replace(' ', '')}`} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
+                    {[['Home', '#'], ['Services', '#services'], ['Process', '#process'], ['Case Studies', '#works'], ['Pricing', '#pricing']].map(([link, href]) => (
+                        <a key={link} href={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
                     ))}
                 </div>
                 <div className="flex flex-col gap-3">

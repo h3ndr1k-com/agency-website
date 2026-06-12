@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 
 // ── Grid config ──
-export const gridLineColor = 'rgba(255,255,255,0.08)';
+export const gridLineColor = 'rgba(255,255,255,0.05)';
 export const gridPlusStyle = {
-    color: 'rgba(255,255,255,0.25)',
+    color: 'rgba(255,255,255,0.15)',
     fontSize: 14,
     fontFamily: 'Inter, sans-serif',
     fontWeight: 300,
@@ -105,8 +105,8 @@ export const Footer = () => (
 
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
-                    {['Home', 'Services', 'Process', 'Case Studies', 'Pricing'].map(link => (
-                        <a key={link} href={`/#${link.toLowerCase().replace(' ', '')}`} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
+                    {[['Home', '/'], ['Services', '/#services'], ['Process', '/#process'], ['Case Studies', '/#works'], ['Pricing', '/#pricing']].map(([link, href]) => (
+                        <a key={link} href={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
                     ))}
                 </div>
                 <div className="flex flex-col gap-3">

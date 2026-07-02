@@ -738,8 +738,7 @@ const Testimonials = () => {
     const testimonials = [
         { num: '01', title: "They didn't sell hype — they built results.", quote: "We came in with vague ideas and left with a working AI system that cut our support workload in half. The clarity, speed, and execution were outstanding.", name: 'Jason W.', role: 'SaaS Founder' },
         { num: '02', title: "The most practical AI partner we've worked with.", quote: "They helped us design a realistic AI roadmap, built what mattered most, and proved ROI faster than we expected. No buzzwords, just outcomes.", name: 'Maya P.', role: 'Operations Director' },
-        { num: '03', title: "They understand both business and engineering.", quote: "Instead of confusing us with technical jargon, they turned AI into a real advantage we use daily. Our team is faster, more focused, and way more efficient now.", name: 'Daniel C.', role: 'Agency Owner' },
-        { num: '04', title: "The first person I call for an urgent handoff.", quote: "When a client project needed an urgent handoff, Hendrik was the first person I called. He got up to speed fast, took the meeting, and delivered with confidence. Honestly, his technical depth made him a better fit than I would have been. That is the kind of partner you want in your corner.", name: 'Evan Gutman', role: 'Evitas AI', logo: '/evitas-ai-logo-white.png' },
+        { num: '03', title: "The first person I call for an urgent handoff.", quote: "When a client project needed an urgent handoff, Hendrik was the first person I called. He got up to speed fast, took the meeting, and delivered with confidence. Honestly, his technical depth made him a better fit than I would have been. That is the kind of partner you want in your corner.", name: 'Evan Gutman', role: 'Evitas AI', logo: '/evitas-ai-logo-white.png' },
     ];
 
     useEffect(() => {

@@ -738,7 +738,7 @@ const Testimonials = () => {
     const testimonials = [
         { num: '01', title: "They didn't sell hype — they built results.", quote: "We came in with vague ideas and left with a working AI system that cut our support workload in half. The clarity, speed, and execution were outstanding.", name: 'Jason W.', role: 'SaaS Founder' },
         { num: '02', title: "The most practical AI partner we've worked with.", quote: "They helped us design a realistic AI roadmap, built what mattered most, and proved ROI faster than we expected. No buzzwords, just outcomes.", name: 'Maya P.', role: 'Operations Director' },
-        { num: '03', title: "They understand both business and engineering.", quote: "Instead of confusing us with technical jargon, they turned AI into a real advantage we use daily. Our team is faster, more focused, and way more efficient now.", name: 'Daniel C.', role: 'Agency Owner' },
+        { num: '03', title: "The first person I call for an urgent handoff.", quote: "When a client project needed an urgent handoff, Hendrik was the first person I called. He got up to speed fast, took the meeting, and delivered with confidence. Honestly, his technical depth made him a better fit than I would have been. That is the kind of partner you want in your corner.", name: 'Evan Gutman', role: 'Evitas AI', logo: '/evitas-ai-logo-white.png' },
     ];
 
     useEffect(() => {
@@ -764,12 +764,13 @@ const Testimonials = () => {
                 </div>
 
                 <div className="min-h-[320px]">
-                    <span className="text-amber-500 font-ui text-xs tracking-[0.3em] mb-6 block">{t.num} / 03</span>
+                    <span className="text-amber-500 font-ui text-xs tracking-[0.3em] mb-6 block">{t.num} / {String(testimonials.length).padStart(2, '0')}</span>
                     <h3 className="text-3xl md:text-5xl font-bold text-white mb-10 tracking-[-0.02em] leading-[1.1] max-w-4xl">{t.title}</h3>
                     <p className="text-zinc-400 text-base md:text-lg leading-relaxed mb-12 max-w-3xl">{t.quote}</p>
                     <div className="flex items-center gap-4 pt-8 border-t border-white/10">
                         <span className="text-white font-bold text-base">{t.name}</span>
                         <span className="text-zinc-600 text-sm">&mdash; {t.role}</span>
+                        {t.logo && <img src={t.logo} alt={`${t.role} logo`} className="h-5 w-auto ml-2 opacity-90" />}
                     </div>
                 </div>
             </div>

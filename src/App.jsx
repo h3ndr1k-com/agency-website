@@ -129,7 +129,7 @@ const Hero = () => {
     return (
         <section ref={ref} className="relative min-h-screen flex flex-col justify-end pb-12 md:pb-20 overflow-hidden pt-32">
             <div className="absolute inset-0 z-0" style={{
-                backgroundImage: 'url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80&auto=format)',
+                backgroundImage: 'url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=60&auto=format)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 filter: 'grayscale(100%) contrast(1.1)'
@@ -374,7 +374,7 @@ const Capabilities = () => {
             {/* Cave image hero */}
             <div className="relative w-full" style={{ aspectRatio: '16/9', maxHeight: '75vh' }}>
                 <div className="absolute inset-0" style={{
-                    backgroundImage: 'url(https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=85)',
+                    backgroundImage: 'url(https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=60)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     filter: 'grayscale(100%) contrast(1.2) brightness(0.7)'
@@ -607,12 +607,12 @@ const Works = () => {
     }, []);
 
     const projects = [
-        { name: 'SYNCOR', year: '2025', tag: 'AI Automation', desc: 'End-to-end workflow automation for a logistics startup — cutting manual processing by 80%.', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=85' },
-        { name: 'MEDISYNC', year: '2024', tag: 'Healthcare AI', desc: 'AI-powered patient triage system reducing wait times and improving diagnostic accuracy.', img: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800&q=85' },
-        { name: 'VERDANT', year: '2024', tag: 'Data Intelligence', desc: 'Built a predictive analytics engine for sustainable agriculture decisions.', img: 'https://images.unsplash.com/photo-1547954575-855750c57bd3?w=800&q=85' },
-        { name: 'GRIDCORE', year: '2025', tag: 'Custom Agents', desc: 'Multi-agent system for real-time energy grid optimization and anomaly detection.', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=85' },
-        { name: 'AEROLYTIC', year: '2025', tag: 'Process Automation', desc: 'Automated document processing pipeline handling 10,000+ invoices monthly.', img: 'https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=800&q=85' },
-        { name: 'NOVAPAY', year: '2025', tag: 'Fintech AI', desc: 'AI fraud detection and risk scoring system for a digital payments platform.', img: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=85' },
+        { name: 'SYNCOR', year: '2025', tag: 'AI Automation', desc: 'End-to-end workflow automation for a logistics startup — cutting manual processing by 80%.', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=60' },
+        { name: 'MEDISYNC', year: '2024', tag: 'Healthcare AI', desc: 'AI-powered patient triage system reducing wait times and improving diagnostic accuracy.', img: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800&q=60' },
+        { name: 'VERDANT', year: '2024', tag: 'Data Intelligence', desc: 'Built a predictive analytics engine for sustainable agriculture decisions.', img: 'https://images.unsplash.com/photo-1547954575-855750c57bd3?w=800&q=60' },
+        { name: 'GRIDCORE', year: '2025', tag: 'Custom Agents', desc: 'Multi-agent system for real-time energy grid optimization and anomaly detection.', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=60' },
+        { name: 'AEROLYTIC', year: '2025', tag: 'Process Automation', desc: 'Automated document processing pipeline handling 10,000+ invoices monthly.', img: 'https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=800&q=60' },
+        { name: 'NOVAPAY', year: '2025', tag: 'Fintech AI', desc: 'AI fraud detection and risk scoring system for a digital payments platform.', img: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=60' },
     ];
 
     const scroll = (dir) => {
@@ -719,7 +719,7 @@ const CaseStudy = () => {
                         </div>
                     </div>
                     <div className="relative aspect-square overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=85" alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover grayscale" />
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=60" alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover grayscale" />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
                         <div className="absolute bottom-6 left-6 right-6">
                             <span className="text-[10px] font-ui uppercase tracking-[0.25em] text-amber-500">DIGITECH FINANCE</span>
@@ -736,9 +736,8 @@ const CaseStudy = () => {
 const Testimonials = () => {
     const [active, setActive] = useState(0);
     const testimonials = [
-        { num: '01', title: "They didn't sell hype — they built results.", quote: "We came in with vague ideas and left with a working AI system that cut our support workload in half. The clarity, speed, and execution were outstanding.", name: 'Jason W.', role: 'SaaS Founder' },
-        { num: '02', title: "The most practical AI partner we've worked with.", quote: "They helped us design a realistic AI roadmap, built what mattered most, and proved ROI faster than we expected. No buzzwords, just outcomes.", name: 'Maya P.', role: 'Operations Director' },
-        { num: '03', title: "The first person I call for an urgent handoff.", quote: "When a client project needed an urgent handoff, Hendrik was the first person I called. He got up to speed fast, took the meeting, and delivered with confidence. Honestly, his technical depth made him a better fit than I would have been. That is the kind of partner you want in your corner.", name: 'Evan Gutman', role: 'Evitas AI', logo: '/evitas-ai-logo-white.png' },
+        { num: '01', title: "The first person I call for an urgent handoff.", quote: "When a client project needed an urgent handoff, Hendrik was the first person I called. He got up to speed fast, took the meeting, and delivered with confidence. Honestly, his technical depth made him a better fit than I would have been. That is the kind of partner you want in your corner.", name: 'Evan Gutman', role: 'Evitas AI', logo: '/evitas-ai-logo-white.png' },
+        { num: '02', title: "They didn't sell hype — they built results.", quote: "We came in with vague ideas and left with a working AI system that cut our support workload in half. The clarity, speed, and execution were outstanding.", name: 'Jason W.', role: 'SaaS Founder' },
     ];
 
     useEffect(() => {
@@ -902,7 +901,7 @@ const WhyUs = () => {
                 </div>
                 <div className="why-img relative">
                     <div className="aspect-[3/4] overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=85" alt="" loading="lazy" className="w-full h-full object-cover grayscale contrast-125" />
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=60" alt="" loading="lazy" className="w-full h-full object-cover grayscale contrast-125" />
                     </div>
                     <div className="absolute top-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
                         <span>// IMPACT</span>
@@ -930,8 +929,8 @@ const Team = () => {
 
     const members = [
         { name: 'Hendrik', role: 'Founder & CEO', quote: '"Building AI systems that actually ship and deliver results."', img: '/Hendrik.jpg' },
-        { name: 'Alex Chen', role: 'Lead ML Engineer', quote: '"If it can be automated, it should be automated. Humans deserve better work."', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=85' },
-        { name: 'Sarah Kim', role: 'AI Product Designer', quote: '"Great AI feels invisible — it just works."', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=85' },
+        { name: 'Alex Chen', role: 'Lead ML Engineer', quote: '"If it can be automated, it should be automated. Humans deserve better work."', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=60' },
+        { name: 'Sarah Kim', role: 'AI Product Designer', quote: '"Great AI feels invisible — it just works."', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=60' },
     ];
 
     return (
@@ -1038,9 +1037,9 @@ const FAQ = () => {
 const Articles = () => {
     const ref = useRef(null);
     const articles = [
-        { title: 'The Foundation of AI: Why Your Knowledge Base is Your Competitive Advantage', desc: 'Learn how to solve the "messy data" problem and build a centralized AI knowledge system.', date: 'JAN 2026', read: '4 MIN READ', img: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=85' },
-        { title: 'The Ethical AI Roadmap: Building Trust in an Automated World', desc: 'Navigate the ethical landscape of AI — from data privacy to bias mitigation.', date: 'DEC 2025', read: '10 MIN READ', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=85' },
-        { title: 'The Crystal Ball: Using AI Simulation to De-Risk Your 2026 Strategy', desc: 'How AI digital twins and predictive simulation help business leaders plan ahead.', date: 'DEC 2025', read: '8 MIN READ', img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=85' },
+        { title: 'The Foundation of AI: Why Your Knowledge Base is Your Competitive Advantage', desc: 'Learn how to solve the "messy data" problem and build a centralized AI knowledge system.', date: 'JAN 2026', read: '4 MIN READ', img: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=60' },
+        { title: 'The Ethical AI Roadmap: Building Trust in an Automated World', desc: 'Navigate the ethical landscape of AI — from data privacy to bias mitigation.', date: 'DEC 2025', read: '10 MIN READ', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=60' },
+        { title: 'The Crystal Ball: Using AI Simulation to De-Risk Your 2026 Strategy', desc: 'How AI digital twins and predictive simulation help business leaders plan ahead.', date: 'DEC 2025', read: '8 MIN READ', img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=60' },
     ];
 
     useEffect(() => {
@@ -1202,9 +1201,8 @@ const Footer = () => (
                 </div>
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
-                    {['LinkedIn', 'X / Twitter', 'Instagram'].map(link => (
-                        <a key={link} href="#" className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
-                    ))}
+                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">LinkedIn</a>
+                    <a href="https://www.instagram.com/hendrikunfiltered/" target="_blank" rel="noopener noreferrer" className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">Instagram</a>
                 </div>
             </div>
 

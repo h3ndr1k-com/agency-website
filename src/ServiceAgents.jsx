@@ -27,7 +27,7 @@ const AgentsHero = () => {
         <section ref={ref} className="relative min-h-[110vh] flex flex-col justify-end pb-20 md:pb-32 overflow-hidden">
             <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
                 <div className="absolute inset-0" style={{
-                    backgroundImage: 'url(https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1920&q=80&auto=format)',
+                    backgroundImage: 'url(https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1920&q=60&auto=format)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     filter: 'grayscale(100%) contrast(1.2) brightness(0.4)',

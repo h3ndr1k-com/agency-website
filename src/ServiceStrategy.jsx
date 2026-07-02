@@ -27,7 +27,7 @@ const ServiceHero = () => {
         <section ref={ref} className="relative min-h-[110vh] flex flex-col justify-end pb-20 md:pb-32 overflow-hidden">
             <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
                 <div className="absolute inset-0" style={{
-                    backgroundImage: 'url(https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80&auto=format)',
+                    backgroundImage: 'url(https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=60&auto=format)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     filter: 'grayscale(100%) contrast(1.2) brightness(0.5)',
@@ -158,7 +158,7 @@ const Framework = () => {
                 'Current tech stack & integration review',
                 'Competitive AI landscape analysis',
             ],
-            visual: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80',
+            visual: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=60',
         },
         {
             num: '02',
@@ -171,7 +171,7 @@ const Framework = () => {
                 'Technical feasibility assessment',
                 'Risk & compliance evaluation',
             ],
-            visual: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
+            visual: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=60',
         },
         {
             num: '03',
@@ -184,7 +184,7 @@ const Framework = () => {
                 'API & integration specifications',
                 'Security & governance framework',
             ],
-            visual: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=800&q=80',
+            visual: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=800&q=60',
         },
         {
             num: '04',
@@ -197,7 +197,7 @@ const Framework = () => {
                 'Vendor & tool recommendations',
                 'Success metrics & KPI framework',
             ],
-            visual: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80',
+            visual: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=60',
         },
     ];
 

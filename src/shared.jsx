@@ -105,7 +105,7 @@ export const Footer = () => (
 
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
-                    {[['Home', '/'], ['Services', '/#services'], ['Process', '/#process'], ['Case Studies', '/#works'], ['Pricing', '/#pricing']].map(([link, href]) => (
+                    {[['Home', '/'], ['Flagship', '/#flagship'], ['Bolt-Ons', '/#services'], ['Case Study', '/#case-study'], ['Free Audit', '/#audit']].map(([link, href]) => (
                         <a key={link} href={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
                     ))}
                 </div>
@@ -150,8 +150,8 @@ export const ServiceNavbar = () => {
                 <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
                     <Link to="/#services" className="hover:text-white transition-colors">Services</Link>
                     <Link to="/#process" className="hover:text-white transition-colors">Process</Link>
-                    <Link to="/#works" className="hover:text-white transition-colors">Case Studies</Link>
-                    <Link to="/#pricing" className="hover:text-white transition-colors">Pricing</Link>
+                    <Link to="/#case-study" className="hover:text-white transition-colors">Case Study</Link>
+                    <Link to="/#audit" className="hover:text-white transition-colors">Free Audit</Link>
                     <Link to="/#contact" className="hover:text-white transition-colors">Contact</Link>
                 </div>
                 <Link to="/#contact" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">

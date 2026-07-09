@@ -4,6 +4,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronRight, ArrowUpRight } from 'lucide-react';
 import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent, AnimatePresence } from 'framer-motion';
+import Flagship from './Flagship.jsx';
+import VoiceSection from './VoiceSection.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -45,7 +47,7 @@ const SectionGrid = () => (
 const CornerButton = ({ href, children, filled, className = '' }) => {
     const base = filled
         ? 'bg-white text-black hover:bg-amber-500'
-        : 'bg-transparent text-white border border-white/60 hover:bg-white hover:text-black';
+        : 'bg-black/40 backdrop-blur-sm text-white border border-white/60 hover:bg-white hover:text-black';
     return (
         <a href={href} className={`relative inline-flex items-center gap-3 px-7 py-4 font-bold text-[11px] font-ui uppercase tracking-[0.2em] transition-all duration-200 group ${base} ${className}`}>
             <span className="absolute -top-[3px] -left-[3px] w-3 h-3 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -82,11 +84,11 @@ const Navbar = () => {
                     COREFIX&reg;
                 </a>
                 <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
-                    <a href="#services" className="hover:text-white transition-colors">Services</a>
+                    <a href="#flagship" className="hover:text-white transition-colors">Flagship</a>
+                    <a href="#services" className="hover:text-white transition-colors">Bolt-Ons</a>
                     <a href="#process" className="hover:text-white transition-colors">Process</a>
-                    <a href="#works" className="hover:text-white transition-colors">Case Studies</a>
-                    <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-                    <a href="#contact" className="hover:text-white transition-colors">Contact</a>
+                    <a href="#voice-demo" className="hover:text-white transition-colors">Live Demo</a>
+                    <a href="#audit" className="hover:text-amber-500 text-amber-500/90 transition-colors">Free Audit</a>
                 </div>
                 <a href="#contact" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
                     <span className="absolute -top-[2px] -left-[2px] w-2.5 h-2.5 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -103,7 +105,7 @@ const Navbar = () => {
             </div>
             {menuOpen && (
                 <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/5 px-6 py-8 flex flex-col gap-6">
-                    {[['Services', '#services'], ['Process', '#process'], ['Case Studies', '#works'], ['Pricing', '#pricing'], ['Contact', '#contact']].map(([item, href]) => (
+                    {[['Flagship', '#flagship'], ['Bolt-Ons', '#services'], ['Process', '#process'], ['Live Demo', '#voice-demo'], ['Free Audit', '#audit'], ['Contact', '#contact']].map(([item, href]) => (
                         <a key={item} href={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</a>
                     ))}
                 </div>
@@ -124,7 +126,7 @@ const Hero = () => {
         return () => ctx.revert();
     }, []);
 
-    const tags = ['AI Strategy', 'Process Automation', 'Custom Agents', 'Data Intelligence'];
+    const tags = ['Spec Intelligence', 'Voice Agents', 'Workflow Automation', 'AI Strategy'];
 
     return (
         <section ref={ref} className="relative min-h-screen flex flex-col justify-end pb-12 md:pb-20 overflow-hidden pt-32">
@@ -134,7 +136,7 @@ const Hero = () => {
                 backgroundPosition: 'center',
                 filter: 'grayscale(100%) contrast(1.1)'
             }} />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A] z-10 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0A0A]/30 to-[#0A0A0A] z-10 pointer-events-none" />
             <GridOverlay />
 
             {/* Tags in top-right sky area */}
@@ -160,11 +162,14 @@ const Hero = () => {
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
                 <div className="grid md:grid-cols-2 gap-8 mt-10 md:mt-14 items-end">
                     <p className="hero-el max-w-xl text-zinc-400 text-sm md:text-base leading-relaxed pl-2">
-                        Build real, production-ready AI systems that automate work, improve performance, and deliver measurable business results.
+                        Production-ready AI systems that catch expensive errors, take live calls, and automate real work &mdash; built by the person you talk to.
                     </p>
-                    <div className="hero-el flex justify-end">
-                        <CornerButton href="#process" filled>
-                            How It Works <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    <div className="hero-el flex justify-end gap-3 flex-wrap">
+                        <CornerButton href="#flagship">
+                            The Flagship <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                        </CornerButton>
+                        <CornerButton href="#audit" filled>
+                            Free AI Audit <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                         </CornerButton>
                     </div>
                 </div>
@@ -173,26 +178,42 @@ const Hero = () => {
     );
 };
 
-// ── Logo Marquee ──
+// ── Clients + Toolchain strip ──
 const LogoMarquee = () => {
-    const partners = ['ACME CORP', 'TECHFLOW', 'NEXUS AI', 'DATASYNC', 'CLOUDWAVE', 'METRIX', 'QUANTLAB'];
+    const clients = [
+        { name: 'POINT 1 DISPLAYS', tag: 'Display Manufacturing — Montreal' },
+        { name: 'EVITAS AI', tag: 'AI Consulting — Partner Network' },
+    ];
+    const stack = ['ANTHROPIC', 'OPENAI', 'VAPI', 'CAL.COM', 'ELEVENLABS', 'MAKE', 'N8N', 'SUPABASE', 'VERCEL'];
     return (
         <section className="py-20 bg-[#080808]">
             <div className="max-w-[900px] mx-auto px-6">
                 <div className="flex justify-center mb-10">
-                    <SectionLabel>Our Trusted Partners</SectionLabel>
+                    <SectionLabel>In Production With</SectionLabel>
                 </div>
-                <div className="border-y border-white/40 py-10 overflow-hidden">
-                    <div className="relative">
-                        <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#080808] to-transparent z-10 pointer-events-none" />
-                        <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#080808] to-transparent z-10 pointer-events-none" />
-                        <div className="flex animate-marquee whitespace-nowrap">
-                            {[...partners, ...partners, ...partners].map((name, i) => (
-                                <div key={i} className="mx-12 flex-shrink-0 text-white font-ui font-black text-xl md:text-2xl tracking-[0.15em] uppercase opacity-70 hover:opacity-100 transition-opacity">
-                                    {name}
-                                </div>
-                            ))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 border-y border-white/40 divide-y sm:divide-y-0 sm:divide-x divide-white/20">
+                    {clients.map((c) => (
+                        <div key={c.name} className="py-10 px-6 text-center group">
+                            <div className="text-white font-ui font-black text-xl md:text-2xl tracking-[0.15em] uppercase group-hover:text-amber-500 transition-colors">
+                                {c.name}
+                            </div>
+                            <div className="text-zinc-600 text-[9px] font-ui uppercase tracking-[0.25em] mt-2">{c.tag}</div>
                         </div>
+                    ))}
+                </div>
+                <div className="mt-8 overflow-hidden relative">
+                    <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#080808] to-transparent z-10 pointer-events-none" />
+                    <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#080808] to-transparent z-10 pointer-events-none" />
+                    <div className="flex animate-marquee whitespace-nowrap items-center">
+                        {[...stack, ...stack, ...stack].map((name, i) => (
+                            <div key={i} className="mx-8 flex-shrink-0 flex items-center gap-8">
+                                <span className="text-zinc-500 font-ui font-bold text-xs tracking-[0.25em] uppercase hover:text-zinc-300 transition-colors">{name}</span>
+                                {i % stack.length === stack.length - 1 && <span className="w-1.5 h-1.5 bg-amber-500/60" />}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="text-center mt-4">
+                        <span className="text-zinc-700 text-[8px] font-ui uppercase tracking-[0.3em]">Toolchain</span>
                     </div>
                 </div>
             </div>
@@ -219,22 +240,22 @@ const Services = () => {
     }, []);
 
     const services = [
-        { num: '01', title: 'AI Strategy & Advisory', desc: 'Clear, execution-ready AI plans aligned with business goals.', link: '/services/ai-strategy' },
-        { num: '02', title: 'Custom AI Agents', desc: 'Tailored agents designed to handle real operational tasks.', link: '/services/custom-agents' },
-        { num: '03', title: 'Workflow Automation', desc: 'Automations that connect tools, data, and teams seamlessly.' },
-        { num: '04', title: 'AI Product Development', desc: 'Scalable AI-powered features, tools, and internal systems.' },
+        { num: '01', title: 'Voice Agents That Take Calls', desc: 'Live agents that answer, qualify, and book straight into your calendar — like the one on this page.', link: '/services/custom-agents' },
+        { num: '02', title: 'Email Triage & Workflow Automation', desc: 'Inbox classification, follow-up tracking, and automations wired into the systems you already run.' },
+        { num: '03', title: 'Document & Data Intelligence', desc: 'Systems that read your PDFs, drawings, and databases — and act on what they find.' },
+        { num: '04', title: 'AI Strategy & Advisory', desc: 'A clear, execution-ready plan for where AI actually saves you money. No slideware.', link: '/services/ai-strategy' },
     ];
 
     return (
         <section id="services" ref={ref} className="py-24 md:py-40">
             <div className="max-w-[1400px] mx-auto px-6">
                 <div className="mb-10">
-                    <SectionLabel>Our Services</SectionLabel>
+                    <SectionLabel>Bolt-Ons</SectionLabel>
                 </div>
                 <h2 className="svc-title text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-[-0.02em] max-w-5xl leading-[1.05] mb-8">
-                    End-to-end partnership from strategy to deployment &mdash; so AI actually <span className="text-zinc-500">ships, works, and delivers.</span>
+                    One flagship. <span className="text-zinc-500">Modular bolt-ons.</span>
                 </h2>
-                <p className="svc-title text-zinc-300 mb-20 max-w-xl text-sm">End-to-end services covering strategy, build, and deployment.</p>
+                <p className="svc-title text-zinc-300 mb-20 max-w-xl text-sm">Each one ships as a working system in your stack — not a proof of concept.</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {services.map((svc, i) => {
@@ -579,7 +600,7 @@ const Process = () => {
 
             <div className="max-w-[1400px] mx-auto px-6 mt-16 text-center">
                 <p className="text-zinc-300 text-sm mb-6 max-w-xl mx-auto">See How These Solutions Translate Into Measurable Impact.</p>
-                <CornerButton href="#pricing" filled>
+                <CornerButton href="#audit" filled>
                     Start Your AI Journey <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                 </CornerButton>
             </div>
@@ -587,81 +608,8 @@ const Process = () => {
     );
 };
 
-// ── Works / Case Studies ──
-const Works = () => {
-    const scrollRef = useRef(null);
-    const ref = useRef(null);
-
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            gsap.from('.works-header', {
-                scrollTrigger: { trigger: ref.current, start: 'top 75%' },
-                y: 40, opacity: 0, duration: 0.9, ease: 'power3.out'
-            });
-            gsap.from('.work-card', {
-                scrollTrigger: { trigger: ref.current, start: 'top 65%' },
-                y: 50, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out'
-            });
-        }, ref);
-        return () => ctx.revert();
-    }, []);
-
-    const projects = [
-        { name: 'SYNCOR', year: '2025', tag: 'AI Automation', desc: 'End-to-end workflow automation for a logistics startup — cutting manual processing by 80%.', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=60' },
-        { name: 'MEDISYNC', year: '2024', tag: 'Healthcare AI', desc: 'AI-powered patient triage system reducing wait times and improving diagnostic accuracy.', img: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800&q=60' },
-        { name: 'VERDANT', year: '2024', tag: 'Data Intelligence', desc: 'Built a predictive analytics engine for sustainable agriculture decisions.', img: 'https://images.unsplash.com/photo-1547954575-855750c57bd3?w=800&q=60' },
-        { name: 'GRIDCORE', year: '2025', tag: 'Custom Agents', desc: 'Multi-agent system for real-time energy grid optimization and anomaly detection.', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=60' },
-        { name: 'AEROLYTIC', year: '2025', tag: 'Process Automation', desc: 'Automated document processing pipeline handling 10,000+ invoices monthly.', img: 'https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=800&q=60' },
-        { name: 'NOVAPAY', year: '2025', tag: 'Fintech AI', desc: 'AI fraud detection and risk scoring system for a digital payments platform.', img: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=60' },
-    ];
-
-    const scroll = (dir) => {
-        if (scrollRef.current) scrollRef.current.scrollBy({ left: dir * 400, behavior: 'smooth' });
-    };
-
-    return (
-        <section id="works" ref={ref} className="py-24 md:py-32 relative overflow-hidden">
-            <SectionGrid />
-            <div className="max-w-[1400px] mx-auto px-6 mb-16 relative z-10">
-                <div className="works-header mb-8"><SectionLabel>Case Studies</SectionLabel></div>
-                <div className="flex items-end justify-between flex-wrap gap-8">
-                    <h2 className="works-header text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] leading-[0.95]">
-                        Work That Speaks<br />in <span className="text-zinc-600">Results, Not Claims</span>
-                    </h2>
-                    <div className="hidden md:flex gap-2">
-                        <button onClick={() => scroll(-1)} className="w-12 h-12 border border-zinc-700 flex items-center justify-center text-zinc-400 hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors">&larr;</button>
-                        <button onClick={() => scroll(1)} className="w-12 h-12 border border-zinc-700 flex items-center justify-center text-zinc-400 hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors">&rarr;</button>
-                    </div>
-                </div>
-                <p className="works-header text-zinc-500 text-sm mt-8 max-w-xl">
-                    A curated selection of projects where strategy, engineering, and execution came together to build AI systems that actually moved the needle.
-                </p>
-            </div>
-
-            <div ref={scrollRef} className="relative z-10 flex gap-4 overflow-x-auto px-6 pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
-                {projects.map((proj, i) => (
-                    <div key={i} className="work-card flex-shrink-0 w-[320px] md:w-[400px] snap-start group cursor-pointer">
-                        <div className="relative aspect-[3/4] overflow-hidden mb-4">
-                            <img src={proj.img} alt={proj.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/80 via-transparent to-transparent" />
-                            <div className="absolute top-5 left-5 right-5 flex justify-between text-[10px] font-ui uppercase tracking-[0.2em] text-white/80">
-                                <span>{proj.tag}</span>
-                                <span>{proj.year}</span>
-                            </div>
-                            <div className="absolute bottom-5 left-5 right-5">
-                                <h3 className="text-white font-black uppercase tracking-tight text-2xl md:text-3xl mb-2">{proj.name}</h3>
-                                <p className="text-zinc-300 text-xs leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 max-w-[300px]">{proj.desc}</p>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </section>
-    );
-};
-
 // ── CountUp helper ──
-const CountUp = ({ target, visible }) => {
+const CountUp = ({ target, visible, prefix = '', suffix = '' }) => {
     const [val, setVal] = useState(0);
     useEffect(() => {
         if (!visible) return;
@@ -674,10 +622,10 @@ const CountUp = ({ target, visible }) => {
         };
         requestAnimationFrame(step);
     }, [visible, target]);
-    return <span>{val}%</span>;
+    return <span>{prefix}{val}{suffix}</span>;
 };
 
-// ── Case Study Stats ──
+// ── Featured Case Study — Point 1 Displays ──
 const CaseStudy = () => {
     const ref = useRef(null);
     const [visible, setVisible] = useState(false);
@@ -691,39 +639,45 @@ const CaseStudy = () => {
     }, []);
 
     const stats = [
-        { value: 72, label: 'Qualified Conversions' },
-        { value: 94, label: 'User Satisfaction' },
-        { value: 43, label: 'Bounce Reduction' },
+        { value: 500, prefix: '~$', label: 'Saved per caught spec error' },
+        { value: 17, label: 'Company standards in the knowledge base' },
+        { value: 8, label: 'Categories scored on every review' },
     ];
 
     return (
-        <section ref={ref} className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/5">
+        <section id="case-study" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/5">
             <div className="max-w-[1400px] mx-auto px-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
                         <div className="mb-6"><SectionLabel>Featured Case Study</SectionLabel></div>
                         <h3 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-8 leading-[1.05]">
-                            We helped DigiTech Finance rebuild their digital experience and modernize their product storytelling.
+                            Point 1 Displays lost their pre-production designer. We replaced the review step with AI.
                         </h3>
-                        <p className="text-zinc-400 text-base leading-relaxed mb-10 italic border-l-2 border-amber-500 pl-6">
-                            "Partnering on this redesign changed how people experience our platform. Our engagement numbers skyrocketed, and the product finally feels as premium as it truly is."
+                        <p className="text-zinc-400 text-base leading-relaxed mb-6 max-w-xl">
+                            The Montreal display manufacturer had a costly gap: every spec error that slipped into production burned roughly $500 &mdash; worst case $2,000. We ingested 17 of their real production standards &mdash; FEFCO codes, digital print guidelines, press specs, Kongsberg tooling rules &mdash; and built a reviewer that grades every incoming spec before the floor ever sees it.
                         </p>
-                        <p className="text-zinc-600 text-xs font-ui uppercase tracking-[0.2em] mb-10">&mdash; Head of Product, DigiTech Finance</p>
+                        <p className="text-zinc-400 text-base leading-relaxed mb-10 italic border-l-2 border-amber-500 pl-6">
+                            No mailbox access. No workflow disruption. A spec goes in; a cited, client-presentable verdict comes out.
+                        </p>
                         <div className="grid grid-cols-3 gap-4 border-t border-white/10 pt-10">
                             {stats.map((stat, i) => (
                                 <div key={i}>
-                                    <div className="text-3xl md:text-5xl font-bold text-white tracking-tight"><CountUp target={stat.value} visible={visible} /></div>
+                                    <div className="text-3xl md:text-5xl font-bold text-white tracking-tight"><CountUp target={stat.value} visible={visible} prefix={stat.prefix || ''} /></div>
                                     <div className="text-zinc-500 text-[10px] mt-3 font-ui uppercase tracking-[0.2em]">{stat.label}</div>
                                 </div>
                             ))}
                         </div>
                     </div>
                     <div className="relative aspect-square overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=60" alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover grayscale" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
+                        <img src="https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=900&q=60" alt="Corrugated packaging production" loading="lazy" className="absolute inset-0 w-full h-full object-cover grayscale" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent" />
+                        <div className="absolute top-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
+                            <span>// FLAGSHIP DEPLOYMENT</span>
+                            <span>2026</span>
+                        </div>
                         <div className="absolute bottom-6 left-6 right-6">
-                            <span className="text-[10px] font-ui uppercase tracking-[0.25em] text-amber-500">DIGITECH FINANCE</span>
-                            <h4 className="text-white font-black text-3xl md:text-4xl mt-2 tracking-tight">FINANCIAL PRODUCT REDESIGN</h4>
+                            <span className="text-[10px] font-ui uppercase tracking-[0.25em] text-amber-500">POINT 1 DISPLAYS &mdash; MONTREAL</span>
+                            <h4 className="text-white font-black text-3xl md:text-4xl mt-2 tracking-tight uppercase">Spec Reviewer in Production</h4>
                         </div>
                     </div>
                 </div>
@@ -732,44 +686,24 @@ const CaseStudy = () => {
     );
 };
 
-// ── Testimonials ──
+// ── Testimonial ──
 const Testimonials = () => {
-    const [active, setActive] = useState(0);
-    const testimonials = [
-        { num: '01', title: "The first person I call for an urgent handoff.", quote: "When a client project needed an urgent handoff, Hendrik was the first person I called. He got up to speed fast, took the meeting, and delivered with confidence. Honestly, his technical depth made him a better fit than I would have been. That is the kind of partner you want in your corner.", name: 'Evan Gutman', role: 'Evitas AI', logo: '/evitas-ai-logo-white.png' },
-        { num: '02', title: "They didn't sell hype — they built results.", quote: "We came in with vague ideas and left with a working AI system that cut our support workload in half. The clarity, speed, and execution were outstanding.", name: 'Jason W.', role: 'SaaS Founder' },
-    ];
-
-    useEffect(() => {
-        const timer = setInterval(() => setActive(prev => (prev + 1) % testimonials.length), 6000);
-        return () => clearInterval(timer);
-    }, []);
-
-    const t = testimonials[active];
+    const t = { title: "The first person I call for an urgent handoff.", quote: "When a client project needed an urgent handoff, Hendrik was the first person I called. He got up to speed fast, took the meeting, and delivered with confidence. Honestly, his technical depth made him a better fit than I would have been. That is the kind of partner you want in your corner.", name: 'Evan Gutman', role: 'Evitas AI', logo: '/evitas-ai-logo-white.png' };
 
     return (
         <section className="py-24 md:py-40 relative overflow-hidden">
             <SectionGrid />
             <div className="max-w-5xl mx-auto px-6 relative z-10">
-                <div className="mb-10"><SectionLabel>Client Voices</SectionLabel></div>
+                <div className="mb-10"><SectionLabel>Peer Voices</SectionLabel></div>
 
-                <div className="flex gap-2 mb-16">
-                    {testimonials.map((_, i) => (
-                        <button key={i} onClick={() => setActive(i)}
-                            className={`h-[2px] transition-all relative ${i === active ? 'w-20 bg-amber-500' : 'w-10 bg-zinc-800'}`}>
-                            <span className="absolute -inset-x-0 -inset-y-5" />
-                        </button>
-                    ))}
-                </div>
-
-                <div className="min-h-[320px]">
-                    <span className="text-amber-500 font-ui text-xs tracking-[0.3em] mb-6 block">{t.num} / {String(testimonials.length).padStart(2, '0')}</span>
+                <div>
+                    <span className="text-amber-500 font-ui text-6xl md:text-8xl leading-none block mb-8 select-none" aria-hidden="true">&ldquo;</span>
                     <h3 className="text-3xl md:text-5xl font-bold text-white mb-10 tracking-[-0.02em] leading-[1.1] max-w-4xl">{t.title}</h3>
                     <p className="text-zinc-400 text-base md:text-lg leading-relaxed mb-12 max-w-3xl">{t.quote}</p>
                     <div className="flex items-center gap-4 pt-8 border-t border-white/10">
                         <span className="text-white font-bold text-base">{t.name}</span>
                         <span className="text-zinc-600 text-sm">&mdash; {t.role}</span>
-                        {t.logo && <img src={t.logo} alt={`${t.role} logo`} className="h-5 w-auto ml-2 opacity-90" />}
+                        <img src={t.logo} alt="Evitas AI logo" className="h-5 w-auto ml-2 opacity-90" />
                     </div>
                 </div>
             </div>
@@ -777,9 +711,8 @@ const Testimonials = () => {
     );
 };
 
-// ── Pricing ──
-const Pricing = () => {
-    const [yearly, setYearly] = useState(false);
+// ── Free AI Audit funnel ──
+const FreeAudit = () => {
     const ref = useRef(null);
 
     useEffect(() => {
@@ -792,68 +725,79 @@ const Pricing = () => {
         return () => ctx.revert();
     }, []);
 
+    const auditItems = [
+        'A 30-minute teardown of how your business actually runs',
+        'A map of where hours and money leak out of your workflows',
+        'A shortlist of automations ranked by ROI — not by hype',
+        'A recorded walkthrough that’s yours to keep, either way',
+    ];
+    const buildItems = [
+        'Fixed-price proposal scoped from your audit — no surprise invoices',
+        'Flagship-grade engineering: tested against your real workflows',
+        'Staged delivery with working software every step',
+        'Production monitoring, tuning, and support after launch',
+    ];
+
     return (
-        <section id="pricing" ref={ref} className="py-24 md:py-40 border-y border-white/5">
+        <section id="audit" ref={ref} className="py-24 md:py-40 border-y border-white/5">
             <div className="max-w-[1400px] mx-auto px-6">
-                <div className="mb-8"><SectionLabel>Pricing</SectionLabel></div>
+                <div className="mb-8"><SectionLabel>The Offer</SectionLabel></div>
                 <div className="grid md:grid-cols-2 gap-8 mb-16 items-end">
                     <h2 className="text-4xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05]">
-                        Flexible Pricing for Different <span className="text-zinc-600">Growth Stages</span>
+                        Start with a free audit. <span className="text-zinc-600">Everything else is custom.</span>
                     </h2>
-                    <p className="text-zinc-500 text-sm md:text-base">Choose a model that fits your team and complexity.</p>
-                </div>
-
-                <div className="flex items-center gap-4 mb-12">
-                    <span className={`text-xs font-ui uppercase tracking-[0.2em] ${!yearly ? 'text-white' : 'text-zinc-500'}`}>Monthly</span>
-                    <button onClick={() => setYearly(!yearly)} className="relative w-14 h-10 bg-zinc-900 border border-zinc-700">
-                        <div className={`absolute top-1.5 w-6 h-6 bg-amber-500 transition-transform ${yearly ? 'translate-x-7' : 'translate-x-0.5'}`} />
-                    </button>
-                    <span className={`text-xs font-ui uppercase tracking-[0.2em] ${yearly ? 'text-white' : 'text-zinc-500'}`}>Yearly</span>
-                    {yearly && <span className="text-[10px] text-amber-500 font-bold font-ui uppercase tracking-widest">15% off</span>}
+                    <p className="text-zinc-500 text-sm md:text-base">No pricing tiers, no retainers you don’t need. We find the money first &mdash; then scope the build that captures it.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5">
-                    <div className="price-card p-8 md:p-12 bg-[#0A0A0A]">
-                        <h3 className="text-2xl font-bold text-white mb-3">Strategy Sprint</h3>
-                        <p className="text-zinc-500 text-sm mb-10 max-w-sm">For teams taking AI seriously &mdash; and ready to implement something real.</p>
-                        <div className="flex items-baseline gap-2 mb-10">
-                            <span className="text-zinc-500 text-base">$</span>
-                            <span className="text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight">{yearly ? '3,612' : '4,249'}</span>
-                            <span className="text-zinc-500 text-xs font-ui uppercase tracking-widest">USD/<br />Project</span>
+                    <div className="price-card p-8 md:p-12 bg-[#0A0A0A] relative">
+                        <div className="absolute top-6 right-6 flex items-center gap-2 px-3 py-1 border border-amber-500/60 text-amber-500 text-[10px] font-bold font-ui uppercase tracking-[0.2em]">
+                            <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
+                            3 slots / month
                         </div>
-                        <a href="#contact" className="block text-center w-full px-6 py-4 border border-zinc-700 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors mb-10">
-                            Pay Now
+                        <h3 className="text-2xl font-bold text-white mb-3">Free AI Audit</h3>
+                        <p className="text-zinc-500 text-sm mb-10 max-w-sm">For operators who suspect they’re bleeding hours &mdash; and want receipts before spending a dollar.</p>
+                        <div className="flex items-baseline gap-3 mb-10">
+                            <span className="text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight">$0</span>
+                            <span className="text-zinc-500 text-xs font-ui uppercase tracking-widest">No pitch.<br />No obligation.</span>
+                        </div>
+                        <a href="#contact" className="block text-center w-full px-6 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4">
+                            Claim an Audit Slot
                         </a>
+                        <button onClick={() => document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })} className="block text-center w-full px-6 py-4 border border-zinc-700 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors mb-10">
+                            Or Book It By Voice
+                        </button>
                         <ul className="space-y-4">
-                            {['Brand & workflow discovery', 'Strategic AI use-case definition', 'Technical feasibility assessment', 'System architecture planning', 'Risk, compliance & reliability considerations', 'Clear roadmap & execution blueprint', 'Implementation recommendations'].map((item, i) => (
+                            {auditItems.map((item, i) => (
                                 <li key={i} className="flex items-start gap-4 text-zinc-400 text-sm">
                                     <div className="w-1 h-1 bg-amber-500 mt-2.5 flex-shrink-0" />
                                     {item}
                                 </li>
                             ))}
                         </ul>
+                        <p className="text-zinc-600 text-xs mt-10 pt-6 border-t border-white/10">If we can’t find you real savings, we say so &mdash; and you keep the audit.</p>
                     </div>
 
                     <div className="price-card p-8 md:p-12 bg-white text-black relative">
-                        <div className="absolute top-6 right-6 px-3 py-1 bg-amber-500 text-black text-[10px] font-bold font-ui uppercase tracking-[0.2em]">Popular</div>
-                        <h3 className="text-2xl font-bold mb-3">Build & Implementation</h3>
-                        <p className="text-zinc-600 text-sm mb-10 max-w-sm">For companies moving from strategy to working AI systems.</p>
-                        <div className="flex items-baseline gap-2 mb-10">
-                            <span className="text-zinc-500 text-base">$</span>
-                            <span className="text-6xl md:text-7xl font-black tracking-tight">{yearly ? '15,894' : '18,699'}</span>
-                            <span className="text-zinc-500 text-xs font-ui uppercase tracking-widest">USD/<br />Project</span>
+                        <div className="absolute top-6 right-6 px-3 py-1 bg-black text-white text-[10px] font-bold font-ui uppercase tracking-[0.2em]">After the audit</div>
+                        <h3 className="text-2xl font-bold mb-3">Custom Builds</h3>
+                        <p className="text-zinc-600 text-sm mb-10 max-w-sm">For companies ready to turn the audit’s findings into working systems.</p>
+                        <div className="flex items-baseline gap-3 mb-10">
+                            <span className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">Custom</span>
+                            <span className="text-zinc-500 text-xs font-ui uppercase tracking-widest">Scoped to<br />your operation</span>
                         </div>
                         <a href="#contact" className="block text-center w-full px-6 py-4 bg-black text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-zinc-900 transition-colors mb-10">
-                            Reach Us
+                            Talk To Us
                         </a>
                         <ul className="space-y-4">
-                            {['Full AI system design', 'Development & engineering', 'Workflow & data integration', 'Testing, deployment & optimization', 'Performance measurement', 'On-ground support & iteration', 'Guaranteed, production-ready delivery'].map((item, i) => (
+                            {buildItems.map((item, i) => (
                                 <li key={i} className="flex items-start gap-4 text-zinc-600 text-sm">
                                     <div className="w-1 h-1 bg-amber-500 mt-2.5 flex-shrink-0" />
                                     {item}
                                 </li>
                             ))}
                         </ul>
+                        <p className="text-zinc-500 text-xs mt-10 pt-6 border-t border-black/10">Every engagement starts with the free audit. That’s the whole funnel.</p>
                     </div>
                 </div>
             </div>
@@ -889,7 +833,7 @@ const WhyUs = () => {
                         Why<br />Us?
                     </h2>
                     <p className="why-el text-zinc-400 text-sm md:text-base leading-relaxed mb-12 max-w-lg">
-                        From architecture to deployment, we focus on building AI solutions that are dependable, scalable, and genuinely transformative &mdash; not experimental toys.
+                        Most agencies sell you a deck and hand the build to whoever's free. Here, the person who scopes your system is the person who ships it &mdash; grounded in your real workflows, measured in dollars saved, running in production. Not experimental toys.
                     </p>
                     <div className="why-el flex flex-wrap gap-2">
                         {attributes.map(attr => (
@@ -913,7 +857,7 @@ const WhyUs = () => {
     );
 };
 
-// ── Meet The Team ──
+// ── The Operator ──
 const Team = () => {
     const ref = useRef(null);
 
@@ -921,50 +865,55 @@ const Team = () => {
         const ctx = gsap.context(() => {
             gsap.from('.team-card', {
                 scrollTrigger: { trigger: ref.current, start: 'top 65%' },
-                y: 60, opacity: 0, duration: 0.9, stagger: 0.1, ease: 'power3.out'
+                y: 60, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out'
             });
         }, ref);
         return () => ctx.revert();
     }, []);
 
-    const members = [
-        { name: 'Hendrik', role: 'Founder & CEO', quote: '"Building AI systems that actually ship and deliver results."', img: '/Hendrik.jpg' },
-        { name: 'Alex Chen', role: 'Lead ML Engineer', quote: '"If it can be automated, it should be automated. Humans deserve better work."', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=60' },
-        { name: 'Sarah Kim', role: 'AI Product Designer', quote: '"Great AI feels invisible — it just works."', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=60' },
+    const crew = [
+        { role: 'Research Agents', desc: 'Sweep docs, codebases, and markets before a single line is scoped.' },
+        { role: 'Build Agents', desc: 'Parallel implementation tracks, running around the clock.' },
+        { role: 'Review Loops', desc: 'Adversarial QA passes on everything before it reaches you.' },
     ];
 
     return (
         <section id="team" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A] relative overflow-hidden">
             <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
-                <div className="mb-8"><SectionLabel>Meet The Team</SectionLabel></div>
-                <h2 className="text-5xl md:text-8xl lg:text-[10rem] font-display text-white tracking-tight leading-[0.85] uppercase mb-20">
-                    Builders,<br />Engineers, and<br />Problem-Solvers First
+                <div className="mb-8"><SectionLabel>The Operator</SectionLabel></div>
+                <h2 className="text-5xl md:text-8xl lg:text-[9rem] font-display text-white tracking-tight leading-[0.85] uppercase mb-20">
+                    One Founder.<br />A Fleet of Agents.
                 </h2>
 
-                <div className="flex flex-col md:flex-row gap-6 items-end justify-center">
-                    {members.map((m, i) => {
-                        const isCenter = i === 0;
-                        return (
-                        <div key={i} className={`team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden ${isCenter ? 'md:w-[38%] md:order-2' : 'md:w-[28%]'} ${i === 1 ? 'md:order-1' : ''} ${i === 2 ? 'md:order-3' : ''}`}>
-                            <div className={`relative overflow-hidden ${isCenter ? 'aspect-[3/4]' : 'aspect-[3/4] md:aspect-[2/3]'}`}>
-                                <img src={m.img} alt={m.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
-                                <div className="absolute bottom-5 left-5 right-5">
-                                    <p className={`text-white font-bold ${isCenter ? 'text-xl' : 'text-base'}`}>{m.name}</p>
-                                    <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">{m.role}</p>
-                                    <p className="text-zinc-300 text-xs mt-2 leading-relaxed italic opacity-0 group-hover:opacity-100 transition-opacity duration-500">{m.quote}</p>
-                                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+                    <div className="team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden">
+                        <div className="relative aspect-[3/4] lg:aspect-auto lg:h-full overflow-hidden min-h-[420px]">
+                            <img src="/Hendrik.jpg" alt="Hendrik, founder of Corefix" loading="lazy" className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-700" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
+                            <div className="absolute bottom-6 left-6 right-6">
+                                <p className="text-white font-bold text-2xl">Hendrik</p>
+                                <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">Founder &mdash; scopes it, builds it, ships it</p>
                             </div>
                         </div>
-                        );
-                    })}
-                </div>
+                    </div>
 
-                <div className="mt-16 text-center">
-                    <CornerButton href="#contact">
-                        About Us <ArrowUpRight size={14} />
-                    </CornerButton>
+                    <div className="flex flex-col gap-6">
+                        <div className="team-card p-8 md:p-10 bg-[#0A0A0A] border border-white/10 flex-1">
+                            <p className="text-zinc-300 text-base md:text-lg leading-relaxed">
+                                No account managers, no hand-offs, no junior devs learning on your dime. The person who takes your first call is the person who architects, builds, and stands behind the system. Behind him: an orchestrated fleet of AI agents doing the heavy lifting &mdash; the same capability Corefix sells, applied to itself.
+                            </p>
+                        </div>
+                        {crew.map((c, i) => (
+                            <div key={i} className="team-card p-6 md:p-8 bg-[#0A0A0A] border border-white/10 flex items-start gap-6 group hover:border-amber-500 transition-colors">
+                                <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500 mt-1">{String(i + 1).padStart(2, '0')}</span>
+                                <div>
+                                    <h3 className="text-white font-bold text-lg mb-1">{c.role}</h3>
+                                    <p className="text-zinc-500 text-sm leading-relaxed">{c.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>
@@ -975,12 +924,12 @@ const Team = () => {
 const FAQ = () => {
     const [open, setOpen] = useState(null);
     const faqs = [
-        { q: 'Do you build real AI systems or just proofs of concept?', a: 'We build production-ready systems. Every project is designed to ship, integrate with your workflows, and deliver measurable business outcomes from day one.' },
-        { q: 'What types of companies do you typically work with?', a: 'We work with startups, scale-ups, and established businesses across SaaS, fintech, healthcare, and e-commerce that are ready to implement AI strategically.' },
-        { q: "What's your usual engagement timeline?", a: 'Strategy sprints take 2-4 weeks. Full build and implementation projects typically run 8-16 weeks depending on complexity.' },
-        { q: 'Do you handle everything end-to-end?', a: 'Yes. From initial strategy and system design through development, testing, deployment, and ongoing optimization.' },
-        { q: 'Can you work with our internal team?', a: 'Absolutely. We integrate seamlessly with your existing engineering and product teams, providing expertise where you need it most.' },
-        { q: "What if we're not sure what to build yet?", a: "That's exactly what our Strategy Sprint is for. We help you identify the highest-impact AI opportunities and build a clear execution roadmap." },
+        { q: 'What exactly happens in the free AI audit?', a: 'A 30-minute call where we tear down how your business runs, map where hours and money leak out, and shortlist automations by ROI. You get a recorded walkthrough either way. Three slots per month — that’s all one person can do properly.' },
+        { q: 'Why is there no pricing on this site?', a: 'Because every build is scoped from your audit, not from a menu. You get a fixed-price proposal before any work starts — no hourly billing, no surprise invoices.' },
+        { q: 'Is the Spec Reviewer only for display manufacturers?', a: 'It was built for print, packaging, and display production — but the pattern (grade incoming documents against your own standards, cite every flag) transfers to any industry that bleeds money on non-conformant paperwork.' },
+        { q: 'Is the voice agent on this page real?', a: 'Yes — it’s a live agent, not a recording. It checks the real calendar and books real meetings. It’s also exactly what we’d build for your business.' },
+        { q: 'Do you work under NDA?', a: 'Yes. Client engagements run under NDA by default, which is also why we describe some work in general terms.' },
+        { q: 'Who actually does the work?', a: 'Hendrik — the founder — scopes, builds, and ships every engagement personally, with an orchestrated fleet of AI agents doing the heavy lifting. No hand-offs to a junior team.' },
     ];
 
     return (
@@ -1033,56 +982,6 @@ const FAQ = () => {
     );
 };
 
-// ── Articles ──
-const Articles = () => {
-    const ref = useRef(null);
-    const articles = [
-        { title: 'The Foundation of AI: Why Your Knowledge Base is Your Competitive Advantage', desc: 'Learn how to solve the "messy data" problem and build a centralized AI knowledge system.', date: 'JAN 2026', read: '4 MIN READ', img: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=60' },
-        { title: 'The Ethical AI Roadmap: Building Trust in an Automated World', desc: 'Navigate the ethical landscape of AI — from data privacy to bias mitigation.', date: 'DEC 2025', read: '10 MIN READ', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=60' },
-        { title: 'The Crystal Ball: Using AI Simulation to De-Risk Your 2026 Strategy', desc: 'How AI digital twins and predictive simulation help business leaders plan ahead.', date: 'DEC 2025', read: '8 MIN READ', img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=60' },
-    ];
-
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            gsap.from('.article-card', {
-                scrollTrigger: { trigger: ref.current, start: 'top 70%' },
-                y: 50, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out'
-            });
-        }, ref);
-        return () => ctx.revert();
-    }, []);
-
-    return (
-        <section ref={ref} className="py-24 md:py-32">
-            <div className="max-w-[1400px] mx-auto px-6">
-                <div className="mb-8"><SectionLabel>Articles</SectionLabel></div>
-                <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-16 leading-[1.05]">
-                    Insights & <span className="text-zinc-600">Field Notes</span>
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5">
-                    {articles.map((a, i) => (
-                        <a key={i} href="#" className="article-card group block bg-[#0A0A0A] hover:bg-[#111] transition-colors p-4">
-                            <div className="relative aspect-[4/5] overflow-hidden mb-5">
-                                <img src={a.img} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/30 to-transparent" />
-                            </div>
-                            <div className="px-2 pb-2">
-                                <div className="flex items-center gap-3 text-zinc-600 text-[10px] font-ui uppercase tracking-[0.2em] mb-4">
-                                    <span>{a.date}</span>
-                                    <span className="w-1 h-1 bg-zinc-700" />
-                                    <span>{a.read}</span>
-                                </div>
-                                <h3 className="text-white font-bold text-base md:text-lg leading-snug mb-3">{a.title}</h3>
-                                <p className="text-zinc-500 text-sm leading-relaxed">{a.desc}</p>
-                            </div>
-                        </a>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-};
-
 // ── Contact ──
 const Contact = () => {
     const ref = useRef(null);
@@ -1106,8 +1005,9 @@ const Contact = () => {
             name: form.name.value,
             email: form.email.value,
             company: form.company.value,
+            interest: form.interest.value,
             message: form.message.value,
-            _subject: 'New inquiry from corefix.app',
+            _subject: `[${form.interest.value}] New inquiry from corefix.app`,
         };
         try {
             const res = await fetch('https://formsubmit.co/ajax/hendrik@corefix.app', {
@@ -1154,6 +1054,16 @@ const Contact = () => {
                         <input type="text" name="name" required placeholder="Name" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
                         <input type="email" name="email" required placeholder="Work Email" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
                         <input type="text" name="company" placeholder="Company" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                        <div className="relative">
+                            <select name="interest" defaultValue="Free AI Audit" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm focus:border-zinc-500 focus:outline-none transition-colors appearance-none cursor-pointer">
+                                <option>Free AI Audit</option>
+                                <option>Spec Reviewer</option>
+                                <option>Voice Agent</option>
+                                <option>Custom Build</option>
+                                <option>Something Else</option>
+                            </select>
+                            <ChevronRight size={14} className="absolute right-5 top-1/2 -translate-y-1/2 rotate-90 text-zinc-500 pointer-events-none" />
+                        </div>
                         <textarea name="message" required placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors resize-none" />
                         <button type="submit" disabled={status === 'sending'} className="w-full px-8 py-6 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.3em] hover:bg-amber-500 transition-colors flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed">
                             {status === 'sending' ? 'Sending...' : 'Submit'} {status !== 'sending' && <ArrowUpRight size={16} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />}
@@ -1195,7 +1105,7 @@ const Footer = () => (
 
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
-                    {[['Home', '#'], ['Services', '#services'], ['Process', '#process'], ['Case Studies', '#works'], ['Pricing', '#pricing']].map(([link, href]) => (
+                    {[['Home', '#'], ['Flagship', '#flagship'], ['Bolt-Ons', '#services'], ['Case Study', '#case-study'], ['Free Audit', '#audit']].map(([link, href]) => (
                         <a key={link} href={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
                     ))}
                 </div>
@@ -1254,17 +1164,17 @@ function App() {
             <Navbar />
             <Hero />
             <LogoMarquee />
+            <Flagship />
             <Services />
             <Capabilities />
             <Process />
-            <Works />
             <CaseStudy />
             <Testimonials />
-            <Pricing />
+            <VoiceSection />
+            <FreeAudit />
             <WhyUs />
             <Team />
             <FAQ />
-            <Articles />
             <Contact />
             <Footer />
         </div>

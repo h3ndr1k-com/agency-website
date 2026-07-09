@@ -16,6 +16,7 @@
     "vite": "^7.3.1"
   },
   "dependencies": {
+    "@calcom/embed-react": "^1.5.3",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@vapi-ai/web": "^2.6.1",

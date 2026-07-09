@@ -2,12 +2,16 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ChevronRight, ArrowUpRight } from 'lucide-react';
+import { ChevronRight, ArrowUpRight, RotateCw } from 'lucide-react';
 import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent, AnimatePresence } from 'framer-motion';
+import Cal, { getCalApi } from '@calcom/embed-react';
 import Flagship from './Flagship.jsx';
 import VoiceSection from './VoiceSection.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const CAL_LINK = 'corefix/intro-call';
+const CAL_URL = 'https://cal.com/corefix/intro-call';
 
 // ── Section Grid (decorative background grid for sections) ──
 const gridLineColor = 'rgba(255,255,255,0.05)';
@@ -48,8 +52,10 @@ const CornerButton = ({ href, children, filled, className = '' }) => {
     const base = filled
         ? 'bg-white text-black hover:bg-amber-500'
         : 'bg-black/40 backdrop-blur-sm text-white border border-white/60 hover:bg-white hover:text-black';
+    const external = typeof href === 'string' && href.startsWith('http');
+    const extProps = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
     return (
-        <a href={href} className={`relative inline-flex items-center gap-3 px-7 py-4 font-bold text-[11px] font-ui uppercase tracking-[0.2em] transition-all duration-200 group ${base} ${className}`}>
+        <a href={href} {...extProps} className={`relative inline-flex items-center gap-3 px-7 py-4 font-bold text-[11px] font-ui uppercase tracking-[0.2em] transition-all duration-200 group ${base} ${className}`}>
             <span className="absolute -top-[3px] -left-[3px] w-3 h-3 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
             <span className="absolute -bottom-[3px] -right-[3px] w-3 h-3 border-b-2 border-r-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
             {children}
@@ -84,16 +90,13 @@ const Navbar = () => {
                     COREFIX&reg;
                 </a>
                 <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
-                    <a href="#flagship" className="hover:text-white transition-colors">Flagship</a>
-                    <a href="#services" className="hover:text-white transition-colors">Bolt-Ons</a>
-                    <a href="#process" className="hover:text-white transition-colors">Process</a>
-                    <a href="#voice-demo" className="hover:text-white transition-colors">Live Demo</a>
-                    <a href="#audit" className="hover:text-amber-500 text-amber-500/90 transition-colors">Free Audit</a>
+                    <a href="#services" className="hover:text-white transition-colors">Services</a>
+                    <a href="#team" className="hover:text-white transition-colors">About</a>
                 </div>
-                <a href="#contact" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
+                <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
                     <span className="absolute -top-[2px] -left-[2px] w-2.5 h-2.5 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     <span className="absolute -bottom-[2px] -right-[2px] w-2.5 h-2.5 border-b-2 border-r-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                    Talk To Us
+                    Let&apos;s Talk
                 </a>
                 <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-white">
                     <div className="flex flex-col gap-1.5">
@@ -105,9 +108,10 @@ const Navbar = () => {
             </div>
             {menuOpen && (
                 <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/5 px-6 py-8 flex flex-col gap-6">
-                    {[['Flagship', '#flagship'], ['Bolt-Ons', '#services'], ['Process', '#process'], ['Live Demo', '#voice-demo'], ['Free Audit', '#audit'], ['Contact', '#contact']].map(([item, href]) => (
+                    {[['Services', '#services'], ['About', '#team']].map(([item, href]) => (
                         <a key={item} href={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</a>
                     ))}
+                    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="text-amber-500 text-lg font-ui uppercase tracking-widest hover:text-white">Let&apos;s Talk</a>
                 </div>
             )}
         </nav>
@@ -126,7 +130,12 @@ const Hero = () => {
         return () => ctx.revert();
     }, []);
 
-    const tags = ['Spec Intelligence', 'Voice Agents', 'Workflow Automation', 'AI Strategy'];
+    const tags = [
+        { label: 'AI Strategy', href: '/services/ai-strategy', route: true },
+        { label: 'Custom Agents', href: '#voice-demo' },
+        { label: 'Spec Reviewer', href: '#flagship' },
+        { label: 'Automation', href: '#services' },
+    ];
 
     return (
         <section ref={ref} className="relative min-h-screen flex flex-col justify-end pb-12 md:pb-20 overflow-hidden pt-32">
@@ -139,23 +148,25 @@ const Hero = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0A0A]/30 to-[#0A0A0A] z-10 pointer-events-none" />
             <GridOverlay />
 
-            {/* Tags in top-right sky area */}
+            {/* Tags in top-right sky area — clickable */}
             <div className="absolute top-40 md:top-52 right-6 md:right-[calc((100%-1400px)/2+24px)] z-40">
                 <div className="hero-el flex flex-col gap-2 items-end">
-                    {tags.map(tag => (
-                        <span key={tag} className="px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/20 bg-black/30 backdrop-blur-sm">
-                            {tag}
-                        </span>
-                    ))}
+                    {tags.map(tag => {
+                        const cls = 'group/tag inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/20 bg-black/30 backdrop-blur-sm hover:border-amber-500 hover:text-white transition-colors';
+                        const inner = (<>{tag.label}<ArrowUpRight size={11} className="opacity-0 group-hover/tag:opacity-100 transition-opacity" /></>);
+                        return tag.route
+                            ? <Link key={tag.label} to={tag.href} className={cls}>{inner}</Link>
+                            : <a key={tag.label} href={tag.href} className={cls}>{inner}</a>;
+                    })}
                 </div>
             </div>
 
             {/* Hero heading — sits ABOVE the grid */}
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
                 <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase" style={{ WebkitTextStroke: '0' }}>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white">We Build</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white">AI Systems</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-zinc-500">For Businesses</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white">Your AI</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white">Growth</span></span>
+                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-zinc-500">Partner</span></span>
                 </h1>
             </div>
 
@@ -166,10 +177,10 @@ const Hero = () => {
                     </p>
                     <div className="hero-el flex justify-end gap-3 flex-wrap">
                         <CornerButton href="#flagship">
-                            The Flagship <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                            See the Work <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                         </CornerButton>
-                        <CornerButton href="#audit" filled>
-                            Free AI Audit <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                        <CornerButton href={CAL_URL} filled className="text-[13px] px-9 py-5">
+                            Let&apos;s Talk <ArrowUpRight size={15} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                         </CornerButton>
                     </div>
                 </div>
@@ -283,8 +294,8 @@ const Services = () => {
 
                 <div className="mt-12 p-8 md:p-12 bg-[#111] border border-white/40 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
                     <p className="text-zinc-200 text-base md:text-lg max-w-2xl">Start with a conversation. Tell us about your business, your goals, and the problems you want solved.</p>
-                    <CornerButton href="#contact" filled className="whitespace-nowrap">
-                        Talk To Us <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+                    <CornerButton href={CAL_URL} filled className="whitespace-nowrap">
+                        Let&apos;s Talk <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                     </CornerButton>
                 </div>
             </div>
@@ -320,19 +331,25 @@ const KnobDisplay = ({ value }) => {
 // ── Capabilities (Reactor Knob + Cave Image) ──
 const Capabilities = () => {
     const capabilities = [
-        'Conversational AI & Chatbots', 'Customer Support Automation', 'Voice & Call Agents',
-        'Internal Ops & Admin Automation', 'Document & Data Intelligence', 'API & Tool Integrations',
-        'Sales & Lead Qualification Agents', 'Fine-tuned LLM Systems'
+        { label: 'Conversational AI & Chatbots', href: '#voice-demo' },
+        { label: 'Customer Support Automation', href: '#services' },
+        { label: 'Voice & Call Agents', href: '#voice-demo' },
+        { label: 'Internal Ops & Admin Automation', href: '#services' },
+        { label: 'Document & Data Intelligence', href: '#flagship' },
+        { label: 'API & Tool Integrations', href: '#services' },
+        { label: 'Sales & Lead Qualification Agents', href: '#voice-demo' },
+        { label: 'Fine-tuned LLM Systems', href: '#services' },
     ];
 
     const MIN_DEG = -135;
     const MAX_DEG = 135;
+    const MID_DEG = 0; // midpoint = 50%
     const TOTAL_TICKS = 40;
     const DEGREES_PER_TICK = (MAX_DEG - MIN_DEG) / TOTAL_TICKS;
 
     const [isDragging, setIsDragging] = useState(false);
-    const rawRotation = useMotionValue(MIN_DEG);
-    const snappedRotation = useMotionValue(MIN_DEG);
+    const rawRotation = useMotionValue(MID_DEG);
+    const snappedRotation = useMotionValue(MID_DEG);
     const smoothRotation = useSpring(snappedRotation, { stiffness: 400, damping: 35, mass: 0.8 });
     const displayValue = useTransform(smoothRotation, [MIN_DEG, MAX_DEG], [0, 100]);
     const lightOpacity = useTransform(rawRotation, [MIN_DEG, MAX_DEG], [0.02, 0.35]);
@@ -374,10 +391,23 @@ const Capabilities = () => {
 
     const ticks = Array.from({ length: TOTAL_TICKS + 1 });
 
-    const [revealCount, setRevealCount] = useState(0);
+    // Start half-revealed (knob sits at 50%); a one-time nudge hints it's draggable.
+    const [revealCount, setRevealCount] = useState(Math.floor(capabilities.length / 2));
     useMotionValueEvent(displayValue, 'change', (v) => {
-        setRevealCount(Math.floor((v / 100) * capabilities.length));
+        setRevealCount(Math.round((v / 100) * capabilities.length));
     });
+
+    useEffect(() => {
+        if (isDragging) return;
+        const t = setTimeout(() => {
+            const nudge = MID_DEG + DEGREES_PER_TICK * 2;
+            snappedRotation.set(nudge);
+            setTimeout(() => snappedRotation.set(MID_DEG), 420);
+        }, 1400);
+        return () => clearTimeout(t);
+        // one-shot on mount
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const capPositions = [
         { top: '15%', left: '8%' },
@@ -408,23 +438,28 @@ const Capabilities = () => {
                     <SectionLabel>AI Capabilities</SectionLabel>
                 </div>
 
-                {/* Floating capability labels scattered over image */}
-                {capabilities.map((cap, i) => (
-                    <div
-                        key={i}
-                        className="absolute z-20 pointer-events-none transition-all duration-700 ease-out hidden lg:block"
-                        style={{
-                            ...capPositions[i],
-                            opacity: i < revealCount ? 1 : 0,
-                            transform: i < revealCount ? 'scale(1)' : 'scale(0.8)',
-                        }}
-                    >
-                        <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-sm border border-white/20 text-white text-[10px] md:text-xs font-ui uppercase tracking-[0.15em]">
-                            <span className="w-1.5 h-1.5 bg-amber-500 flex-shrink-0" />
-                            {cap}
-                        </span>
-                    </div>
-                ))}
+                {/* Floating capability labels scattered over image — clickable */}
+                {capabilities.map((cap, i) => {
+                    const shown = i < revealCount;
+                    return (
+                        <div
+                            key={i}
+                            className="absolute z-20 transition-all duration-700 ease-out hidden lg:block"
+                            style={{
+                                ...capPositions[i],
+                                opacity: shown ? 1 : 0,
+                                transform: shown ? 'scale(1)' : 'scale(0.8)',
+                                pointerEvents: shown ? 'auto' : 'none',
+                            }}
+                        >
+                            <a href={cap.href} className="group/cap inline-flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-sm border border-white/20 hover:border-amber-500 text-white text-[10px] md:text-xs font-ui uppercase tracking-[0.15em] transition-colors">
+                                <span className="w-1.5 h-1.5 bg-amber-500 flex-shrink-0" />
+                                {cap.label}
+                                <ArrowUpRight size={11} className="opacity-0 group-hover/cap:opacity-100 transition-opacity" />
+                            </a>
+                        </div>
+                    );
+                })}
 
                 {/* Reactor Knob centered over image */}
                 <div className="absolute inset-0 flex items-center justify-center z-10">
@@ -469,7 +504,10 @@ const Capabilities = () => {
 
                         {/* Digital readout */}
                         <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none">
-                            <span className="text-[10px] text-zinc-400 font-ui tracking-[0.2em] mb-2 animate-pulse">SPIN ME</span>
+                            <span className="inline-flex items-center gap-1.5 text-[10px] text-amber-500 font-ui tracking-[0.25em] mb-2">
+                                <RotateCw size={12} className="animate-spin" style={{ animationDuration: '3.5s' }} />
+                                DRAG TO SPIN
+                            </span>
                             <span className="text-[9px] text-zinc-600 font-ui tracking-[0.25em] mb-1">OUTPUT</span>
                             <KnobDisplay value={displayValue} />
                         </div>
@@ -486,10 +524,10 @@ const Capabilities = () => {
             <div className="lg:hidden max-w-[1400px] mx-auto px-6 py-12">
                 <div className="grid grid-cols-2 gap-4">
                     {capabilities.map((cap, i) => (
-                        <div key={i} className="flex items-start gap-2">
+                        <a key={i} href={cap.href} className="flex items-start gap-2 group">
                             <div className="w-1.5 h-1.5 bg-amber-500 mt-1.5 flex-shrink-0" />
-                            <span className="text-sm text-zinc-300 font-medium">{cap}</span>
-                        </div>
+                            <span className="text-sm text-zinc-300 font-medium group-hover:text-white transition-colors">{cap.label}</span>
+                        </a>
                     ))}
                 </div>
             </div>
@@ -761,7 +799,7 @@ const FreeAudit = () => {
                             <span className="text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight">$0</span>
                             <span className="text-zinc-500 text-xs font-ui uppercase tracking-widest">No pitch.<br />No obligation.</span>
                         </div>
-                        <a href="#contact" className="block text-center w-full px-6 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4">
+                        <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="block text-center w-full px-6 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4">
                             Claim an Audit Slot
                         </a>
                         <button onClick={() => document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })} className="block text-center w-full px-6 py-4 border border-zinc-700 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors mb-10">
@@ -786,8 +824,8 @@ const FreeAudit = () => {
                             <span className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">Custom</span>
                             <span className="text-zinc-500 text-xs font-ui uppercase tracking-widest">Scoped to<br />your operation</span>
                         </div>
-                        <a href="#contact" className="block text-center w-full px-6 py-4 bg-black text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-zinc-900 transition-colors mb-10">
-                            Talk To Us
+                        <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="block text-center w-full px-6 py-4 bg-black text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-zinc-900 transition-colors mb-10">
+                            Book a Call
                         </a>
                         <ul className="space-y-4">
                             {buildItems.map((item, i) => (
@@ -843,9 +881,9 @@ const WhyUs = () => {
                         ))}
                     </div>
                 </div>
-                <div className="why-img relative">
+                <div className="why-img relative group">
                     <div className="aspect-[3/4] overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=60" alt="" loading="lazy" className="w-full h-full object-cover grayscale contrast-125" />
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=60" alt="" loading="lazy" className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out" />
                     </div>
                     <div className="absolute top-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
                         <span>// IMPACT</span>
@@ -887,9 +925,9 @@ const Team = () => {
                 </h2>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-                    <div className="team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden">
+                    <div className="team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden hover:border-amber-500/60 hover:-translate-y-1 transition-all duration-500">
                         <div className="relative aspect-[3/4] lg:aspect-auto lg:h-full overflow-hidden min-h-[420px]">
-                            <img src="/Hendrik.jpg" alt="Hendrik, founder of Corefix" loading="lazy" className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-700" />
+                            <img src="/Hendrik.jpg" alt="Hendrik, founder of Corefix" loading="lazy" className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out" />
                             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
                             <div className="absolute bottom-6 left-6 right-6">
                                 <p className="text-white font-bold text-2xl">Hendrik</p>
@@ -949,7 +987,7 @@ const FAQ = () => {
                         </div>
                         <div className="mt-10 flex items-center gap-6">
                             <span className="text-white font-display text-2xl md:text-3xl uppercase">Got More Questions?</span>
-                            <CornerButton href="#contact" filled>
+                            <CornerButton href={CAL_URL} filled>
                                 Reach Us
                             </CornerButton>
                         </div>
@@ -982,10 +1020,70 @@ const FAQ = () => {
     );
 };
 
+// ── Articles ──
+const Articles = () => {
+    const ref = useRef(null);
+    const articles = [
+        { title: 'The Foundation of AI: Why Your Knowledge Base is Your Competitive Advantage', desc: 'Learn how to solve the "messy data" problem and build a centralized AI knowledge system.', date: 'JAN 2026', read: '4 MIN READ', img: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=60' },
+        { title: 'The Ethical AI Roadmap: Building Trust in an Automated World', desc: 'Navigate the ethical landscape of AI — from data privacy to bias mitigation.', date: 'DEC 2025', read: '10 MIN READ', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=60' },
+        { title: 'The Crystal Ball: Using AI Simulation to De-Risk Your 2026 Strategy', desc: 'How AI digital twins and predictive simulation help business leaders plan ahead.', date: 'DEC 2025', read: '8 MIN READ', img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=60' },
+    ];
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            gsap.from('.article-card', {
+                scrollTrigger: { trigger: ref.current, start: 'top 70%' },
+                y: 50, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out'
+            });
+        }, ref);
+        return () => ctx.revert();
+    }, []);
+
+    return (
+        <section id="insights" ref={ref} className="py-24 md:py-32">
+            <div className="max-w-[1400px] mx-auto px-6">
+                <div className="mb-8"><SectionLabel>Articles</SectionLabel></div>
+                <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-16 leading-[1.05]">
+                    Insights & <span className="text-zinc-600">Field Notes</span>
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5">
+                    {articles.map((a, i) => (
+                        <a key={i} href="#" className="article-card group block bg-[#0A0A0A] hover:bg-[#111] transition-colors p-4">
+                            <div className="relative aspect-[4/5] overflow-hidden mb-5">
+                                <img src={a.img} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/30 to-transparent" />
+                            </div>
+                            <div className="px-2 pb-2">
+                                <div className="flex items-center gap-3 text-zinc-600 text-[10px] font-ui uppercase tracking-[0.2em] mb-4">
+                                    <span>{a.date}</span>
+                                    <span className="w-1 h-1 bg-zinc-700" />
+                                    <span>{a.read}</span>
+                                </div>
+                                <h3 className="text-white font-bold text-base md:text-lg leading-snug mb-3">{a.title}</h3>
+                                <p className="text-zinc-500 text-sm leading-relaxed">{a.desc}</p>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
 // ── Contact ──
 const Contact = () => {
     const ref = useRef(null);
     const [status, setStatus] = useState('idle');
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            (async () => {
+                const api = await getCalApi({ namespace: 'intro-call' });
+                api('ui', { theme: 'dark', hideEventTypeDetails: false, layout: 'month_view' });
+            })();
+        }, ref);
+        return () => ctx.revert();
+    }, []);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -1029,50 +1127,75 @@ const Contact = () => {
     return (
         <section id="contact" ref={ref} className="py-24 md:py-40 bg-[#0A0A0A] border-y border-white/5 relative overflow-hidden">
             <SectionGrid />
-            <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16 relative z-10">
-                <div>
-                    <div className="contact-el mb-8"><SectionLabel>Talk To Us</SectionLabel></div>
-                    <h2 className="contact-el text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] mb-8 leading-[0.95]">
-                        Tell Us<br />What You Want<br /><span className="text-zinc-600">AI to Fix</span>
-                    </h2>
-                    <p className="contact-el text-zinc-500 text-sm md:text-base max-w-md">Share a bit about your business and we'll come back with a clear, no-fluff plan of attack.</p>
+            <div className="max-w-[1400px] mx-auto px-6 relative z-10">
+                <div className="grid md:grid-cols-2 gap-16 items-start">
+                    <div>
+                        <div className="contact-el mb-8"><SectionLabel>Let&apos;s Talk</SectionLabel></div>
+                        <h2 className="contact-el text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] mb-8 leading-[0.95]">
+                            Book a Call<br /><span className="text-zinc-600">Right Here</span>
+                        </h2>
+                        <p className="contact-el text-zinc-500 text-sm md:text-base max-w-md mb-8">Pick a time and it drops straight onto the calendar &mdash; a 30-minute intro, no pitch. Or let the voice agent above book it for you.</p>
+                        <div className="contact-el flex flex-col gap-3 max-w-xs">
+                            <CornerButton href={CAL_URL} filled className="justify-center">
+                                Open Full Calendar <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+                            </CornerButton>
+                            <a href="mailto:hendrik@corefix.app" className="text-zinc-500 text-xs font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors pl-1">Or email hendrik@corefix.app</a>
+                        </div>
+                    </div>
+
+                    <div className="contact-el border border-white/15 bg-[#0A0A0A] overflow-hidden" style={{ minHeight: 640 }}>
+                        <Cal
+                            namespace="intro-call"
+                            calLink={CAL_LINK}
+                            style={{ width: '100%', height: '100%', minHeight: 640, overflow: 'scroll' }}
+                            config={{ layout: 'month_view', theme: 'dark' }}
+                        />
+                    </div>
                 </div>
 
-                {status === 'success' ? (
-                    <div className="contact-el flex flex-col items-center justify-center text-center p-12 border border-amber-500/30 bg-amber-500/[0.03]">
-                        <div className="w-12 h-12 border-2 border-amber-500 flex items-center justify-center mb-6">
-                            <svg viewBox="0 0 24 24" className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 13l4 4L19 7" /></svg>
-                        </div>
-                        <h3 className="text-2xl font-bold text-white mb-3">Message Sent</h3>
-                        <p className="text-zinc-400 text-sm mb-8">We'll get back to you within 24 hours with a clear plan of attack.</p>
-                        <button onClick={() => setStatus('idle')} className="text-amber-500 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors">
-                            Send Another Message
-                        </button>
+                {/* Secondary — written inquiry */}
+                <div className="mt-20 pt-16 border-t border-white/10 grid md:grid-cols-2 gap-16 items-start">
+                    <div>
+                        <h3 className="contact-el text-2xl md:text-4xl font-bold text-white tracking-[-0.02em] mb-4">Prefer to write?</h3>
+                        <p className="contact-el text-zinc-500 text-sm md:text-base max-w-md">Tell us what you want AI to fix and we&apos;ll come back with a clear, no-fluff plan of attack.</p>
                     </div>
-                ) : (
-                    <form className="contact-el space-y-3" onSubmit={handleSubmit}>
-                        <input type="text" name="name" required placeholder="Name" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
-                        <input type="email" name="email" required placeholder="Work Email" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
-                        <input type="text" name="company" placeholder="Company" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
-                        <div className="relative">
-                            <select name="interest" defaultValue="Free AI Audit" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm focus:border-zinc-500 focus:outline-none transition-colors appearance-none cursor-pointer">
-                                <option>Free AI Audit</option>
-                                <option>Spec Reviewer</option>
-                                <option>Voice Agent</option>
-                                <option>Custom Build</option>
-                                <option>Something Else</option>
-                            </select>
-                            <ChevronRight size={14} className="absolute right-5 top-1/2 -translate-y-1/2 rotate-90 text-zinc-500 pointer-events-none" />
+
+                    {status === 'success' ? (
+                        <div className="contact-el flex flex-col items-center justify-center text-center p-12 border border-amber-500/30 bg-amber-500/[0.03]">
+                            <div className="w-12 h-12 border-2 border-amber-500 flex items-center justify-center mb-6">
+                                <svg viewBox="0 0 24 24" className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <h3 className="text-2xl font-bold text-white mb-3">Message Sent</h3>
+                            <p className="text-zinc-400 text-sm mb-8">We'll get back to you within 24 hours with a clear plan of attack.</p>
+                            <button onClick={() => setStatus('idle')} className="text-amber-500 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors">
+                                Send Another Message
+                            </button>
                         </div>
-                        <textarea name="message" required placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors resize-none" />
-                        <button type="submit" disabled={status === 'sending'} className="w-full px-8 py-6 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.3em] hover:bg-amber-500 transition-colors flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed">
-                            {status === 'sending' ? 'Sending...' : 'Submit'} {status !== 'sending' && <ArrowUpRight size={16} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />}
-                        </button>
-                        {status === 'error' && (
-                            <p className="text-red-400 text-xs font-ui text-center mt-2">Something went wrong. Try again or email hendrik@corefix.app directly.</p>
-                        )}
-                    </form>
-                )}
+                    ) : (
+                        <form className="contact-el space-y-3" onSubmit={handleSubmit}>
+                            <input type="text" name="name" required placeholder="Name" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                            <input type="email" name="email" required placeholder="Work Email" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                            <input type="text" name="company" placeholder="Company" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                            <div className="relative">
+                                <select name="interest" defaultValue="Free AI Audit" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm focus:border-zinc-500 focus:outline-none transition-colors appearance-none cursor-pointer">
+                                    <option>Free AI Audit</option>
+                                    <option>Spec Reviewer</option>
+                                    <option>Voice Agent</option>
+                                    <option>Custom Build</option>
+                                    <option>Something Else</option>
+                                </select>
+                                <ChevronRight size={14} className="absolute right-5 top-1/2 -translate-y-1/2 rotate-90 text-zinc-500 pointer-events-none" />
+                            </div>
+                            <textarea name="message" required placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors resize-none" />
+                            <button type="submit" disabled={status === 'sending'} className="w-full px-8 py-6 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.3em] hover:bg-amber-500 transition-colors flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed">
+                                {status === 'sending' ? 'Sending...' : 'Submit'} {status !== 'sending' && <ArrowUpRight size={16} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />}
+                            </button>
+                            {status === 'error' && (
+                                <p className="text-red-400 text-xs font-ui text-center mt-2">Something went wrong. Try again or email hendrik@corefix.app directly.</p>
+                            )}
+                        </form>
+                    )}
+                </div>
             </div>
         </section>
     );
@@ -1105,9 +1228,10 @@ const Footer = () => (
 
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
-                    {[['Home', '#'], ['Flagship', '#flagship'], ['Bolt-Ons', '#services'], ['Case Study', '#case-study'], ['Free Audit', '#audit']].map(([link, href]) => (
+                    {[['Home', '#'], ['Services', '#services'], ['About', '#team'], ['Insights', '#insights']].map(([link, href]) => (
                         <a key={link} href={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
                     ))}
+                    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="text-amber-500 text-sm hover:text-white transition-colors font-ui uppercase tracking-wider py-2">Let&apos;s Talk</a>
                 </div>
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
@@ -1175,6 +1299,7 @@ function App() {
             <WhyUs />
             <Team />
             <FAQ />
+            <Articles />
             <Contact />
             <Footer />
         </div>

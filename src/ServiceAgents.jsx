@@ -2,11 +2,16 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight, ChevronRight, ArrowLeft, Zap, Mail, Users, BarChart3, Globe, Tv, Pen, MessageSquare, Target, Search } from 'lucide-react';
+import Vapi from '@vapi-ai/web';
+import { ArrowUpRight, ChevronRight, ArrowLeft, Zap, Mail, Users, BarChart3, Globe, Tv, Pen, MessageSquare, Target, Search, Phone, PhoneOff, Mic, MicOff, Loader2, RefreshCw } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { ServiceNavbar, Footer, SectionGrid, BrightGrid, SectionLabel, CornerButton } from './shared';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// ── Vapi Sales Training Bot config ──
+const VAPI_PUBLIC_KEY = '68f1a1e8-2f95-45c6-8843-9c6c1631d231';
+const VAPI_ASSISTANT_ID = 'ebd3810a-cf2f-4c1f-8775-afa76a055a62';
 
 // ── Hero ──
 const AgentsHero = () => {
@@ -263,12 +268,213 @@ const ProductCard = ({ product, index, featured }) => (
     </div>
 );
 
+// ── Sales Training Bot: live in-browser voice demo ──
+const CALL_STATUS = { IDLE: 'idle', CONNECTING: 'connecting', ACTIVE: 'active', ENDED: 'ended', ERROR: 'error' };
+
+const fmtTime = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+
+const SalesTrainingBot = () => {
+    const vapiRef = useRef(null);
+    const timerRef = useRef(null);
+    const transcriptEndRef = useRef(null);
+
+    const [status, setStatus] = useState(CALL_STATUS.IDLE);
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const [muted, setMuted] = useState(false);
+    const [duration, setDuration] = useState(0);
+    const [transcript, setTranscript] = useState([]);
+    const [debrief, setDebrief] = useState(null);
+    const [errorMsg, setErrorMsg] = useState('');
+
+    useEffect(() => () => {
+        clearInterval(timerRef.current);
+        vapiRef.current?.stop();
+    }, []);
+
+    useEffect(() => {
+        transcriptEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, [transcript]);
+
+    const startCall = () => {
+        setErrorMsg('');
+        setTranscript([]);
+        setDebrief(null);
+        setDuration(0);
+        setMuted(false);
+        setStatus(CALL_STATUS.CONNECTING);
+
+        const vapi = new Vapi(VAPI_PUBLIC_KEY);
+        vapiRef.current = vapi;
+
+        vapi.on('call-start', () => {
+            setStatus(CALL_STATUS.ACTIVE);
+            timerRef.current = setInterval(() => setDuration(d => d + 1), 1000);
+        });
+
+        vapi.on('speech-start', () => setIsSpeaking(true));
+        vapi.on('speech-end', () => setIsSpeaking(false));
+
+        vapi.on('message', (message) => {
+            if (message?.type === 'transcript' && message.transcriptType === 'final') {
+                setTranscript(t => [...t, { role: message.role, text: message.transcript }]);
+            }
+            if (message?.type === 'end-of-call-report') {
+                setDebrief(message.analysis || null);
+            }
+        });
+
+        vapi.on('call-end', () => {
+            clearInterval(timerRef.current);
+            setStatus(CALL_STATUS.ENDED);
+        });
+
+        vapi.on('error', (err) => {
+            clearInterval(timerRef.current);
+            setErrorMsg(err?.message || 'Something interrupted the call. Please try again.');
+            setStatus(CALL_STATUS.ERROR);
+        });
+
+        vapi.start(VAPI_ASSISTANT_ID).catch((err) => {
+            clearInterval(timerRef.current);
+            setErrorMsg(err?.message || 'Could not start the call — check microphone permissions and try again.');
+            setStatus(CALL_STATUS.ERROR);
+        });
+    };
+
+    const endCall = () => vapiRef.current?.stop();
+
+    const toggleMute = () => {
+        if (!vapiRef.current) return;
+        const next = !muted;
+        vapiRef.current.setMuted(next);
+        setMuted(next);
+    };
+
+    const userWords = transcript.filter(t => t.role === 'user').reduce((n, t) => n + t.text.trim().split(/\s+/).filter(Boolean).length, 0);
+
+    return (
+        <div className="sales-bot relative border border-amber-500/30 bg-[#0A0A0A] overflow-hidden mb-4">
+            <div className="grid lg:grid-cols-2">
+                {/* ── Left: info / controls / transcript ── */}
+                <div className="p-8 md:p-12 flex flex-col justify-center">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className={`w-2 h-2 ${status === CALL_STATUS.ACTIVE ? 'bg-green-500 animate-pulse' : 'bg-amber-500'}`} />
+                        <span className="text-[10px] font-ui text-zinc-500 tracking-[0.25em] uppercase">Live Voice Demo</span>
+                    </div>
+
+                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">AI Sales Training Bot</h3>
+                    <p className="text-amber-500 font-ui text-xs uppercase tracking-[0.15em] font-bold mb-6">Built &amp; deployed for Torian</p>
+
+                    {status === CALL_STATUS.IDLE && (
+                        <>
+                            <p className="text-zinc-400 text-sm md:text-base leading-relaxed mb-8 max-w-md">
+                                Get on a real voice call with the same AI sales trainer we built and deployed for Torian's team. It role-plays a live prospect, pushes back with real objections, and gives you a debrief when you hang up.
+                            </p>
+                            <button onClick={startCall} className="relative inline-flex items-center gap-3 px-7 py-4 bg-white text-black hover:bg-amber-500 font-bold text-[11px] font-ui uppercase tracking-[0.2em] transition-all duration-200 group w-fit">
+                                <Phone size={15} /> Start Practice Call
+                            </button>
+                            <p className="text-zinc-600 text-[10px] font-ui uppercase tracking-[0.2em] mt-5">Runs in your browser &middot; mic access required &middot; no signup</p>
+                        </>
+                    )}
+
+                    {status === CALL_STATUS.CONNECTING && (
+                        <div className="flex items-center gap-3 text-zinc-300">
+                            <Loader2 size={18} className="animate-spin text-amber-500" />
+                            <span className="font-ui text-sm uppercase tracking-[0.15em]">Connecting to the trainer&hellip;</span>
+                        </div>
+                    )}
+
+                    {status === CALL_STATUS.ACTIVE && (
+                        <div className="flex flex-col flex-1 min-h-0">
+                            <div className="flex items-center justify-between mb-4">
+                                <span className="font-ui text-xs uppercase tracking-[0.2em] text-white font-bold">{fmtTime(duration)}</span>
+                                <span className="font-ui text-[10px] uppercase tracking-[0.2em] text-amber-500">{isSpeaking ? 'Trainer speaking' : 'Listening'}</span>
+                            </div>
+
+                            <div className="border border-white/10 bg-[#050505] h-48 md:h-56 overflow-y-auto p-4 space-y-3 mb-6">
+                                {transcript.length === 0 && (
+                                    <p className="text-zinc-600 text-xs font-ui uppercase tracking-wider">Say hello to kick things off&hellip;</p>
+                                )}
+                                {transcript.map((line, i) => (
+                                    <div key={i} className={line.role === 'user' ? 'text-right' : 'text-left'}>
+                                        <span className={`inline-block max-w-[85%] text-xs md:text-sm leading-relaxed px-3 py-2 ${line.role === 'user' ? 'bg-amber-500/10 text-amber-100 border border-amber-500/20' : 'bg-white/5 text-zinc-300 border border-white/10'}`}>
+                                            {line.text}
+                                        </span>
+                                    </div>
+                                ))}
+                                <div ref={transcriptEndRef} />
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <button onClick={toggleMute} className="flex items-center gap-2 px-5 py-3 border border-white/20 text-white text-[11px] font-ui uppercase tracking-[0.15em] hover:border-white/50 transition-colors">
+                                    {muted ? <MicOff size={14} /> : <Mic size={14} />} {muted ? 'Unmute' : 'Mute'}
+                                </button>
+                                <button onClick={endCall} className="flex items-center gap-2 px-5 py-3 bg-red-500/10 border border-red-500/40 text-red-400 text-[11px] font-ui uppercase tracking-[0.15em] hover:bg-red-500 hover:text-white transition-colors">
+                                    <PhoneOff size={14} /> End Call
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {status === CALL_STATUS.ENDED && (
+                        <div>
+                            <div className="grid grid-cols-3 gap-px bg-white/5 mb-6">
+                                {[
+                                    { val: fmtTime(duration), label: 'Call Length' },
+                                    { val: String(transcript.length), label: 'Exchanges' },
+                                    { val: String(userWords), label: 'Your Words' },
+                                ].map((s, i) => (
+                                    <div key={i} className="p-4 bg-[#0A0A0A]">
+                                        <div className="text-lg md:text-xl font-black text-white">{s.val}</div>
+                                        <div className="text-zinc-500 text-[9px] mt-1 font-ui uppercase tracking-[0.15em]">{s.label}</div>
+                                    </div>
+                                ))}
+                            </div>
+                            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                                {debrief?.summary || "Call complete. This live browser demo shows the same trainer we run for Torian — full scoring, objection breakdowns, and rep-by-rep leaderboards are wired up on the back end for our clients' teams."}
+                            </p>
+                            <button onClick={startCall} className="relative inline-flex items-center gap-3 px-7 py-4 bg-transparent text-white border border-white/60 hover:bg-white hover:text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] transition-all duration-200 w-fit">
+                                <RefreshCw size={14} /> Call Again
+                            </button>
+                        </div>
+                    )}
+
+                    {status === CALL_STATUS.ERROR && (
+                        <div>
+                            <p className="text-red-400 text-sm leading-relaxed mb-6">{errorMsg}</p>
+                            <button onClick={startCall} className="relative inline-flex items-center gap-3 px-7 py-4 bg-white text-black hover:bg-amber-500 font-bold text-[11px] font-ui uppercase tracking-[0.2em] transition-all duration-200 w-fit">
+                                <RefreshCw size={14} /> Try Again
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                {/* ── Right: orb visualization ── */}
+                <div className="relative bg-[#050505] border-t lg:border-t-0 lg:border-l border-white/10 flex items-center justify-center p-12 min-h-[280px] overflow-hidden">
+                    <SectionGrid />
+                    <div className="relative z-10 flex items-center justify-center">
+                        {status === CALL_STATUS.ACTIVE && (
+                            <span className={`absolute inline-flex h-32 w-32 md:h-40 md:w-40 rounded-full bg-amber-500/20 ${isSpeaking ? 'animate-ping' : ''}`} />
+                        )}
+                        <div className={`relative w-28 h-28 md:w-32 md:h-32 rounded-full border flex items-center justify-center transition-all duration-300 ${
+                            status === CALL_STATUS.ACTIVE ? 'border-amber-500 bg-amber-500/10' : status === CALL_STATUS.CONNECTING ? 'border-amber-500/50 animate-pulse' : 'border-white/20'
+                        }`}>
+                            <Phone className={status === CALL_STATUS.ACTIVE ? 'text-amber-500' : 'text-zinc-500'} size={36} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // ── Sales & Pipeline Section ──
 const SalesAgents = () => {
     const ref = useRef(null);
     useEffect(() => {
         const ctx = gsap.context(() => {
             gsap.from('.sales-header', { scrollTrigger: { trigger: ref.current, start: 'top 70%' }, y: 50, opacity: 0, duration: 1, ease: 'power3.out' });
+            gsap.from('.sales-bot', { scrollTrigger: { trigger: '.sales-bot', start: 'top 75%' }, y: 40, opacity: 0, duration: 0.9, ease: 'power3.out' });
             gsap.from('.prod-card', { scrollTrigger: { trigger: '.sales-grid', start: 'top 75%' }, y: 40, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out' });
         }, ref);
         return () => ctx.revert();
@@ -308,8 +514,10 @@ const SalesAgents = () => {
                     Fill the Pipeline. <span className="text-zinc-600">Close Faster.</span>
                 </h2>
                 <p className="sales-header text-zinc-400 text-sm md:text-base max-w-xl mb-16">
-                    Agents that prospect, qualify, and prep proposals — so your team only handles conversations that close.
+                    Agents that prospect, qualify, and prep proposals — so your team only handles conversations that close. Try the trainer below, live, right now.
                 </p>
+
+                <SalesTrainingBot />
 
                 <div className="sales-grid grid grid-cols-1 md:grid-cols-3 gap-4">
                     {products.map((p, i) => <ProductCard key={i} product={p} index={i} featured={i === 0} />)}

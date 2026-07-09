@@ -18,7 +18,8 @@ if (!KEY) {
 }
 
 const headers = { Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' };
-const server = { url: `${SITE}/api/vapi-tools`, ...(SECRET ? { secret: SECRET } : {}) };
+// Vapi's /tool API silently drops server.secret — send the shared secret as a custom header instead.
+const server = { url: `${SITE}/api/vapi-tools`, ...(SECRET ? { headers: { 'x-corefix-secret': SECRET } } : {}) };
 
 async function post(path, body) {
     const r = await fetch(`${API}${path}`, { method: 'POST', headers, body: JSON.stringify(body) });

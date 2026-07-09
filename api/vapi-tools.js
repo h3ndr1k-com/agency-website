@@ -11,8 +11,11 @@ export default async function handler(req, res) {
         return;
     }
 
+    // Vapi's /tool API dropped server.secret (x-vapi-secret); tools now carry the
+    // secret as a custom header instead. Accept either.
     const secret = process.env.TOOL_WEBHOOK_SECRET;
-    if (secret && req.headers['x-vapi-secret'] !== secret) {
+    const sent = req.headers['x-corefix-secret'] || req.headers['x-vapi-secret'];
+    if (secret && sent !== secret) {
         res.status(401).json({ error: 'Unauthorized' });
         return;
     }

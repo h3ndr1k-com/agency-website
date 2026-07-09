@@ -107,11 +107,11 @@ if (VAPI_KEY && ASSISTANT_ID) {
                 headers: { Authorization: `Bearer ${VAPI_KEY}` },
             }).then((r) => r.json());
             const url = t?.server?.url;
-            const hasSecret = !!t?.server?.secret;
+            const hasSecret = !!(t?.server?.headers?.['x-corefix-secret'] || t?.server?.secret);
             const urlOk = url === WEBHOOK;
             console.log(`   • ${t?.function?.name || t?.type}  url=${url ? (urlOk ? ok(url) : bad(url)) : bad('(none)')}  secret=${hasSecret ? ok('set') : bad('MISSING')}`);
             if (url && !urlOk) verdict = `Tool server.url (${url}) ≠ live webhook (${WEBHOOK}). Re-run setup with SITE_URL=${SITE}.`;
-            if (!hasSecret) verdict = `Tool "${t?.function?.name}" has no server.secret, but the webhook requires one → every call 401s. Re-run setup with TOOL_WEBHOOK_SECRET set.`;
+            if (!hasSecret) verdict = `Tool "${t?.function?.name}" carries no secret header, but the webhook requires one → every call 401s. Re-run setup with TOOL_WEBHOOK_SECRET set.`;
         }
         const names = [];
         for (const id of toolIds) {

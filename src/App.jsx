@@ -10,8 +10,8 @@ import VoiceSection from './VoiceSection.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const CAL_LINK = 'corefix/intro-call';
-const CAL_URL = 'https://cal.com/corefix/intro-call';
+const CAL_LINK = 'corefix.ai/30min';
+const CAL_URL = 'https://cal.com/corefix.ai/30min';
 
 // ── Section Grid (decorative background grid for sections) ──
 const gridLineColor = 'rgba(255,255,255,0.05)';

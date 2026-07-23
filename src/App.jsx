@@ -724,6 +724,53 @@ const CaseStudy = () => {
     );
 };
 
+// ── Spec Reviewer VSL ──
+const SpecReviewerVSL = () => {
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            gsap.from('.vsl-reveal', {
+                scrollTrigger: { trigger: ref.current, start: 'top 72%' },
+                y: 36, opacity: 0, duration: 0.8, stagger: 0.12, ease: 'power3.out'
+            });
+        }, ref);
+        return () => ctx.revert();
+    }, []);
+
+    return (
+        <section ref={ref} className="py-24 md:py-32 border-b border-white/5">
+            <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1.55fr)_minmax(19rem,0.7fr)] gap-8 lg:gap-16 items-center">
+                <div className="vsl-reveal relative aspect-video bg-[#111] border border-white/10 overflow-hidden">
+                    <video
+                        controls
+                        playsInline
+                        preload="metadata"
+                        poster="/assets/spec-reviewer-vsl-poster.jpg"
+                        className="w-full h-full object-cover"
+                        aria-label="Spec Reviewer walkthrough video"
+                    >
+                        <source src="/assets/spec-reviewer-vsl.mp4" type="video/mp4" />
+                        Your browser does not support embedded video. Please use a modern browser to watch this walkthrough.
+                    </video>
+                </div>
+                <div className="vsl-reveal">
+                    <div className="mb-6"><SectionLabel>Before the Call</SectionLabel></div>
+                    <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] leading-[1.05] mb-6">
+                        See the Spec Reviewer catch a real production issue.
+                    </h2>
+                    <p className="text-zinc-400 text-base leading-relaxed mb-8 max-w-md">
+                        A 3-minute walkthrough of the system, the standard it checks against, and the cited verdict your team receives before a job reaches production.
+                    </p>
+                    <a href="#audit" className="inline-flex items-center gap-3 px-6 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 active:translate-y-px transition-all">
+                        Get a Free Audit <ChevronRight size={15} aria-hidden="true" />
+                    </a>
+                </div>
+            </div>
+        </section>
+    );
+};
+
 // ── Testimonial ──
 const Testimonials = () => {
     const t = { title: "The first person I call for an urgent handoff.", quote: "When a client project needed an urgent handoff, Hendrik was the first person I called. He got up to speed fast, took the meeting, and delivered with confidence. Honestly, his technical depth made him a better fit than I would have been. That is the kind of partner you want in your corner.", name: 'Evan Gutman', role: 'Evitas AI', logo: '/evitas-ai-logo-white.png' };
@@ -1295,6 +1342,7 @@ function App() {
             <CaseStudy />
             <Testimonials />
             <VoiceSection />
+            <SpecReviewerVSL />
             <FreeAudit />
             <WhyUs />
             <Team />

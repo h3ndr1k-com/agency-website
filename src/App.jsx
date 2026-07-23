@@ -158,6 +158,13 @@ const Hero = () => {
                             ? <Link key={tag.label} to={tag.href} className={cls}>{inner}</Link>
                             : <a key={tag.label} href={tag.href} className={cls}>{inner}</a>;
                     })}
+                    <a
+                        href="#spec-reviewer-walkthrough"
+                        className="group/watch mt-3 inline-flex items-center gap-2 border border-amber-500 bg-amber-500 px-4 py-3 text-[10px] font-ui font-bold uppercase tracking-[0.18em] text-black transition-colors duration-200 hover:bg-white active:translate-y-px"
+                    >
+                        Watch What It Can Do
+                        <ChevronRight size={13} className="transition-transform duration-200 group-hover/watch:translate-x-1" aria-hidden="true" />
+                    </a>
                 </div>
             </div>
 
@@ -739,7 +746,7 @@ const SpecReviewerVSL = () => {
     }, []);
 
     return (
-        <section ref={ref} className="py-24 md:py-32 border-b border-white/5">
+        <section id="spec-reviewer-walkthrough" ref={ref} className="py-24 md:py-32 border-b border-white/5">
             <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1.55fr)_minmax(19rem,0.7fr)] gap-8 lg:gap-16 items-center">
                 <div className="vsl-reveal relative aspect-video bg-[#111] border border-white/10 overflow-hidden">
                     <video

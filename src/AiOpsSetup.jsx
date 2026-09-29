@@ -160,23 +160,21 @@ function Landing() {
     return (
         <div ref={ref}>
             <section className="relative overflow-hidden">
-                <div className="relative h-[72vh] min-h-[440px]">
-                    <img
-                        src="/ai-ops-fog.jpg"
-                        alt=""
-                        className="absolute inset-0 h-full w-full object-cover object-[center_38%] grayscale contrast-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/20 via-transparent to-[#0A0A0A] pointer-events-none" aria-hidden="true" />
-                    <a
-                        href="https://unsplash.com/photos/foggy-mountain-summit-1Z2niiBPg5A"
-                        className="absolute right-6 bottom-20 z-30 text-[10px] font-ui uppercase tracking-[0.18em] text-white/70 hover:text-white transition-colors"
-                    >
-                        Photo · v2osk
-                    </a>
-                </div>
+                <img
+                    src="/ai-ops-fog.jpg"
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover object-[center_38%] grayscale contrast-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/55 via-[#0A0A0A]/68 to-[#0A0A0A] pointer-events-none" aria-hidden="true" />
+                <a
+                    href="https://unsplash.com/photos/foggy-mountain-summit-1Z2niiBPg5A"
+                    className="absolute right-6 top-28 z-30 text-[10px] font-ui uppercase tracking-[0.18em] text-white/70 hover:text-white transition-colors"
+                >
+                    Photo · v2osk
+                </a>
                 <BrightGrid z="z-20" />
-                <div className="relative z-30 -mt-28 md:-mt-36">
-                <div className="max-w-[1400px] mx-auto px-6 pt-8 pb-20 md:pb-28">
+                <div className="relative z-30 pt-28 md:pt-32">
+                <div className="max-w-[1400px] mx-auto px-6 pb-20 md:pb-28">
                     <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-16 items-start">
                         <div>
                             <div className="ops-el mb-8">

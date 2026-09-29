@@ -241,10 +241,12 @@ function Landing() {
                             <button
                                 type="submit"
                                 disabled={pending !== null}
-                                className="relative w-full inline-flex items-center justify-center gap-3 px-7 py-5 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.16em] sm:tracking-[0.2em] hover:bg-amber-500 transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="relative w-full px-6 py-5 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.14em] sm:tracking-[0.18em] leading-relaxed text-center hover:bg-amber-500 transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {pending === 'pay' ? 'Redirecting to checkout' : pending === 'claim' ? 'Holding your seat' : 'Book your AI Ops Setup Session'}
-                                {pending === null && <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />}
+                                <span className="inline-flex items-center justify-center gap-3 max-w-full whitespace-normal">
+                                    {pending === 'pay' ? 'Redirecting to checkout' : pending === 'claim' ? 'Holding your seat' : 'Book your AI Ops Setup Session'}
+                                    {pending === null && <ArrowUpRight size={14} className="shrink-0 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />}
+                                </span>
                             </button>
                             <p className="text-zinc-600 text-[10px] font-ui uppercase tracking-[0.16em] text-center">
                                 {payPath ? '$97 CAD · then pick a time' : 'Free while seats remain · then pick a time'}
@@ -398,11 +400,19 @@ export default function AiOpsSetup() {
     const booking = pathname.endsWith('/book');
 
     useEffect(() => {
-        const previous = document.title;
+        const previousTitle = document.title;
+        const description = document.querySelector('meta[name="description"]');
+        const previousDescription = description?.getAttribute('content') || '';
         document.title = booking
             ? 'Book your AI Ops Setup Session — Corefix'
             : 'Get AI working in your business in 60 minutes — Corefix';
-        return () => { document.title = previous; };
+        if (description && !booking) {
+            description.setAttribute('content', 'A live 60-minute screen-share. You leave with a plan and a working starter. $97 CAD, with the first 3 sessions free.');
+        }
+        return () => {
+            document.title = previousTitle;
+            if (description) description.setAttribute('content', previousDescription);
+        };
     }, [booking]);
 
     return (

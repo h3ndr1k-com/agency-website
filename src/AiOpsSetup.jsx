@@ -159,9 +159,28 @@ function Landing() {
 
     return (
         <div ref={ref}>
-            <section className="relative overflow-hidden pt-28 pb-20 md:pt-32 md:pb-28">
-                <BrightGrid />
-                <div className="max-w-[1400px] mx-auto px-6 relative z-10">
+            <section className="relative overflow-hidden">
+                <div
+                    className="absolute inset-x-0 top-0 h-[46vh] md:h-[52vh] z-0"
+                    aria-hidden="true"
+                    style={{
+                        backgroundImage: 'url(/ai-ops-fog.jpg)',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center 42%',
+                        filter: 'grayscale(100%) contrast(1.12) brightness(0.88)',
+                    }}
+                />
+                <div className="absolute inset-x-0 top-0 h-[46vh] md:h-[52vh] z-[1] bg-gradient-to-b from-[#0A0A0A]/45 via-[#0A0A0A]/10 to-[#0A0A0A] pointer-events-none" aria-hidden="true" />
+                <a
+                    href="https://unsplash.com/photos/foggy-mountain-summit-1Z2niiBPg5A"
+                    className="absolute right-6 top-[18vh] z-30 text-[10px] font-ui uppercase tracking-[0.18em] text-white/55 hover:text-white transition-colors"
+                >
+                    Photo · v2osk
+                </a>
+                <BrightGrid z="z-20" />
+                <div className="relative z-30 pt-24 md:pt-28">
+                <div className="h-[26vh] min-h-28" aria-hidden="true" />
+                <div className="max-w-[1400px] mx-auto px-6 pt-8 pb-20 md:pb-28 bg-gradient-to-b from-transparent via-[#0A0A0A]/88 to-[#0A0A0A]">
                     <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-16 items-start">
                         <div>
                             <div className="ops-el mb-8">
@@ -253,6 +272,7 @@ function Landing() {
                             </p>
                         </form>
                     </div>
+                </div>
                 </div>
             </section>
 

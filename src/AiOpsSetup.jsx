@@ -144,8 +144,12 @@ function Landing() {
                 await startCheckout(intake);
                 return;
             }
+            if (data.code === 'storage_unconfigured') {
+                navigate('/ai-ops-setup/book');
+                return;
+            }
             setPending(null);
-            setError(data.blocker || data.error || 'Could not hold a seat. Email hendrik@corefix.app.');
+            setError(data.error || 'Could not hold a seat. Email hendrik@corefix.app.');
             if (typeof data.remaining === 'number') {
                 setSlots((current) => ({ ...(current || {}), ...data, remaining: data.remaining }));
             }
@@ -247,9 +251,6 @@ function Landing() {
                                 <span className="sr-only">Top time sink</span>
                                 <textarea name="timeSink" required rows={4} placeholder="Top time sink" value={form.timeSink} onChange={onChange} className={`${fieldClass} resize-none`} />
                             </label>
-                            {slots?.blocker && (
-                                <p className="text-amber-500/90 text-xs leading-relaxed border border-amber-500/30 bg-amber-500/[0.04] px-4 py-3">{slots.blocker}</p>
-                            )}
                             {error && <p className="text-red-400 text-xs leading-relaxed">{error}</p>}
                             <button
                                 type="submit"
@@ -303,11 +304,17 @@ function calHref(intake) {
     return url.toString();
 }
 
+function openBooking() {
+    const intake = readStoredIntake();
+    if (intake?.name && intake?.email) return { kind: 'open', intake };
+    return { kind: 'denied', message: 'Add your name and email on the setup page, then pick a time.' };
+}
+
 function BookSession() {
     const [params] = useSearchParams();
     const claimId = params.get('claim') || '';
     const sessionId = params.get('session_id') || '';
-    const [auth, setAuth] = useState({ kind: 'loading' });
+    const [auth, setAuth] = useState(() => (claimId || sessionId ? { kind: 'loading' } : openBooking()));
 
     useEffect(() => {
         let cancelled = false;
@@ -326,10 +333,10 @@ function BookSession() {
                     const data = await res.json().catch(() => ({}));
                     if (cancelled) return;
                     if (data.paid && data.intake) setAuth({ kind: 'paid', intake: { ...readStoredIntake(), ...data.intake } });
-                    else setAuth({ kind: 'denied', message: data.blocker || 'Payment is not confirmed yet.' });
+                    else setAuth({ kind: 'denied', message: data.error || 'Payment is not confirmed yet.' });
                     return;
                 }
-                if (!cancelled) setAuth({ kind: 'denied', message: 'Start from the setup page so we can hold a free seat or take payment.' });
+                if (!cancelled) setAuth(openBooking());
             } catch {
                 if (!cancelled) setAuth({ kind: 'denied', message: 'Could not confirm this booking. Email hendrik@corefix.app.' });
             }
@@ -338,7 +345,7 @@ function BookSession() {
     }, [claimId, sessionId]);
 
     useEffect(() => {
-        if (auth.kind !== 'free' && auth.kind !== 'paid') return undefined;
+        if (auth.kind !== 'free' && auth.kind !== 'paid' && auth.kind !== 'open') return undefined;
         let active = true;
         (async () => {
             const api = await getCalApi({ namespace: 'ai-ops-setup' });
@@ -384,10 +391,10 @@ function BookSession() {
                     </div>
                 )}
 
-                {(auth.kind === 'free' || auth.kind === 'paid') && (
+                {(auth.kind === 'free' || auth.kind === 'paid' || auth.kind === 'open') && (
                     <>
                         <p className="mt-6 text-amber-500 text-xs font-ui uppercase tracking-[0.18em]">
-                            {auth.kind === 'free' ? 'Free seat claimed' : 'Payment received — $97 CAD'}
+                            {auth.kind === 'paid' ? 'Payment received — $97 CAD' : auth.kind === 'free' ? 'Free seat claimed' : 'Pick a time'}
                         </p>
                         <div className="mt-8 border border-white/15 bg-[#0A0A0A] overflow-hidden" style={{ minHeight: 640 }}>
                             <Cal

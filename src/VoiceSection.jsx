@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Mic, PhoneOff, Phone } from 'lucide-react';
 import { SectionGrid, SectionLabel } from './shared.jsx';
+import SiriWave from './SiriWave.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -111,16 +112,20 @@ export default function VoiceSection() {
                 </p>
 
                 {/* Orb console */}
-                <div className="voice-el relative p-10 md:p-14 border border-white/20 bg-[#0A0A0A]/70">
+                <div className="voice-el relative w-full min-w-0 max-w-xl p-6 sm:p-10 md:p-14 border border-white/20 bg-[#0A0A0A]">
                     <span className="absolute -top-[2px] -left-[2px] w-4 h-4 border-t-2 border-l-2 border-amber-500" />
                     <span className="absolute -top-[2px] -right-[2px] w-4 h-4 border-t-2 border-r-2 border-amber-500" />
                     <span className="absolute -bottom-[2px] -left-[2px] w-4 h-4 border-b-2 border-l-2 border-amber-500" />
                     <span className="absolute -bottom-[2px] -right-[2px] w-4 h-4 border-b-2 border-r-2 border-amber-500" />
 
-                    <div className="flex justify-between text-[8px] md:text-[9px] font-ui uppercase tracking-[0.25em] text-zinc-600 mb-8 gap-6">
+                    <div className="flex flex-wrap justify-center sm:justify-between text-[8px] md:text-[9px] font-ui uppercase tracking-[0.25em] text-zinc-600 mb-4 gap-x-6 gap-y-2">
                         <span>Agent: Corefix-01</span>
                         <span>Channel: WebRTC</span>
                         <span className={live ? 'text-amber-500' : ''}>{live ? `Live ${mmss}` : 'Secure'}</span>
+                    </div>
+
+                    <div className="mx-auto mb-2 w-full min-w-0 max-w-[420px]">
+                        <SiriWave variant="wave" size={420} renderScale={1.5} aria-hidden="true" />
                     </div>
 
                     <button

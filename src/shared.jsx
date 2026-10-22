@@ -80,8 +80,16 @@ export const SectionLabel = ({ children }) => (
     </span>
 );
 
+const DEFAULT_FOOTER_LINKS = [
+    ['Home', '/'],
+    ['Flagship', '/#flagship'],
+    ['Bolt-Ons', '/#services'],
+    ['Case Study', '/#case-study'],
+    ['Free Audit', '/#audit'],
+];
+
 // ── Shared Footer ──
-export const Footer = () => (
+export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
     <footer className="bg-[#050505] pt-24 pb-10 px-6">
         <div className="max-w-[1400px] mx-auto">
             <div className="mb-20 overflow-hidden">
@@ -105,7 +113,7 @@ export const Footer = () => (
 
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
-                    {[['Home', '/'], ['Flagship', '/#flagship'], ['Bolt-Ons', '/#services'], ['Case Study', '/#case-study'], ['Free Audit', '/#audit']].map(([link, href]) => (
+                    {links.map(([link, href]) => (
                         <a key={link} href={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
                     ))}
                 </div>

@@ -6,6 +6,7 @@ import './index.css'
 
 const ServiceStrategy = lazy(() => import('./ServiceStrategy.jsx'))
 const ServiceAgents = lazy(() => import('./ServiceAgents.jsx'))
+const AiOpsSetup = lazy(() => import('./AiOpsSetup.jsx'))
 
 const Loading = () => <div className="min-h-screen bg-[#0A0A0A]" />
 
@@ -31,6 +32,8 @@ createRoot(document.getElementById('root')).render(
             <Route path="/" element={<App />} />
             <Route path="/services/ai-strategy" element={<Suspense fallback={<Loading />}><ServiceStrategy /></Suspense>} />
             <Route path="/services/custom-agents" element={<Suspense fallback={<Loading />}><ServiceAgents /></Suspense>} />
+            <Route path="/ai-ops-setup" element={<Suspense fallback={<Loading />}><AiOpsSetup /></Suspense>} />
+            <Route path="/ai-ops-setup/book" element={<Suspense fallback={<Loading />}><AiOpsSetup /></Suspense>} />
         </Routes>
     </BrowserRouter>,
 )

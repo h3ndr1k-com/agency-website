@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Mic, PhoneOff, Phone } from 'lucide-react';
+import { PhoneOff, Phone } from 'lucide-react';
 import { SectionGrid, SectionLabel } from './shared.jsx';
+import SiriWave from './SiriWave.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,12 +23,12 @@ const STATUS_COPY = {
 
 export default function VoiceSection() {
     const ref = useRef(null);
-    const orbRef = useRef(null);
+    const threadRef = useRef(null);
     const vapiRef = useRef(null);
     const timerRef = useRef(null);
     const [status, setStatus] = useState('idle');
     const [seconds, setSeconds] = useState(0);
-    const [line, setLine] = useState(null);
+    const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -52,7 +53,7 @@ export default function VoiceSection() {
             return;
         }
         setStatus('connecting');
-        setLine(null);
+        setMessages([]);
         setSeconds(0);
 
         try {
@@ -73,13 +74,21 @@ export default function VoiceSection() {
                 });
                 vapi.on('speech-start', () => setStatus('speaking'));
                 vapi.on('speech-end', () => setStatus('listening'));
-                vapi.on('volume-level', (v) => {
-                    orbRef.current?.style.setProperty('--vol', String(Math.min(1, v * 1.6)));
-                });
                 vapi.on('message', (m) => {
-                    if (m.type === 'transcript' && m.transcript) {
-                        setLine({ role: m.role, text: m.transcript });
-                    }
+                    if (m.type !== 'transcript' || !m.transcript) return;
+                    const next = {
+                        role: m.role === 'assistant' ? 'assistant' : 'user',
+                        text: m.transcript,
+                        final: m.transcriptType === 'final',
+                    };
+                    setMessages((prev) => {
+                        const last = prev[prev.length - 1];
+                        if (last && last.role === next.role && !last.final) {
+                            return [...prev.slice(0, -1), next];
+                        }
+                        if (last && last.role === next.role && last.text === next.text) return prev;
+                        return [...prev, next].slice(-8);
+                    });
                 });
                 vapi.on('error', () => {
                     clearInterval(timerRef.current);
@@ -96,6 +105,14 @@ export default function VoiceSection() {
         vapiRef.current?.stop();
     }, []);
 
+    useEffect(() => {
+        const thread = threadRef.current;
+        if (thread) thread.scrollTop = thread.scrollHeight;
+    }, [messages, status]);
+
+    const canDial = status !== 'connecting' && !live;
+    const canHangUp = live || status === 'connecting';
+
     const mmss = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 
     return (
@@ -111,65 +128,94 @@ export default function VoiceSection() {
                 </p>
 
                 {/* Orb console */}
-                <div className="voice-el relative p-10 md:p-14 border border-white/20 bg-[#0A0A0A]/70">
+                <div className="voice-el relative w-full min-w-0 max-w-xl p-6 sm:p-10 md:p-14 border border-white/20 bg-[#0A0A0A]">
                     <span className="absolute -top-[2px] -left-[2px] w-4 h-4 border-t-2 border-l-2 border-amber-500" />
                     <span className="absolute -top-[2px] -right-[2px] w-4 h-4 border-t-2 border-r-2 border-amber-500" />
                     <span className="absolute -bottom-[2px] -left-[2px] w-4 h-4 border-b-2 border-l-2 border-amber-500" />
                     <span className="absolute -bottom-[2px] -right-[2px] w-4 h-4 border-b-2 border-r-2 border-amber-500" />
 
-                    <div className="flex justify-between text-[8px] md:text-[9px] font-ui uppercase tracking-[0.25em] text-zinc-600 mb-8 gap-6">
+                    <div className="flex flex-wrap justify-center sm:justify-between text-[8px] md:text-[9px] font-ui uppercase tracking-[0.25em] text-zinc-600 mb-4 gap-x-6 gap-y-2">
                         <span>Agent: Corefix-01</span>
                         <span>Channel: WebRTC</span>
                         <span className={live ? 'text-amber-500' : ''}>{live ? `Live ${mmss}` : 'Secure'}</span>
                     </div>
 
-                    <button
-                        ref={orbRef}
-                        onClick={live || status === 'connecting' ? endCall : startCall}
-                        aria-label={live ? 'End the voice call' : 'Start a voice call with the Corefix AI agent'}
-                        className="allow-round relative w-44 h-44 md:w-52 md:h-52 mx-auto block group focus:outline-none"
-                        style={{ '--vol': 0 }}
-                    >
-                        {/* volume-reactive rings */}
-                        <span className={`absolute inset-0 rounded-full border transition-colors duration-300 ${live ? 'border-amber-500/50' : 'border-white/15 group-hover:border-white/30'}`}
-                            style={{ transform: 'scale(calc(1 + var(--vol) * 0.22))', transition: 'transform 90ms linear, border-color 300ms' }} />
-                        <span className={`absolute inset-3 rounded-full border transition-colors duration-300 ${live ? 'border-amber-500/30' : 'border-white/10'}`}
-                            style={{ transform: 'scale(calc(1 + var(--vol) * 0.14))', transition: 'transform 120ms linear, border-color 300ms' }} />
-                        <span className={`absolute inset-0 rounded-full bg-amber-500 blur-2xl transition-opacity duration-500 ${live ? 'opacity-25' : status === 'connecting' ? 'opacity-15 animate-pulse' : 'opacity-0 group-hover:opacity-10'}`}
-                            style={live ? { opacity: 'calc(0.15 + var(--vol) * 0.35)' } : undefined} />
+                    <div className="mx-auto w-full min-w-0 max-w-[420px]">
+                        <SiriWave variant="wave" size={420} renderScale={1.5} aria-hidden="true" />
+                    </div>
 
-                        {/* core */}
-                        <span className={`absolute inset-8 rounded-full flex items-center justify-center transition-colors duration-300 ${live ? 'bg-amber-500 text-black' : 'bg-white text-black group-hover:bg-amber-500'}`}>
-                            {status === 'connecting' ? (
-                                <span className="flex gap-1.5">
-                                    {[0, 1, 2].map((i) => (
-                                        <span key={i} className="w-1.5 h-1.5 rounded-full bg-black animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
-                                    ))}
+                    <div className="relative mx-auto mt-1 w-full min-w-0 max-w-md text-left">
+                        <div
+                            className={`border border-white/15 border-t-2 bg-[#121212] px-4 py-4 sm:px-5 ${canDial ? 'cursor-pointer' : ''} ${live ? 'border-t-amber-500' : status === 'error' ? 'border-t-red-400' : 'border-t-amber-500/70'}`}
+                            onClick={canDial ? startCall : undefined}
+                            onKeyDown={canDial ? (e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    startCall();
+                                }
+                            } : undefined}
+                            role={canDial ? 'button' : 'log'}
+                            tabIndex={canDial ? 0 : undefined}
+                            aria-live="polite"
+                            aria-label={canDial ? 'Start a voice call with the Corefix AI agent' : 'Voice conversation'}
+                        >
+                            <div className="mb-3 flex items-center justify-between gap-3">
+                                <span className="text-[9px] font-ui uppercase tracking-[0.25em] text-amber-500">Corefix</span>
+                                <span className={`text-[9px] font-ui uppercase tracking-[0.25em] ${live ? 'text-amber-500' : status === 'error' ? 'text-red-400' : 'text-zinc-500'}`}>
+                                    {STATUS_COPY[status]}
                                 </span>
-                            ) : live ? (
-                                <PhoneOff size={26} strokeWidth={2.2} />
-                            ) : (
-                                <Mic size={28} strokeWidth={2.2} />
-                            )}
-                        </span>
-                    </button>
+                            </div>
+                            <div ref={threadRef} className="max-h-36 space-y-3 overflow-y-auto">
+                                {messages.length === 0 && (
+                                    <p className="text-sm leading-relaxed text-zinc-400">
+                                        {status === 'connecting' && 'Connecting…'}
+                                        {status === 'error' && (
+                                            <>Mic blocked or network hiccup &mdash; <a href="#audit" onClick={(e) => e.stopPropagation()} className="text-amber-500 hover:underline">book the old-fashioned way</a>.</>
+                                        )}
+                                        {status === 'ended' && 'Call ended. Dial again if you want another pass.'}
+                                        {status === 'idle' && !CONFIGURED && 'Voice line warming up — grab an audit slot below, or dial to jump there.'}
+                                        {status === 'idle' && CONFIGURED && 'Standing by. Dial in and ask what we build — it can book the intro on Hendrik’s calendar.'}
+                                        {(status === 'listening' || status === 'speaking') && STATUS_COPY[status]}
+                                    </p>
+                                )}
+                                {messages.map((msg, i) => (
+                                    <div key={`${msg.role}-${i}`} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
+                                        <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-600">
+                                            {msg.role === 'assistant' ? 'Corefix' : 'You'}
+                                        </span>
+                                        <p className={`mt-1 text-sm leading-relaxed ${msg.final === false ? 'text-zinc-500' : 'text-zinc-200'}`}>{msg.text}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <span aria-hidden="true" className="absolute left-8 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-[#121212]" />
+                    </div>
 
-                    <div className="mt-8 h-10 flex flex-col items-center justify-center">
-                        <span className={`text-[10px] font-ui uppercase tracking-[0.3em] ${live ? 'text-amber-500' : status === 'error' ? 'text-red-400' : 'text-zinc-500'}`}>
-                            {STATUS_COPY[status]}
-                        </span>
-                        {line && live && (
-                            <p className="text-zinc-400 text-xs mt-2 max-w-md truncate">
-                                <span className="text-zinc-600 font-ui uppercase text-[9px] tracking-widest mr-2">{line.role === 'assistant' ? 'Corefix' : 'You'}</span>
-                                {line.text}
-                            </p>
-                        )}
-                        {status === 'error' && (
-                            <p className="text-zinc-500 text-xs mt-2">Mic blocked or network hiccup &mdash; <a href="#audit" className="text-amber-500 hover:underline">book the old-fashioned way</a>.</p>
-                        )}
-                        {status === 'idle' && !CONFIGURED && (
-                            <p className="text-zinc-600 text-xs mt-2">Voice line warming up &mdash; grab an audit slot below.</p>
-                        )}
+                    <div className="mt-8 flex items-start justify-center gap-8">
+                        <div className="flex flex-col items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={startCall}
+                                disabled={!canDial}
+                                aria-label="Start a voice call with the Corefix AI agent"
+                                className="allow-round flex h-11 w-11 items-center justify-center bg-amber-500 text-black transition-colors hover:bg-amber-400 focus:outline-none disabled:bg-transparent disabled:text-zinc-600 disabled:border disabled:border-white/15"
+                            >
+                                <Phone size={16} strokeWidth={2.2} />
+                            </button>
+                            <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-500">Dial</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={endCall}
+                                disabled={!canHangUp}
+                                aria-label="End the voice call"
+                                className="allow-round flex h-11 w-11 items-center justify-center border border-white/20 text-white transition-colors hover:border-amber-500 hover:text-amber-500 focus:outline-none disabled:border-white/10 disabled:text-zinc-700"
+                            >
+                                <PhoneOff size={16} strokeWidth={2.2} />
+                            </button>
+                            <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-500">Hang up</span>
+                        </div>
                     </div>
                 </div>
 

@@ -8,7 +8,7 @@ export const ROUTES = {
         path: '/',
         title: 'Speed to lead is what we do',
         description:
-            'AI voice agents that answer every call and web lead in seconds, day or night, and book it on your calendar. Pilot from $297.',
+            'AI voice agents that answer every call and web lead in seconds, day or night, and book it on your calendar. $297/mo.',
         h1: 'Speed to lead is what we do.',
         ogType: 'website',
     },
@@ -205,8 +205,8 @@ export function crawlerHtml(path) {
   <p>The business that answers first gets the job. Our AI voice agent picks up every call and web lead in seconds, day or night, and books it on your calendar.</p>
   <p><a href="/#voice-demo">Try the live voice demo</a> · <a href="${CAL_URL}">Book a demo</a></p>
   <p><a href="/spec-studio">Display or packaging manufacturer? See Spec Studio.</a></p>
-  <p>Free missed-call check: we call your line after hours and show you what happens.</p>
-  <p>Pilot from $297, then $397/mo, month to month.</p>
+  <p>$297/mo. If it doesn't catch a single lead in your first month, you get your money back.</p>
+  <p>No lock-in contract. Cancel anytime with a month's notice.</p>
 </main>`;
     }
     if (path === '/spec-studio') {

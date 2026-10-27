@@ -84,7 +84,7 @@ const DEFAULT_FOOTER_LINKS = [
     ['Home', '/'],
     ['Spec Studio', '/spec-studio'],
     ['Voice Demo', '/#voice-demo'],
-    ['Missed-Call Check', '/#audit'],
+    ['Pricing', '/#audit'],
     ['Contact', '/#contact'],
 ];
 
@@ -158,7 +158,7 @@ export const ServiceNavbar = () => {
                     <Link to="/#voice-demo" className="hover:text-white transition-colors">Voice Demo</Link>
                     <Link to="/spec-studio" className="hover:text-white transition-colors">Spec Studio</Link>
                     <Link to="/#process" className="hover:text-white transition-colors">Process</Link>
-                    <Link to="/#audit" className="hover:text-white transition-colors">Missed-Call Check</Link>
+                    <Link to="/#audit" className="hover:text-white transition-colors">Pricing</Link>
                     <Link to="/#contact" className="hover:text-white transition-colors">Contact</Link>
                 </div>
                 <Link to="/#contact" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">

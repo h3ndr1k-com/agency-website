@@ -324,7 +324,7 @@ const Capabilities = () => {
         { label: 'Customer Support Automation', href: '#services' },
         { label: 'Voice & Call Agents', href: '#voice-demo' },
         { label: 'Internal Ops & Admin Automation', href: '#services' },
-        { label: 'Document & Data Intelligence', href: '#flagship' },
+        { label: 'Document & Data Intelligence', href: '/spec-studio' },
         { label: 'API & Tool Integrations', href: '#services' },
         { label: 'Sales & Lead Qualification Agents', href: '#voice-demo' },
         { label: 'Fine-tuned LLM Systems', href: '#services' },
@@ -335,6 +335,7 @@ const Capabilities = () => {
     const MID_DEG = 0; // midpoint = 50%
     const TOTAL_TICKS = 40;
     const DEGREES_PER_TICK = (MAX_DEG - MIN_DEG) / TOTAL_TICKS;
+    const AXIS_THRESHOLD = 10; // px before we decide spin vs scroll
 
     const [isDragging, setIsDragging] = useState(false);
     const rawRotation = useMotionValue(MID_DEG);
@@ -344,39 +345,89 @@ const Capabilities = () => {
     const lightOpacity = useTransform(rawRotation, [MIN_DEG, MAX_DEG], [0.02, 0.35]);
     const indicatorShadow = useTransform(rawRotation, (r) => `0 0 ${Math.max(5, (r + 135) / 10)}px orange`);
     const knobRef = useRef(null);
+    const dragModeRef = useRef(null); // null | 'spin' | 'scroll'
+    const startPtrRef = useRef({ x: 0, y: 0, id: null });
 
-    const handlePointerDown = useCallback(() => {
+    const applyRotationFromPoint = useCallback((clientX, clientY) => {
+        if (!knobRef.current) return;
+        const rect = knobRef.current.getBoundingClientRect();
+        const x = clientX - (rect.left + rect.width / 2);
+        const y = clientY - (rect.top + rect.height / 2);
+        let degs = Math.atan2(y, x) * (180 / Math.PI) + 90;
+        if (degs > 180) degs -= 360;
+        if (degs < MIN_DEG && degs > -180) degs = MIN_DEG;
+        if (degs > MAX_DEG) degs = MAX_DEG;
+        rawRotation.set(degs);
+        snappedRotation.set(Math.round(degs / DEGREES_PER_TICK) * DEGREES_PER_TICK);
+    }, [rawRotation, snappedRotation, DEGREES_PER_TICK]);
+
+    const endDrag = useCallback((target, pointerId) => {
+        dragModeRef.current = null;
+        setIsDragging(false);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.body.style.touchAction = '';
+        try {
+            if (target && pointerId != null && target.hasPointerCapture?.(pointerId)) {
+                target.releasePointerCapture(pointerId);
+            }
+        } catch { /* already released */ }
+    }, []);
+
+    const handlePointerDown = useCallback((e) => {
+        if (e.button != null && e.button !== 0) return;
+        dragModeRef.current = null;
+        startPtrRef.current = { x: e.clientX, y: e.clientY, id: e.pointerId };
         setIsDragging(true);
         document.body.style.cursor = 'grabbing';
         document.body.style.userSelect = 'none';
+        // Capture so touch keeps firing even if the finger leaves the knob
+        try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* older browsers */ }
     }, []);
 
     useEffect(() => {
-        if (!isDragging) return;
+        if (!isDragging) return undefined;
+
         const handlePointerMove = (e) => {
-            if (!knobRef.current) return;
-            const rect = knobRef.current.getBoundingClientRect();
-            const x = e.clientX - (rect.left + rect.width / 2);
-            const y = e.clientY - (rect.top + rect.height / 2);
-            let degs = Math.atan2(y, x) * (180 / Math.PI) + 90;
-            if (degs > 180) degs -= 360;
-            if (degs < MIN_DEG && degs > -180) degs = MIN_DEG;
-            if (degs > MAX_DEG) degs = MAX_DEG;
-            rawRotation.set(degs);
-            snappedRotation.set(Math.round(degs / DEGREES_PER_TICK) * DEGREES_PER_TICK);
+            const start = startPtrRef.current;
+            if (start.id != null && e.pointerId !== start.id) return;
+
+            const dx = e.clientX - start.x;
+            const dy = e.clientY - start.y;
+            const dist = Math.hypot(dx, dy);
+
+            if (dragModeRef.current == null) {
+                if (dist < AXIS_THRESHOLD) return;
+                // Mostly vertical → let the page scroll; abandon knob drag.
+                if (Math.abs(dy) > Math.abs(dx) * 1.15) {
+                    dragModeRef.current = 'scroll';
+                    endDrag(knobRef.current, start.id);
+                    return;
+                }
+                dragModeRef.current = 'spin';
+                document.body.style.touchAction = 'none';
+            }
+
+            if (dragModeRef.current !== 'spin') return;
+            if (e.cancelable) e.preventDefault();
+            applyRotationFromPoint(e.clientX, e.clientY);
         };
-        const handlePointerUp = () => {
-            setIsDragging(false);
-            document.body.style.cursor = '';
-            document.body.style.userSelect = '';
+
+        const handlePointerUp = (e) => {
+            const start = startPtrRef.current;
+            if (start.id != null && e.pointerId !== start.id) return;
+            endDrag(knobRef.current || e.target, e.pointerId);
         };
-        window.addEventListener('pointermove', handlePointerMove);
+
+        window.addEventListener('pointermove', handlePointerMove, { passive: false });
         window.addEventListener('pointerup', handlePointerUp);
+        window.addEventListener('pointercancel', handlePointerUp);
         return () => {
             window.removeEventListener('pointermove', handlePointerMove);
             window.removeEventListener('pointerup', handlePointerUp);
+            window.removeEventListener('pointercancel', handlePointerUp);
         };
-    }, [isDragging, rawRotation, snappedRotation, DEGREES_PER_TICK]);
+    }, [isDragging, applyRotationFromPoint, endDrag]);
 
     const ticks = Array.from({ length: TOTAL_TICKS + 1 });
 
@@ -399,22 +450,22 @@ const Capabilities = () => {
     }, []);
 
     const capPositions = [
-        { top: '15%', left: '8%' },
-        { top: '12%', right: '12%' },
-        { top: '38%', left: '5%' },
-        { top: '35%', right: '5%' },
-        { top: '62%', left: '10%' },
-        { top: '58%', right: '8%' },
-        { top: '80%', left: '15%' },
-        { top: '78%', right: '15%' },
+        { top: '8%', left: '3%' },
+        { top: '8%', right: '3%' },
+        { top: '28%', left: '2%' },
+        { top: '28%', right: '2%' },
+        { top: '52%', left: '3%' },
+        { top: '52%', right: '3%' },
+        { top: '74%', left: '6%' },
+        { top: '74%', right: '6%' },
     ];
 
     return (
         <section className="relative overflow-hidden bg-[#0A0A0A]">
-            {/* Cave image hero */}
-            <div className="relative w-full" style={{ aspectRatio: '16/9', maxHeight: '75vh' }}>
+            {/* Cave image hero — taller on small screens so labels + knob fit */}
+            <div className="relative w-full" style={{ aspectRatio: '16/9', minHeight: '420px', maxHeight: '85vh' }}>
                 <div className="absolute inset-0" style={{
-                    backgroundImage: 'url(https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=60)',
+                    backgroundImage: 'url(https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1200&q=60&auto=format&fit=crop)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     filter: 'grayscale(100%) contrast(1.2) brightness(0.7)'
@@ -422,18 +473,17 @@ const Capabilities = () => {
                 <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/40 via-transparent to-[#0A0A0A]" />
                 <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
 
-                {/* Section label centered above knob */}
-                <div className="absolute top-8 md:top-12 left-1/2 -translate-x-1/2 z-20">
+                <div className="absolute top-6 md:top-12 left-1/2 -translate-x-1/2 z-20">
                     <SectionLabel>AI Capabilities</SectionLabel>
                 </div>
 
-                {/* Floating capability labels scattered over image — clickable */}
+                {/* Floating capability labels — reveal on all viewports as the knob turns */}
                 {capabilities.map((cap, i) => {
                     const shown = i < revealCount;
                     return (
                         <div
                             key={i}
-                            className="absolute z-20 transition-all duration-700 ease-out hidden lg:block"
+                            className="absolute z-20 transition-all duration-700 ease-out max-w-[42%] sm:max-w-none"
                             style={{
                                 ...capPositions[i],
                                 opacity: shown ? 1 : 0,
@@ -441,22 +491,19 @@ const Capabilities = () => {
                                 pointerEvents: shown ? 'auto' : 'none',
                             }}
                         >
-                            <a href={cap.href} className="group/cap inline-flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-sm border border-white/20 hover:border-amber-500 text-white text-[10px] md:text-xs font-ui uppercase tracking-[0.15em] transition-colors">
+                            <a href={cap.href} className="group/cap inline-flex items-center gap-2 px-2.5 py-1.5 md:px-3 bg-black/60 backdrop-blur-sm border border-white/20 hover:border-amber-500 text-white text-[9px] md:text-xs font-ui uppercase tracking-[0.12em] md:tracking-[0.15em] transition-colors">
                                 <span className="w-1.5 h-1.5 bg-amber-500 flex-shrink-0" />
-                                {cap.label}
-                                <ArrowUpRight size={11} className="opacity-0 group-hover/cap:opacity-100 transition-opacity" />
+                                <span className="leading-snug">{cap.label}</span>
+                                <ArrowUpRight size={11} className="opacity-0 group-hover/cap:opacity-100 transition-opacity hidden sm:inline" />
                             </a>
                         </div>
                     );
                 })}
 
-                {/* Reactor Knob centered over image */}
                 <div className="absolute inset-0 flex items-center justify-center z-10">
                     <div className="relative w-52 h-52 md:w-64 md:h-64 select-none allow-round">
-                        {/* Glow */}
                         <motion.div className="absolute inset-0 bg-orange-500 rounded-full blur-3xl" style={{ opacity: lightOpacity }} />
 
-                        {/* Tick marks ring */}
                         <div className="absolute inset-0 pointer-events-none">
                             {ticks.map((_, i) => {
                                 const angle = (i / TOTAL_TICKS) * (MAX_DEG - MIN_DEG) + MIN_DEG;
@@ -468,15 +515,19 @@ const Capabilities = () => {
                             })}
                         </div>
 
-                        {/* The knob */}
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40">
                             <motion.div
                                 ref={knobRef}
-                                className={`relative w-full h-full rounded-full touch-none z-20 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-                                style={{ rotate: smoothRotation }}
+                                className={`relative w-full h-full rounded-full z-20 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                                style={{ rotate: smoothRotation, touchAction: 'none' }}
                                 onPointerDown={handlePointerDown}
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
+                                role="slider"
+                                aria-label="Drag to reveal AI capabilities"
+                                aria-valuemin={0}
+                                aria-valuemax={capabilities.length}
+                                aria-valuenow={revealCount}
                             >
                                 <div className="w-full h-full rounded-full bg-neutral-900 shadow-[0_10px_30px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-neutral-800 flex items-center justify-center relative overflow-hidden">
                                     <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent_50%),conic-gradient(from_0deg,transparent_0deg,#000_360deg)]" />
@@ -485,39 +536,25 @@ const Capabilities = () => {
                                             className="absolute top-3 w-1.5 h-5 bg-orange-500 rounded-full"
                                             style={{ boxShadow: indicatorShadow }}
                                         />
-                                        <span className="font-ui text-[9px] text-zinc-600 tracking-[0.25em] mt-4">LEVEL</span>
+                                        <span className="font-ui text-[9px] text-zinc-500 tracking-[0.25em] mt-4">LEVEL</span>
                                     </div>
                                 </div>
                             </motion.div>
                         </div>
 
-                        {/* Digital readout */}
                         <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none">
                             <span className="inline-flex items-center gap-1.5 text-[10px] text-amber-500 font-ui tracking-[0.25em] mb-2">
                                 <RotateCw size={12} className="animate-spin" style={{ animationDuration: '3.5s' }} />
                                 DRAG TO SPIN
                             </span>
-                            <span className="text-[9px] text-zinc-600 font-ui tracking-[0.25em] mb-1">OUTPUT</span>
+                            <span className="text-[9px] text-zinc-500 font-ui tracking-[0.25em] mb-1">OUTPUT</span>
                             <KnobDisplay value={displayValue} />
                         </div>
                     </div>
                 </div>
 
-                {/* COREFIX® label below knob */}
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
-                    <span className="text-zinc-500 text-sm font-ui font-bold tracking-[0.2em]">COREFIX&reg;</span>
-                </div>
-            </div>
-
-            {/* Mobile-only capabilities list (floating labels need desktop space) */}
-            <div className="lg:hidden max-w-[1400px] mx-auto px-6 py-12">
-                <div className="grid grid-cols-2 gap-4">
-                    {capabilities.map((cap, i) => (
-                        <a key={i} href={cap.href} className="flex items-start gap-2 group">
-                            <div className="w-1.5 h-1.5 bg-amber-500 mt-1.5 flex-shrink-0" />
-                            <span className="text-sm text-zinc-300 font-medium group-hover:text-white transition-colors">{cap.label}</span>
-                        </a>
-                    ))}
+                <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-10">
+                    <span className="text-zinc-400 text-sm font-ui font-bold tracking-[0.2em]">COREFIX&reg;</span>
                 </div>
             </div>
         </section>
@@ -785,7 +822,7 @@ const Testimonials = () => {
     );
 };
 
-// ── Missed-call check + voice pilot ──
+// ── Voice agent pricing ──
 const FreeAudit = () => {
     const ref = useRef(null);
 
@@ -799,11 +836,11 @@ const FreeAudit = () => {
         return () => ctx.revert();
     }, []);
 
-    const auditItems = [
-        'We call your line after hours (or during a known gap)',
-        'You get a clear readout of what happened: answered, voicemail, or miss',
-        'We map how a speed-to-lead voice agent would catch those leads',
-        'No obligation. Keep the findings either way',
+    const offerItems = [
+        'Answers every call and web lead in seconds, day or night',
+        'Books qualified leads straight onto your calendar',
+        'If it doesn\'t catch a single lead in your first month, you get your money back.',
+        'No lock-in contract. Cancel anytime with a month\'s notice.',
     ];
 
     return (
@@ -812,35 +849,42 @@ const FreeAudit = () => {
                 <div className="mb-8"><SectionLabel>The Offer</SectionLabel></div>
                 <div className="grid md:grid-cols-2 gap-8 mb-16 items-end">
                     <h2 className="text-4xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05]">
-                        Free missed-call check:{' '}
-                        <span className="text-zinc-500">we call your line after hours and show you what happens.</span>
+                        Speed-to-lead voice agent.{' '}
+                        <span className="text-zinc-500">One price. Money-back if it doesn&apos;t catch a lead.</span>
                     </h2>
                     <p className="text-zinc-400 text-sm md:text-base">
-                        See the gap with your own number. Then decide if a voice agent that answers in seconds is worth a pilot.
+                        Spec Studio is scoped separately with no list price. Talk to the live demo above, then book a call.
                     </p>
                 </div>
 
                 <div className="price-card p-8 md:p-12 bg-[#0A0A0A] border border-white/15 relative max-w-3xl">
                     <div className="absolute top-6 right-6 flex items-center gap-2 px-3 py-1 border border-amber-500/60 text-amber-500 text-[10px] font-bold font-ui uppercase tracking-[0.2em]">
                         <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
-                        Free check
+                        Month to month
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-3">Missed-call check</h3>
+                    <h3 className="text-2xl font-bold text-white mb-3">Voice agent</h3>
                     <p className="text-zinc-400 text-sm mb-8 max-w-md">
-                        For teams that know leads die in voicemail and want proof before a pilot.
+                        For teams that lose jobs to voicemail and slow follow-up.
                     </p>
-                    <p className="text-white text-lg md:text-xl font-semibold mb-10">
-                        Pilot from $297, then $397/mo, month to month.
+                    <div className="flex items-baseline gap-3 mb-4">
+                        <span className="text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight">$297/mo</span>
+                        <span className="text-zinc-500 text-xs font-ui uppercase tracking-widest">USD</span>
+                    </div>
+                    <p className="text-zinc-300 text-sm mb-3 max-w-lg">
+                        If it doesn&apos;t catch a single lead in your first month, you get your money back.
+                    </p>
+                    <p className="text-zinc-400 text-sm mb-10 max-w-lg">
+                        No lock-in contract. Cancel anytime with a month&apos;s notice.
                     </p>
                     {/* Spec Studio stays unpriced on its own page. */}
                     <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex text-center px-8 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4">
-                        Book the free check
+                        Book a call
                     </a>
                     <button type="button" onClick={() => document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })} className="ml-0 md:ml-3 inline-flex text-center px-8 py-4 border border-zinc-600 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors mb-10">
                         Or talk to the demo agent
                     </button>
                     <ul className="space-y-4">
-                        {auditItems.map((item, i) => (
+                        {offerItems.map((item, i) => (
                             <li key={i} className="flex items-start gap-4 text-zinc-400 text-sm">
                                 <div className="w-1 h-1 bg-amber-500 mt-2.5 flex-shrink-0" />
                                 {item}
@@ -972,8 +1016,8 @@ const Team = () => {
 const FAQ = () => {
     const [open, setOpen] = useState(null);
     const faqs = [
-        { q: 'What is the free missed-call check?', a: 'We call your line after hours (or during a known gap) and show you what happens: answered, voicemail, or a miss. Then we map how a speed-to-lead voice agent would catch those leads. No obligation.' },
-        { q: 'Why is there no pricing on this site?', a: 'The voice pilot is listed: Pilot from $297, then $397/mo, month to month. Spec Studio and deeper custom work are scoped after we see your workflows, so we do not publish a menu price for those.' },
+        { q: 'What does the voice agent cost?', a: 'One price: $297/mo (USD). If it doesn\'t catch a single lead in your first month, you get your money back. No lock-in contract. Cancel anytime with a month\'s notice.' },
+        { q: 'Why is Spec Studio not priced here?', a: 'Spec Studio and deeper custom work are scoped after we see your workflows, so we do not publish a menu price for those. The voice agent is the listed offer at $297/mo.' },
         { q: 'Is the voice agent on this page real?', a: 'Yes. It is a live agent, not a recording. It checks the real calendar and books real meetings. It is also exactly what we would build for your business.' },
         { q: 'Do you work under NDA?', a: 'Yes. Client engagements run under NDA by default, which is also why we describe some work in general terms.' },
         { q: 'Who actually does the work?', a: 'Hendrik, the founder, scopes, builds, and ships every engagement personally, with an orchestrated fleet of AI agents doing the heavy lifting. No hand-offs to a junior team.' },
@@ -1225,9 +1269,8 @@ const Contact = () => {
                             </label>
                             <div className="relative">
                                 <label htmlFor="interest" className="sr-only">What are you interested in?</label>
-                                <select id="interest" name="interest" defaultValue="Missed-call check" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm focus:border-zinc-500 focus:outline-none transition-colors appearance-none cursor-pointer">
-                                    <option>Missed-call check</option>
-                                    <option>Voice Agent Pilot</option>
+                                <select id="interest" name="interest" defaultValue="Voice Agent" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm focus:border-zinc-500 focus:outline-none transition-colors appearance-none cursor-pointer">
+                                    <option>Voice Agent</option>
                                     <option>Spec Studio</option>
                                     <option>Something Else</option>
                                 </select>

@@ -119,7 +119,7 @@ export function Terms() {
             <p>
                 Calendar bookings are introductory unless otherwise stated. Paid engagements
                 (including voice-agent pilots and Spec Studio) are governed by a separate proposal
-                or agreement. Pilot pricing shown on the site may change; Spec Studio is scoped
+                or agreement. Voice-agent pricing shown on the site may change; Spec Studio is scoped
                 without a published list price.
             </p>
             <h2 className="text-white text-xl font-bold pt-4">Acceptable use</h2>

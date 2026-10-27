@@ -22,7 +22,7 @@ const FOOTER_LINKS = [
     ['Home', '/'],
     ['Spec Studio', '/spec-studio'],
     ['Voice Demo', '/#voice-demo'],
-    ['Missed-Call Check', '/#audit'],
+    ['Pricing', '/#audit'],
     ['Contact', '/#contact'],
 ];
 

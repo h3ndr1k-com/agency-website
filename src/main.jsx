@@ -5,7 +5,7 @@ import App from './App.jsx'
 import './index.css'
 
 const ServiceStrategy = lazy(() => import('./ServiceStrategy.jsx'))
-const ServiceAgents = lazy(() => import('./ServiceAgents.jsx'))
+const VoiceAgent = lazy(() => import('./VoiceAgent.jsx'))
 const AiOpsSetup = lazy(() => import('./AiOpsSetup.jsx'))
 const SpecStudio = lazy(() => import('./SpecStudio.jsx'))
 const Privacy = lazy(() => import('./Legal.jsx').then((m) => ({ default: m.Privacy })))
@@ -36,7 +36,7 @@ function Root() {
                 <Route path="/" element={<App />} />
                 <Route path="/spec-studio" element={<Suspense fallback={<Loading />}><SpecStudio /></Suspense>} />
                 <Route path="/services/ai-strategy" element={<Suspense fallback={<Loading />}><ServiceStrategy /></Suspense>} />
-                <Route path="/services/custom-agents" element={<Suspense fallback={<Loading />}><ServiceAgents /></Suspense>} />
+                <Route path="/services/voice-agent" element={<Suspense fallback={<Loading />}><VoiceAgent /></Suspense>} />
                 <Route path="/ai-ops-setup" element={<Suspense fallback={<Loading />}><AiOpsSetup /></Suspense>} />
                 <Route path="/ai-ops-setup/book" element={<Suspense fallback={<Loading />}><AiOpsSetup /></Suspense>} />
                 <Route path="/privacy" element={<Suspense fallback={<Loading />}><Privacy /></Suspense>} />

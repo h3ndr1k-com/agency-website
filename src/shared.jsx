@@ -82,6 +82,7 @@ export const SectionLabel = ({ children }) => (
 
 const DEFAULT_FOOTER_LINKS = [
     ['Home', '/'],
+    ['Voice Agent', '/services/voice-agent'],
     ['Spec Studio', '/spec-studio'],
     ['Voice Demo', '/#voice-demo'],
     ['Pricing', '/#audit'],
@@ -155,7 +156,7 @@ export const ServiceNavbar = () => {
                     COREFIX&reg;
                 </Link>
                 <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
-                    <Link to="/#voice-demo" className="hover:text-white transition-colors">Voice Demo</Link>
+                    <Link to="/services/voice-agent" className="hover:text-white transition-colors">Voice Agent</Link>
                     <Link to="/spec-studio" className="hover:text-white transition-colors">Spec Studio</Link>
                     <Link to="/#process" className="hover:text-white transition-colors">Process</Link>
                     <Link to="/#audit" className="hover:text-white transition-colors">Pricing</Link>

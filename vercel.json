@@ -8,6 +8,16 @@
       "permanent": true
     },
     {
+      "source": "/services/custom-agents",
+      "destination": "/services/voice-agent",
+      "permanent": true
+    },
+    {
+      "source": "/services/custom-agents/",
+      "destination": "/services/voice-agent",
+      "permanent": true
+    },
+    {
       "source": "/spec-studio/",
       "destination": "/spec-studio",
       "permanent": true
@@ -38,8 +48,8 @@
       "permanent": true
     },
     {
-      "source": "/services/custom-agents/",
-      "destination": "/services/custom-agents",
+      "source": "/services/voice-agent/",
+      "destination": "/services/voice-agent",
       "permanent": true
     },
     {

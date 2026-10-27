@@ -6,7 +6,7 @@ import { ChevronRight, ArrowUpRight, RotateCw } from 'lucide-react';
 import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 import VoiceSection from './VoiceSection.jsx';
 import SeoHead from './SeoHead.jsx';
-import { CAL_URL, HOME_FAQS, VOICE_COMPARE } from './seo.js';
+import { CAL_URL, HOME_FAQS } from './seo.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -141,7 +141,7 @@ const Hero = () => {
     }, []);
 
     const tags = [
-        { label: 'Voice Agents', href: '#voice-demo' },
+        { label: 'Voice Agents', href: '/services/voice-agent', route: true },
         { label: 'Spec Studio', href: '/spec-studio', route: true },
         { label: 'AI Strategy', href: '/services/ai-strategy', route: true },
         { label: 'Automation', href: '#services' },
@@ -240,7 +240,7 @@ const Services = () => {
     }, []);
 
     const services = [
-        { num: '01', title: 'Voice Agents That Take Calls', desc: 'Live agents that answer, qualify, and book straight into your calendar, like the one on this page.', link: '/services/custom-agents' },
+        { num: '01', title: 'Voice Agents That Take Calls', desc: 'Live agents that answer, qualify, and book straight into your calendar, like the one on this page.', link: '/services/voice-agent' },
         { num: '02', title: 'Email Triage & Workflow Automation', desc: 'Inbox classification, follow-up tracking, and automations wired into the systems you already run.' },
         { num: '03', title: 'Spec Studio', desc: 'AI pre-production review for print, packaging, and display manufacturers.', link: '/spec-studio' },
         { num: '04', title: 'AI Strategy & Advisory', desc: 'A clear, execution-ready plan for where AI actually saves you money. No slideware.', link: '/services/ai-strategy' },
@@ -902,60 +902,16 @@ const FreeAudit = () => {
                             </li>
                         ))}
                     </ul>
+                    <p className="mt-10 text-zinc-300 text-sm">
+                        <Link to="/services/voice-agent" className="text-amber-500 hover:text-white transition-colors font-ui uppercase tracking-[0.15em] text-[11px] font-bold">
+                            Full voice agent page →
+                        </Link>
+                    </p>
                 </div>
-
-                <VoiceCompare />
             </div>
         </section>
     );
 };
-
-// ── Voice agent vs typical answering service (no named competitors) ──
-const VoiceCompare = () => (
-    <section
-        id="compare"
-        aria-labelledby="compare-heading"
-        className="mt-16 md:mt-20 max-w-3xl"
-    >
-        <h3
-            id="compare-heading"
-            className="text-2xl md:text-3xl font-bold text-white tracking-[-0.02em] mb-3"
-        >
-            Corefix voice agent vs a typical answering service
-        </h3>
-        <p className="text-zinc-300 text-sm md:text-base mb-8 max-w-xl">
-            Same job on paper. Different pricing, commitment, and whether the lead actually lands on your calendar.
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <div className="border border-amber-500/50 bg-amber-500/[0.06] p-5 sm:p-6">
-                <h4 className="text-white text-xs font-ui font-bold uppercase tracking-[0.2em] mb-4">
-                    Corefix voice agent
-                </h4>
-                <ul className="space-y-3">
-                    {VOICE_COMPARE.corefix.map((item) => (
-                        <li key={item} className="flex items-start gap-3 text-zinc-200 text-sm leading-relaxed">
-                            <span className="mt-1.5 w-1.5 h-1.5 bg-amber-500 flex-shrink-0" aria-hidden="true" />
-                            <span>{item}</span>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-            <div className="border border-white/15 bg-[#0A0A0A] p-5 sm:p-6">
-                <h4 className="text-zinc-200 text-xs font-ui font-bold uppercase tracking-[0.2em] mb-4">
-                    Typical answering service
-                </h4>
-                <ul className="space-y-3">
-                    {VOICE_COMPARE.typical.map((item) => (
-                        <li key={item} className="flex items-start gap-3 text-zinc-300 text-sm leading-relaxed">
-                            <span className="mt-1.5 w-1.5 h-1.5 bg-zinc-500 flex-shrink-0" aria-hidden="true" />
-                            <span>{item}</span>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </div>
-    </section>
-);
 
 // ── Why Us ──
 const WhyUs = () => {

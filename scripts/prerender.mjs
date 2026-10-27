@@ -109,7 +109,7 @@ const pages = [
     ['/', 'index.html'],
     ['/spec-studio', 'spec-studio/index.html'],
     ['/services/ai-strategy', 'services/ai-strategy/index.html'],
-    ['/services/custom-agents', 'services/custom-agents/index.html'],
+    ['/services/voice-agent', 'services/voice-agent/index.html'],
     ['/ai-ops-setup', 'ai-ops-setup/index.html'],
     ['/ai-ops-setup/book', 'ai-ops-setup/book/index.html'],
     ['/privacy', 'privacy/index.html'],

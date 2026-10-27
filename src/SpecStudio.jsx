@@ -13,7 +13,7 @@ import {
     SectionLabel,
     CornerButton,
 } from './shared.jsx';
-import { CAL_URL } from './seo.js';
+import { CAL_URL, SPEC_FAQS } from './seo.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,16 +28,24 @@ const FOOTER_LINKS = [
 function SpecHero() {
     return (
         <section className="relative min-h-[70vh] flex flex-col justify-end pb-16 md:pb-24 overflow-hidden pt-32">
-            <div
-                className="absolute inset-0 z-0"
-                style={{
-                    backgroundImage:
-                        'url(https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=1200&q=60&auto=format&fit=crop)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    filter: 'grayscale(100%) contrast(1.1)',
-                }}
-            />
+            <picture className="absolute inset-0 z-0">
+                <source
+                    type="image/webp"
+                    srcSet="/img/spec-studio-hero-800.webp 800w, /img/spec-studio-hero-1200.webp 1200w"
+                    sizes="100vw"
+                />
+                <img
+                    src="/img/spec-studio-hero-1200.jpg"
+                    srcSet="/img/spec-studio-hero-800.jpg 800w, /img/spec-studio-hero-1200.jpg 1200w"
+                    sizes="100vw"
+                    width={1200}
+                    height={800}
+                    alt=""
+                    fetchPriority="high"
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-cover grayscale contrast-110"
+                />
+            </picture>
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0A0A]/40 to-[#0A0A0A] z-10 pointer-events-none" />
             <BrightGrid z="z-20" />
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
@@ -45,7 +53,7 @@ function SpecHero() {
                     <SectionLabel>Product</SectionLabel>
                 </div>
                 <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase text-white text-[16vw] md:text-[9rem] lg:text-[11rem]">
-                    Spec<span className="text-amber-500">_</span>Studio
+                    Spec<span className="text-amber-500" aria-hidden="true">_</span>Studio
                 </h1>
                 <div className="grid md:grid-cols-2 gap-8 mt-10 items-end">
                     <p className="max-w-xl text-zinc-300 text-sm md:text-base leading-relaxed">
@@ -244,20 +252,7 @@ function Walkthrough() {
 
 function SpecFAQ() {
     const [open, setOpen] = useState(null);
-    const faqs = [
-        {
-            q: 'Is Spec Studio only for display manufacturers?',
-            a: 'It was built for print, packaging, and display production, but the pattern (grade incoming documents against your own standards, cite every flag) transfers to any industry that bleeds money on non-conformant paperwork.',
-        },
-        {
-            q: 'Does Spec Studio invent specs?',
-            a: 'No. It is grounded in your own knowledge base (standards, press specs, dieline rules). It flags what is missing or non-conformant. It never invents a spec.',
-        },
-        {
-            q: 'How do we get started?',
-            a: 'Book a demo. We walk through a real sample against your standards and scope a fixed-price deployment if it fits.',
-        },
-    ];
+    const faqs = SPEC_FAQS;
 
     return (
         <section className="py-24 md:py-32 bg-[#0A0A0A] relative overflow-hidden">

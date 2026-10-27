@@ -19,10 +19,10 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.corefix.app/services/custom-agents</loc>
+    <loc>https://www.corefix.app/services/voice-agent</loc>
     <lastmod>2026-10-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.corefix.app/ai-ops-setup</loc>

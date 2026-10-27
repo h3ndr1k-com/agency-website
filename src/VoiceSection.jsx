@@ -121,9 +121,9 @@ export default function VoiceSection() {
             <div className="max-w-[1400px] mx-auto px-6 relative z-10 flex flex-col items-center text-center">
                 <div className="voice-el mb-8"><SectionLabel>Live Demo</SectionLabel></div>
                 <h2 className="voice-el text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] mb-6 leading-[0.95] max-w-4xl text-balance">
-                    Don&apos;t take our word for it.<br /><span className="text-zinc-500">Talk to our AI.</span>
+                    Don&apos;t take our word for it.<br /><span className="text-zinc-300">Talk to our AI.</span>
                 </h2>
-                <p className="voice-el text-zinc-400 text-sm md:text-base max-w-lg mb-6">
+                <p className="voice-el text-zinc-300 text-sm md:text-base max-w-lg mb-6">
                     This is a live agent, not a recording. Ask it what we build. It answers, checks Hendrik&apos;s real calendar, and books your intro call mid-conversation.
                 </p>
                 <div className="voice-el mb-12 flex flex-wrap items-center justify-center gap-4 text-sm">
@@ -241,7 +241,7 @@ export default function VoiceSection() {
                     </div>
                 </div>
 
-                <p className="voice-el text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] mt-8 flex items-center gap-3 flex-wrap justify-center">
+                <p className="voice-el text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] mt-8 flex items-center gap-3 flex-wrap justify-center">
                     <span>Voice · ~2 min · books straight to the calendar</span>
                     {PHONE && (
                         <>

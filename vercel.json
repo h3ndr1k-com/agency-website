@@ -1,9 +1,60 @@
 {
+  "trailingSlash": false,
   "redirects": [
     {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "corefix.app" }],
       "destination": "https://www.corefix.app/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/services/custom-agents",
+      "destination": "/services/voice-agent",
+      "permanent": true
+    },
+    {
+      "source": "/services/custom-agents/",
+      "destination": "/services/voice-agent",
+      "permanent": true
+    },
+    {
+      "source": "/spec-studio/",
+      "destination": "/spec-studio",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/",
+      "destination": "/privacy",
+      "permanent": true
+    },
+    {
+      "source": "/terms/",
+      "destination": "/terms",
+      "permanent": true
+    },
+    {
+      "source": "/ai-ops-setup/",
+      "destination": "/ai-ops-setup",
+      "permanent": true
+    },
+    {
+      "source": "/ai-ops-setup/book/",
+      "destination": "/ai-ops-setup/book",
+      "permanent": true
+    },
+    {
+      "source": "/services/ai-strategy/",
+      "destination": "/services/ai-strategy",
+      "permanent": true
+    },
+    {
+      "source": "/services/voice-agent/",
+      "destination": "/services/voice-agent",
+      "permanent": true
+    },
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
       "permanent": true
     }
   ]

@@ -6,6 +6,7 @@ import { ArrowUpRight, ChevronRight, ArrowLeft } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ServiceNavbar, Footer, SectionGrid, BrightGrid, SectionLabel, CornerButton } from './shared';
 import SeoHead from './SeoHead.jsx';
+import { STRATEGY_FAQS } from './seo.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -92,10 +93,11 @@ const Problem = () => {
         return () => ctx.revert();
     }, []);
 
+    // Non-numeric: no unsourced percentages or dollar figures.
     const painPoints = [
-        { stat: '73%', label: 'of AI projects fail to make it past pilot stage' },
-        { stat: '68%', label: 'of executives say their AI strategy is unclear' },
-        { stat: '$4.6M', label: 'average cost of failed AI implementation' },
+        { title: 'Pilots that stall', label: 'Many AI projects never make it past the pilot stage into production.' },
+        { title: 'Unclear strategy', label: 'Teams often start with tools before they have a clear problem to solve.' },
+        { title: 'Budget burned', label: 'Failed implementations drain budget on proofs of concept that never ship.' },
     ];
 
     return (
@@ -106,18 +108,18 @@ const Problem = () => {
                     <div>
                         <div className="prob-el mb-6"><SectionLabel>The Reality</SectionLabel></div>
                         <h2 className="prob-el text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05] mb-8">
-                            Most AI initiatives <span className="text-zinc-600">fail before they start.</span>
+                            Most AI initiatives <span className="text-zinc-300">fail before they start.</span>
                         </h2>
-                        <p className="prob-el text-zinc-400 text-sm md:text-base leading-relaxed max-w-lg">
-                            Companies rush into AI without a clear strategy — choosing tools before defining problems, building features nobody needs, and burning budgets on proof-of-concepts that never ship. The issue isn't the technology. It's the thinking.
+                        <p className="prob-el text-zinc-300 text-sm md:text-base leading-relaxed max-w-lg">
+                            Companies rush into AI without a clear strategy: choosing tools before defining problems, building features nobody needs, and burning budgets on proofs of concept that never ship. The issue isn&apos;t the technology. It&apos;s the thinking.
                         </p>
                     </div>
                     <div className="space-y-6">
                         {painPoints.map((p, i) => (
                             <div key={i} className="prob-el p-6 md:p-8 border border-white/10 bg-white/[0.02] hover:border-amber-500/50 transition-colors group">
-                                <div className="flex items-baseline gap-4">
-                                    <span className="text-4xl md:text-5xl font-black text-white tracking-tight group-hover:text-amber-500 transition-colors">{p.stat}</span>
-                                    <span className="text-zinc-400 text-sm leading-snug">{p.label}</span>
+                                <div className="flex flex-col gap-2">
+                                    <span className="text-xl md:text-2xl font-black text-white tracking-tight group-hover:text-amber-500 transition-colors">{p.title}</span>
+                                    <span className="text-zinc-300 text-sm leading-snug">{p.label}</span>
                                 </div>
                             </div>
                         ))}
@@ -490,13 +492,7 @@ const Trust = () => {
 // ── Service FAQ ──
 const ServiceFAQ = () => {
     const [open, setOpen] = useState(null);
-    const faqs = [
-        { q: 'What exactly do I get at the end of the sprint?', a: 'A complete strategy package: AI opportunity map, system architecture, implementation roadmap, risk assessment, vendor evaluation, and an executive summary. All actionable — no filler.' },
-        { q: 'Do I need technical knowledge to participate?', a: 'Not at all. We translate complex AI concepts into business language. You bring the domain expertise; we handle the technical analysis.' },
-        { q: 'What if we decide to build after the strategy sprint?', a: 'Your strategy sprint investment is credited toward any Build & Implementation engagement. The roadmap we create is designed to be executed — by us or your internal team.' },
-        { q: 'How is this different from a consulting firm?', a: 'We build AI systems. Our strategies are grounded in engineering reality, not theoretical frameworks. Every recommendation comes with a technical feasibility score and implementation path.' },
-        { q: 'Can we start sooner than 4 weeks?', a: 'We typically kick off within 1-2 weeks of agreement. The 4-week timeline is for the sprint itself. Limited spots available each quarter.' },
-    ];
+    const faqs = STRATEGY_FAQS;
 
     return (
         <section className="py-24 md:py-32 relative overflow-hidden">

@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import Cal, { getCalApi } from '@calcom/embed-react';
 import { STACKS, stackLabel } from '../api/_lib/ai-ops-intake.js';
 import { ServiceNavbar, Footer, BrightGrid, SectionGrid, SectionLabel, CornerButton } from './shared';
+import SeoHead from './SeoHead.jsx';
 
 const CAL_LINK = (import.meta.env.VITE_CAL_AI_OPS_LINK || 'corefix.ai/aios-setup-session-60-min')
     .replace(/^https?:\/\/(www\.)?cal\.com\//, '')
@@ -72,7 +73,8 @@ function Landing() {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.from('.ops-el', { y: 28, opacity: 0, duration: 0.85, stagger: 0.07, ease: 'power2.out' });
+            // Never fade the H1 (LCP / a11y). Animate chrome only.
+            gsap.from('.ops-chrome', { y: 28, opacity: 0, duration: 0.85, stagger: 0.07, ease: 'power2.out' });
         }, ref);
         return () => ctx.revert();
     }, []);
@@ -164,11 +166,24 @@ function Landing() {
     return (
         <div ref={ref}>
             <section className="relative overflow-hidden">
-                <img
-                    src="/ai-ops-fog.jpg"
-                    alt=""
-                    className="absolute inset-0 h-full w-full object-cover object-[center_38%] grayscale contrast-110"
-                />
+                <picture className="absolute inset-0">
+                    <source
+                        type="image/webp"
+                        srcSet="/img/ai-ops-fog-640.webp 640w, /img/ai-ops-fog-960.webp 960w"
+                        sizes="(max-width: 768px) 100vw, 960px"
+                    />
+                    <img
+                        src="/img/ai-ops-fog-960.jpg"
+                        srcSet="/img/ai-ops-fog-640.jpg 640w, /img/ai-ops-fog-960.jpg 960w"
+                        sizes="(max-width: 768px) 100vw, 960px"
+                        width={960}
+                        height={572}
+                        alt=""
+                        fetchPriority="high"
+                        decoding="async"
+                        className="absolute inset-0 h-full w-full object-cover object-[center_38%] grayscale contrast-110"
+                    />
+                </picture>
                 <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/55 via-[#0A0A0A]/68 to-[#0A0A0A] pointer-events-none" aria-hidden="true" />
                 <a
                     href="https://unsplash.com/photos/foggy-mountain-summit-1Z2niiBPg5A"
@@ -181,37 +196,37 @@ function Landing() {
                 <div className="max-w-[1400px] mx-auto px-6 pb-20 md:pb-28">
                     <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-16 items-start">
                         <div>
-                            <div className="ops-el mb-8">
-                                <Link to="/" className="inline-flex items-center gap-2 text-zinc-400 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors group">
+                            <div className="ops-chrome mb-8">
+                                <Link to="/" className="inline-flex items-center gap-2 text-zinc-300 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors group">
                                     <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back to Home
                                 </Link>
                             </div>
-                            <div className="ops-el mb-6"><SectionLabel>AI Ops Setup</SectionLabel></div>
-                            <h1 className="ops-el font-display uppercase leading-[0.9] tracking-[0.01em] text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl max-w-4xl">
+                            <div className="ops-chrome mb-6"><SectionLabel>AI Ops Setup</SectionLabel></div>
+                            <h1 className="font-display uppercase leading-[0.9] tracking-[0.01em] text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl max-w-4xl">
                                 Get AI working in your business in 60 minutes
                             </h1>
-                            <p className="ops-el mt-8 max-w-xl text-zinc-300 text-base md:text-lg leading-relaxed">
-                                A live screen-share session — not a sales call. You leave with a plan and a working starter.
+                            <p className="ops-chrome mt-8 max-w-xl text-zinc-200 text-base md:text-lg leading-relaxed">
+                                A live screen-share session, not a sales call. You leave with a plan and a working starter.
                             </p>
 
-                            <div className="ops-el mt-8 flex flex-wrap items-center gap-4">
+                            <div className="ops-chrome mt-8 flex flex-wrap items-center gap-4">
                                 <span className="text-white font-ui text-sm uppercase tracking-[0.18em]">$97 · 60 min · 1:1</span>
                                 <span aria-live="polite"><SlotBadge slots={slots} failed={slotsFailed} /></span>
                             </div>
-                            <p className="ops-el mt-4 text-zinc-500 text-sm">$97 credited toward fixed-scope build of #1.</p>
+                            <p className="ops-chrome mt-4 text-zinc-300 text-sm">$97 credited toward fixed-scope build of #1.</p>
                             {payPath && (
-                                <p className="ops-el mt-2 text-zinc-500 text-xs font-ui uppercase tracking-[0.16em]">Checkout charges $97 CAD.</p>
+                                <p className="ops-chrome mt-2 text-zinc-300 text-xs font-ui uppercase tracking-[0.16em]">Checkout charges $97 CAD.</p>
                             )}
 
-                            <div className="ops-el mt-10 max-w-xl">
-                                <p className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Who it&apos;s for</p>
-                                <p className="text-zinc-300 text-sm md:text-base leading-relaxed">
-                                    Solo operators and small teams (under ~20) who've tried ChatGPT but nothing stuck in the real workflow.
+                            <div className="ops-chrome mt-10 max-w-xl">
+                                <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Who it&apos;s for</p>
+                                <p className="text-zinc-200 text-sm md:text-base leading-relaxed">
+                                    Solo operators and small teams (under ~20) who&apos;ve tried ChatGPT but nothing stuck in the real workflow.
                                 </p>
                             </div>
                         </div>
 
-                        <form id="book" onSubmit={onSubmit} className="ops-el lg:sticky lg:top-28 border border-white/15 bg-[#0A0A0A] p-6 md:p-8 space-y-3">
+                        <form id="book" onSubmit={onSubmit} className="ops-chrome lg:sticky lg:top-28 border border-white/15 bg-[#0A0A0A] p-6 md:p-8 space-y-3">
                             <p className="text-[10px] font-ui uppercase tracking-[0.25em] text-zinc-500 mb-4">Short intake</p>
                             {cancelled && (
                                 <p className="text-amber-500 text-xs font-ui uppercase tracking-[0.14em] mb-2">Checkout cancelled. Your details are still here.</p>
@@ -374,8 +389,8 @@ function BookSession() {
                 <h1 className="font-display uppercase leading-[0.9] text-white text-5xl md:text-7xl max-w-4xl">
                     Book your AI Ops Setup Session
                 </h1>
-                <p className="mt-6 max-w-xl text-zinc-400 text-sm md:text-base leading-relaxed">
-                    A live screen-share session — not a sales call. You leave with a plan and a working starter.
+                <p className="mt-6 max-w-xl text-zinc-300 text-sm md:text-base leading-relaxed">
+                    A live screen-share session, not a sales call. You leave with a plan and a working starter.
                 </p>
 
                 {auth.kind === 'loading' && (
@@ -394,7 +409,7 @@ function BookSession() {
                 {(auth.kind === 'free' || auth.kind === 'paid' || auth.kind === 'open') && (
                     <>
                         <p className="mt-6 text-amber-500 text-xs font-ui uppercase tracking-[0.18em]">
-                            {auth.kind === 'paid' ? 'Payment received — $97 CAD' : auth.kind === 'free' ? 'Free seat claimed' : 'Pick a time'}
+                            {auth.kind === 'paid' ? 'Payment received · $97 CAD' : auth.kind === 'free' ? 'Free seat claimed' : 'Pick a time'}
                         </p>
                         <div className="mt-8 border border-white/15 bg-[#0A0A0A] overflow-hidden" style={{ minHeight: 640 }}>
                             <Cal
@@ -419,27 +434,15 @@ function BookSession() {
 export default function AiOpsSetup() {
     const { pathname } = useLocation();
     const booking = pathname.endsWith('/book');
-
-    useEffect(() => {
-        const previousTitle = document.title;
-        const description = document.querySelector('meta[name="description"]');
-        const previousDescription = description?.getAttribute('content') || '';
-        document.title = booking
-            ? 'Book your AI Ops Setup Session — Corefix'
-            : 'Get AI working in your business in 60 minutes — Corefix';
-        if (description && !booking) {
-            description.setAttribute('content', 'A live 60-minute screen-share. You leave with a plan and a working starter. $97 CAD, with the first 3 sessions free.');
-        }
-        return () => {
-            document.title = previousTitle;
-            if (description) description.setAttribute('content', previousDescription);
-        };
-    }, [booking]);
+    const seoPath = booking ? '/ai-ops-setup/book' : '/ai-ops-setup';
 
     return (
         <div className="w-full min-h-screen font-sans bg-[#0A0A0A] text-white selection:bg-amber-500 selection:text-black relative">
+            <SeoHead path={seoPath} />
             <ServiceNavbar />
-            {booking ? <BookSession /> : <Landing />}
+            <main>
+                {booking ? <BookSession /> : <Landing />}
+            </main>
             <Footer links={FOOTER_LINKS} />
         </div>
     );

@@ -52,7 +52,7 @@ export function Privacy() {
                 <strong className="text-white">Last updated:</strong> October 2026 (DRAFT)
             </p>
             <p>
-                Corefix (&quot;we&quot;, &quot;us&quot;) operates corefix.app. This draft explains what we
+                Corefix ("we", "us") operates corefix.app. This draft explains what we
                 collect when you use the site, book a call, submit the contact form, or use the
                 voice demo.
             </p>

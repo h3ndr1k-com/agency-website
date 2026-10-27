@@ -53,7 +53,10 @@ function SpecHero() {
                     <SectionLabel>Product</SectionLabel>
                 </div>
                 <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase text-white text-[16vw] md:text-[9rem] lg:text-[11rem]">
-                    Spec<span className="text-amber-500" aria-hidden="true">_</span>Studio
+                    <span className="sr-only">Spec Studio</span>
+                    <span aria-hidden="true">
+                        Spec<span className="text-amber-500">_</span>Studio
+                    </span>
                 </h1>
                 <div className="grid md:grid-cols-2 gap-8 mt-10 items-end">
                     <p className="max-w-xl text-zinc-300 text-sm md:text-base leading-relaxed">

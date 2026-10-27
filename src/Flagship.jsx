@@ -9,10 +9,10 @@ gsap.registerPlugin(ScrollTrigger);
 const DielineScene = lazy(() => import('./DielineScene.jsx'));
 
 const FLAGS = [
-    { severity: 'BLOCKING', category: 'DIE & TOOLING', issue: 'Title block calls NEW BLOCK DIE 55036167-001A — "New Die" checkbox left unchecked' },
-    { severity: 'BLOCKING', category: 'DIMENSIONS', issue: 'No per-panel dimensions or stated tolerance — only overall sheet size dimensioned' },
+    { severity: 'BLOCKING', category: 'DIE & TOOLING', issue: 'Title block calls NEW BLOCK DIE 55036167-001A - "New Die" checkbox left unchecked' },
+    { severity: 'BLOCKING', category: 'DIMENSIONS', issue: 'No per-panel dimensions or stated tolerance - only overall sheet size dimensioned' },
     { severity: 'NEEDED', category: 'LEGEND', issue: 'Yellow highlighted lines undefined in the CAD legend' },
-    { severity: 'NEEDED', category: 'GRAPHICS', issue: 'Artwork unverified — bleed, resolution, lead-edge gripper margin unchecked' },
+    { severity: 'NEEDED', category: 'GRAPHICS', issue: 'Artwork unverified - bleed, resolution, lead-edge gripper margin unchecked' },
 ];
 
 const CATEGORIES = [
@@ -23,15 +23,15 @@ const CATEGORIES = [
 ];
 
 const STATS = [
-    { value: '~$500', label: 'Cost of one uncaught spec error — worst case $2,000' },
+    { value: '~$500', label: 'Cost of one uncaught spec error - worst case $2,000' },
     { value: '8', label: 'Inspection categories scored on every review' },
-    { value: 'MIN', label: 'Verdict in minutes — not a designer\'s afternoon' },
+    { value: 'MIN', label: 'Verdict in minutes - not a designer\'s afternoon' },
 ];
 
 const ANNOTATIONS = [
     { text: 'FEFCO 0201', pos: 'top-4 left-4' },
     { text: 'BLEED 1/4"', pos: 'top-4 right-4' },
-    { text: 'LEAD EDGE — BOTTOM', pos: 'bottom-4 left-4' },
+    { text: 'LEAD EDGE - BOTTOM', pos: 'bottom-4 left-4' },
     { text: 'KONGSBERG READY', pos: 'bottom-4 right-4' },
 ];
 
@@ -92,7 +92,10 @@ export default function Flagship({ embed = false }) {
                     <>
                         <div className="flag-head mb-8"><SectionLabel>Flagship Product</SectionLabel></div>
                         <h2 className="flag-head font-display uppercase text-white leading-[0.9] tracking-[0.01em] text-[16vw] md:text-[9rem] lg:text-[11rem] select-none">
-                            Spec<span className="text-amber-500" aria-hidden="true">_</span>Studio
+                            <span className="sr-only">Spec Studio</span>
+                            <span aria-hidden="true">
+                                Spec<span className="text-amber-500">_</span>Studio
+                            </span>
                         </h2>
                     </>
                 )}
@@ -127,11 +130,11 @@ export default function Flagship({ embed = false }) {
                         ))}
                         <span className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-2 text-[9px] md:text-[10px] font-ui uppercase tracking-[0.25em] text-amber-500/80 pointer-events-none whitespace-nowrap">
                             <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
-                            Fold Simulation — Scroll to Assemble
+                            Fold Simulation - Scroll to Assemble
                         </span>
                     </div>
 
-                    {/* Live review replay — real output from a real spec */}
+                    {/* Live review replay - real output from a real spec */}
                     <div className="flag-report border border-white/20 bg-[#0A0A0A]/80 p-6 md:p-8 flex flex-col">
                         <div className="flag-report-header flex items-center justify-between gap-4 pb-5 border-b border-white/10">
                             <div className="flex items-center gap-3 min-w-0">
@@ -188,7 +191,7 @@ export default function Flagship({ embed = false }) {
                             </div>
                         </div>
                         <p className="text-zinc-600 text-[9px] font-ui uppercase tracking-[0.15em] mt-4">
-                            Real output — reviewed before this spec reached production
+                            Real output - reviewed before this spec reached production
                         </p>
                     </div>
                 </div>

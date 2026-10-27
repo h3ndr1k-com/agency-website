@@ -152,7 +152,7 @@ export default function VoiceSection() {
                     <span className="absolute -bottom-[2px] -left-[2px] w-4 h-4 border-b-2 border-l-2 border-amber-500" />
                     <span className="absolute -bottom-[2px] -right-[2px] w-4 h-4 border-b-2 border-r-2 border-amber-500" />
 
-                    <div className="flex flex-wrap justify-center sm:justify-between text-[8px] md:text-[9px] font-ui uppercase tracking-[0.25em] text-zinc-600 mb-4 gap-x-6 gap-y-2">
+                    <div className="flex flex-wrap justify-center sm:justify-between text-[8px] md:text-[9px] font-ui uppercase tracking-[0.25em] text-zinc-400 mb-4 gap-x-6 gap-y-2">
                         <span>Agent: Corefix-01</span>
                         <span>Channel: WebRTC</span>
                         <span className={live ? 'text-amber-500' : ''}>{live ? `Live ${mmss}` : 'Secure'}</span>
@@ -179,7 +179,7 @@ export default function VoiceSection() {
                         >
                             <div className="mb-3 flex items-center justify-between gap-3">
                                 <span className="text-[9px] font-ui uppercase tracking-[0.25em] text-amber-500">Corefix</span>
-                                <span className={`text-[9px] font-ui uppercase tracking-[0.25em] ${live ? 'text-amber-500' : status === 'error' ? 'text-red-400' : 'text-zinc-500'}`}>
+                                <span className={`text-[9px] font-ui uppercase tracking-[0.25em] ${live ? 'text-amber-500' : status === 'error' ? 'text-red-400' : 'text-zinc-400'}`}>
                                     {STATUS_COPY[status]}
                                 </span>
                             </div>
@@ -202,10 +202,10 @@ export default function VoiceSection() {
                                 )}
                                 {messages.map((msg, i) => (
                                     <div key={`${msg.role}-${i}`} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
-                                        <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-600">
+                                        <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-400">
                                             {msg.role === 'assistant' ? 'Corefix' : 'You'}
                                         </span>
-                                        <p className={`mt-1 text-sm leading-relaxed ${msg.final === false ? 'text-zinc-500' : 'text-zinc-200'}`}>{msg.text}</p>
+                                        <p className={`mt-1 text-sm leading-relaxed ${msg.final === false ? 'text-zinc-400' : 'text-zinc-200'}`}>{msg.text}</p>
                                     </div>
                                 ))}
                             </div>
@@ -220,11 +220,11 @@ export default function VoiceSection() {
                                 onClick={startCall}
                                 disabled={!canDial}
                                 aria-label="Start a voice call with the Corefix AI agent"
-                                className="allow-round flex h-11 w-11 items-center justify-center bg-amber-500 text-black transition-colors hover:bg-amber-400 focus:outline-none disabled:bg-transparent disabled:text-zinc-600 disabled:border disabled:border-white/15"
+                                className="allow-round flex h-11 w-11 items-center justify-center overflow-visible bg-amber-500 text-black transition-colors hover:bg-amber-400 focus:outline-none disabled:bg-transparent disabled:text-zinc-600 disabled:border disabled:border-white/15"
                             >
-                                <Phone size={16} strokeWidth={2.2} />
+                                <Phone size={28} strokeWidth={2} className="shrink-0 overflow-visible" aria-hidden="true" />
                             </button>
-                            <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-500">Dial</span>
+                            <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-400">Dial</span>
                         </div>
                         <div className="flex flex-col items-center gap-2">
                             <button
@@ -232,11 +232,11 @@ export default function VoiceSection() {
                                 onClick={endCall}
                                 disabled={!canHangUp}
                                 aria-label="End the voice call"
-                                className="allow-round flex h-11 w-11 items-center justify-center border border-white/20 text-white transition-colors hover:border-amber-500 hover:text-amber-500 focus:outline-none disabled:border-white/10 disabled:text-zinc-700"
+                                className="allow-round flex h-11 w-11 items-center justify-center overflow-visible border border-white/20 text-white transition-colors hover:border-amber-500 hover:text-amber-500 focus:outline-none disabled:border-white/10 disabled:text-zinc-500"
                             >
-                                <PhoneOff size={16} strokeWidth={2.2} />
+                                <PhoneOff size={28} strokeWidth={2} className="shrink-0 overflow-visible" aria-hidden="true" />
                             </button>
-                            <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-500">Hang up</span>
+                            <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-400">Hang up</span>
                         </div>
                     </div>
                 </div>
@@ -252,7 +252,7 @@ export default function VoiceSection() {
                         </>
                     )}
                 </p>
-                <p className="voice-el text-zinc-500 text-xs max-w-md mt-6 leading-relaxed">
+                <p className="voice-el text-zinc-400 text-xs max-w-md mt-6 leading-relaxed">
                     Privacy: the demo uses your microphone for a live WebRTC call processed by our voice provider (Vapi) so the agent can talk, check the calendar, and book. See our{' '}
                     <a href="/privacy" className="text-amber-500 hover:underline">Privacy Policy</a>
                     {' '}(draft). Prefer not to use a mic?{' '}

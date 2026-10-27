@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 /**
- * Post-build prerender: write per-route HTML with unique head tags,
- * www canonicals, JSON-LD, and crawler-visible H1/copy/links inside #root.
- * Client hydrates #root with hydrateRoot when markup is present.
- * JSON-LD is written once here; SeoHead keeps it on first paint (no duplicate).
+ * Post-build prerender: renderToString real route components so hydrateRoot matches.
+ * Also writes unique head tags, www canonicals, and JSON-LD.
  */
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { createServer } from 'vite';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -21,12 +20,28 @@ const {
     canonicalFor,
     ogImageFor,
     jsonLdForPath,
-    crawlerHtml,
 } = seoMod;
 
 const template = readFileSync(join(dist, 'index.html'), 'utf8');
 
-function applyHead(html, path) {
+const vite = await createServer({
+    root,
+    server: { middlewareMode: true },
+    appType: 'custom',
+    logLevel: 'error',
+});
+
+let render;
+try {
+    const mod = await vite.ssrLoadModule('/src/entry-server.jsx');
+    render = mod.render;
+} catch (err) {
+    await vite.close();
+    console.error('SSR load failed:', err);
+    process.exit(1);
+}
+
+function applyHead(html, path, body) {
     const meta = ROUTES[path] || ROUTES['/404'];
     const is404 = path === '/404' || meta.path === '/404';
     const jsonLd = is404 ? [] : jsonLdForPath(path);
@@ -49,7 +64,6 @@ function applyHead(html, path) {
     );
 
     if (is404) {
-        // 404 must not claim a self-URL or home as canonical / og:url
         out = out.replace(/<link rel="canonical" href="[^"]*"\s*\/?>\s*/g, '');
         out = out.replace(/\s*<meta property="og:url" content="[^"]*"\s*\/?>/g, '');
     } else {
@@ -78,15 +92,13 @@ function applyHead(html, path) {
     if (path === '/spec-studio') {
         preload = `
   <link rel="preload" as="image" href="/img/spec-studio-hero-800.webp" type="image/webp" imagesrcset="/img/spec-studio-hero-800.webp 800w, /img/spec-studio-hero-1200.webp 1200w" imagesizes="100vw" fetchpriority="high" />`;
+    } else if (path === '/services/voice-agent') {
+        preload = `
+  <link rel="preload" as="image" href="/img/voice-agent-hero-800.webp" type="image/webp" imagesrcset="/img/voice-agent-hero-800.webp 800w, /img/voice-agent-hero-1200.webp 1200w" imagesizes="100vw" fetchpriority="high" />`;
     }
 
     out = out.replace('</head>', `${robots}\n${jsonLdTags}${preload}\n</head>`);
-
-    const body = crawlerHtml(path === '/404' ? '/404' : path);
-    out = out.replace(
-        /<div id="root"><\/div>/,
-        `<div id="root">${body}</div>`
-    );
+    out = out.replace(/<div id="root"><\/div>/, `<div id="root">${body}</div>`);
     return out;
 }
 
@@ -98,11 +110,12 @@ function escapeAttr(s) {
 }
 
 function writeRoute(path, fileRel) {
-    const html = applyHead(template, path);
+    const body = render(path === '/404' ? '/404' : path);
+    const html = applyHead(template, path, body);
     const outPath = join(dist, fileRel);
     mkdirSync(dirname(outPath), { recursive: true });
     writeFileSync(outPath, html);
-    console.log('prerender', path, '→', fileRel);
+    console.log('prerender', path, '→', fileRel, `(${body.length} chars)`);
 }
 
 const pages = [
@@ -116,11 +129,12 @@ const pages = [
     ['/terms', 'terms/index.html'],
 ];
 
-for (const [path, file] of pages) writeRoute(path, file);
-
-// Vercel serves this file with HTTP 404 for unknown routes.
-// Direct /404.html may still be 200 (static file); body has no canonical/og:url/JSON-LD.
-writeRoute('/404', '404.html');
+try {
+    for (const [path, file] of pages) writeRoute(path, file);
+    writeRoute('/404', '404.html');
+} finally {
+    await vite.close();
+}
 
 for (const f of ['robots.txt', 'sitemap.xml']) {
     const src = join(root, 'public', f);

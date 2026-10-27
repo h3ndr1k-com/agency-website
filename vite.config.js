@@ -1,7 +1,32 @@
+import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+
+/**
+ * MPA clean URLs for preview: /spec-studio -> /spec-studio/index.html when that
+ * file exists. Unknown paths stay 404 (no SPA fallback to home).
+ */
+function prerenderCleanUrlsPlugin() {
+    return {
+        name: 'corefix-prerender-clean-urls',
+        configurePreviewServer(server) {
+            server.middlewares.use((req, _res, next) => {
+                if (!req.url || req.method !== 'GET') return next()
+                const raw = req.url.split('?')[0]
+                if (raw === '/' || raw.includes('.')) return next()
+                const clean = raw.replace(/\/$/, '')
+                const indexRel = join(clean.slice(1), 'index.html')
+                const indexAbs = join(server.config.root, 'dist', indexRel)
+                if (existsSync(indexAbs)) {
+                    req.url = `/${indexRel.replace(/\\/g, '/')}${req.url.includes('?') ? '?' + req.url.split('?')[1] : ''}`
+                }
+                next()
+            })
+        },
+    }
+}
 
 // Vite does not serve the Vercel functions in /api. This mounts them in `npm run dev` only.
 function apiDevPlugin() {
@@ -47,8 +72,11 @@ function apiDevPlugin() {
 }
 
 // https://vitejs.dev/config/
+// appType mpa: preview/serve must use per-route prerendered HTML (no SPA
+// fallback to index.html). That keeps hydrateRoot matched to the right tree.
 export default defineConfig({
-    plugins: [react(), apiDevPlugin()],
+    appType: 'mpa',
+    plugins: [react(), apiDevPlugin(), prerenderCleanUrlsPlugin()],
     build: {
         rollupOptions: {
             output: {

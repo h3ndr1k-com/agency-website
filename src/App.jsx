@@ -1,9 +1,8 @@
-import { lazy, Suspense, useEffect, useRef, useState, useCallback } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ChevronRight, ArrowUpRight, RotateCw } from 'lucide-react';
-import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent, AnimatePresence } from 'framer-motion';
+import { ChevronRight, ArrowUpRight } from 'lucide-react';
 import VoiceSection from './VoiceSection.jsx';
 import SeoHead from './SeoHead.jsx';
 import { CAL_URL, HOME_FAQS } from './seo.js';
@@ -12,6 +11,41 @@ gsap.registerPlugin(ScrollTrigger);
 
 const CAL_LINK = 'corefix.ai/30min';
 const CalEmbed = lazy(() => import('@calcom/embed-react').then((m) => ({ default: m.default })));
+const Capabilities = lazy(() => import('./Capabilities.jsx'));
+const CapabilitiesFallback = () => (
+    <section className="relative overflow-hidden bg-[#0A0A0A]" aria-busy="true" style={{ minHeight: '420px' }} />
+);
+
+function LazyCapabilities() {
+    const ref = useRef(null);
+    const [show, setShow] = useState(false);
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return undefined;
+        const io = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setShow(true);
+                    io.disconnect();
+                }
+            },
+            { rootMargin: '200px' }
+        );
+        io.observe(el);
+        return () => io.disconnect();
+    }, []);
+    return (
+        <div ref={ref}>
+            {show ? (
+                <Suspense fallback={<CapabilitiesFallback />}>
+                    <Capabilities />
+                </Suspense>
+            ) : (
+                <CapabilitiesFallback />
+            )}
+        </div>
+    );
+}
 
 // ── Section Grid (decorative background grid for sections) ──
 const gridLineColor = 'rgba(255,255,255,0.05)';
@@ -30,7 +64,7 @@ const gridHPositions = ['25%', '50%', '75%'];
 
 const SectionGrid = () => (
     <div className="absolute inset-0 pointer-events-none z-0" aria-hidden="true">
-        {/* Horizontal lines — full width */}
+        {/* Horizontal lines - full width */}
         {gridHPositions.map((top, i) => (
             <div key={`h-${i}`} className="absolute left-0 right-0 h-[1px]" style={{ background: gridLineColor, top }} />
         ))}
@@ -134,7 +168,7 @@ const Hero = () => {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Secondary chrome only — never fade the LCP copy.
+            // Secondary chrome only - never fade the LCP copy.
             gsap.from('.hero-chrome', { y: 20, opacity: 0, duration: 0.7, stagger: 0.08, ease: 'power2.out', delay: 0.15 });
         }, ref);
         return () => ctx.revert();
@@ -180,7 +214,7 @@ const Hero = () => {
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
                 <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase text-white" style={{ WebkitTextStroke: '0' }}>
                     <span className="block text-[14vw] md:text-[9vw] lg:text-[7.5vw]">Speed to lead</span>
-                    <span className="block text-[14vw] md:text-[9vw] lg:text-[7.5vw] text-zinc-300">is what we do.</span>
+                    <span className="block text-[14vw] md:text-[9vw] lg:text-[7.5vw] text-zinc-300"> is what we do.</span>
                 </h1>
             </div>
 
@@ -253,7 +287,7 @@ const Services = () => {
                     <SectionLabel>Bolt-Ons</SectionLabel>
                 </div>
                 <h2 className="svc-title text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-[-0.02em] max-w-5xl leading-[1.05] mb-8">
-                    One flagship. <span className="text-zinc-500">Modular bolt-ons.</span>
+                    One flagship. <span className="text-zinc-400">Modular bolt-ons.</span>
                 </h2>
                 <p className="svc-title text-zinc-300 mb-20 max-w-xl text-sm">Each one ships as a working system in your stack, not a proof of concept.</p>
 
@@ -274,7 +308,7 @@ const Services = () => {
                                             </span>
                                         )}
                                     </div>
-                                    <ArrowUpRight size={20} className="text-zinc-500 group-hover:text-amber-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />
+                                    <ArrowUpRight size={20} className="text-zinc-400 group-hover:text-amber-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />
                                 </div>
                             </Card>
                         );
@@ -286,275 +320,6 @@ const Services = () => {
                     <CornerButton href={CAL_URL} filled className="whitespace-nowrap">
                         Let&apos;s Talk <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                     </CornerButton>
-                </div>
-            </div>
-        </section>
-    );
-};
-
-// ── Reactor Knob Tick ──
-const KnobTick = ({ currentRotation, angle }) => {
-    const opacity = useTransform(currentRotation, (r) => r >= angle ? 1 : 0.2);
-    const color = useTransform(currentRotation, (r) => r >= angle ? '#f97316' : '#404040');
-    const shadow = useTransform(currentRotation, (r) => r >= angle ? '0 0 8px rgba(249,115,22,0.6)' : 'none');
-    return <motion.div style={{ backgroundColor: color, opacity, boxShadow: shadow }} className="w-1 h-2.5" />;
-};
-
-// ── Reactor Knob Display ──
-const KnobDisplay = ({ value }) => {
-    const [display, setDisplay] = useState(0);
-    useMotionValueEvent(value, 'change', (v) => setDisplay(Math.round(v)));
-    return (
-        <div className="relative">
-            <span className="absolute inset-0 blur-sm text-orange-500/50 font-ui text-2xl font-black tabular-nums tracking-widest">
-                {display.toString().padStart(3, '0')}
-            </span>
-            <span className="relative font-ui text-2xl text-orange-500 font-black tabular-nums tracking-widest">
-                {display.toString().padStart(3, '0')}
-                <span className="text-sm text-zinc-600 ml-1">%</span>
-            </span>
-        </div>
-    );
-};
-
-// ── Capabilities (Reactor Knob + Cave Image) ──
-const Capabilities = () => {
-    const capabilities = [
-        { label: 'Conversational AI & Chatbots', href: '#voice-demo' },
-        { label: 'Customer Support Automation', href: '#services' },
-        { label: 'Voice & Call Agents', href: '#voice-demo' },
-        { label: 'Internal Ops & Admin Automation', href: '#services' },
-        { label: 'Document & Data Intelligence', href: '/spec-studio' },
-        { label: 'API & Tool Integrations', href: '#services' },
-        { label: 'Sales & Lead Qualification Agents', href: '#voice-demo' },
-        { label: 'Fine-tuned LLM Systems', href: '#services' },
-    ];
-
-    const MIN_DEG = -135;
-    const MAX_DEG = 135;
-    const MID_DEG = 0; // midpoint = 50%
-    const TOTAL_TICKS = 40;
-    const DEGREES_PER_TICK = (MAX_DEG - MIN_DEG) / TOTAL_TICKS;
-    const AXIS_THRESHOLD = 10; // px before we decide spin vs scroll
-
-    const [isDragging, setIsDragging] = useState(false);
-    const rawRotation = useMotionValue(MID_DEG);
-    const snappedRotation = useMotionValue(MID_DEG);
-    const smoothRotation = useSpring(snappedRotation, { stiffness: 400, damping: 35, mass: 0.8 });
-    const displayValue = useTransform(smoothRotation, [MIN_DEG, MAX_DEG], [0, 100]);
-    const lightOpacity = useTransform(rawRotation, [MIN_DEG, MAX_DEG], [0.02, 0.35]);
-    const indicatorShadow = useTransform(rawRotation, (r) => `0 0 ${Math.max(5, (r + 135) / 10)}px orange`);
-    const knobRef = useRef(null);
-    const dragModeRef = useRef(null); // null | 'spin' | 'scroll'
-    const startPtrRef = useRef({ x: 0, y: 0, id: null });
-
-    const applyRotationFromPoint = useCallback((clientX, clientY) => {
-        if (!knobRef.current) return;
-        const rect = knobRef.current.getBoundingClientRect();
-        const x = clientX - (rect.left + rect.width / 2);
-        const y = clientY - (rect.top + rect.height / 2);
-        let degs = Math.atan2(y, x) * (180 / Math.PI) + 90;
-        if (degs > 180) degs -= 360;
-        if (degs < MIN_DEG && degs > -180) degs = MIN_DEG;
-        if (degs > MAX_DEG) degs = MAX_DEG;
-        rawRotation.set(degs);
-        snappedRotation.set(Math.round(degs / DEGREES_PER_TICK) * DEGREES_PER_TICK);
-    }, [rawRotation, snappedRotation, DEGREES_PER_TICK]);
-
-    const endDrag = useCallback((target, pointerId) => {
-        dragModeRef.current = null;
-        setIsDragging(false);
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-        document.body.style.touchAction = '';
-        try {
-            if (target && pointerId != null && target.hasPointerCapture?.(pointerId)) {
-                target.releasePointerCapture(pointerId);
-            }
-        } catch { /* already released */ }
-    }, []);
-
-    const handlePointerDown = useCallback((e) => {
-        if (e.button != null && e.button !== 0) return;
-        dragModeRef.current = null;
-        startPtrRef.current = { x: e.clientX, y: e.clientY, id: e.pointerId };
-        setIsDragging(true);
-        document.body.style.cursor = 'grabbing';
-        document.body.style.userSelect = 'none';
-        // Capture so touch keeps firing even if the finger leaves the knob
-        try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* older browsers */ }
-    }, []);
-
-    useEffect(() => {
-        if (!isDragging) return undefined;
-
-        const handlePointerMove = (e) => {
-            const start = startPtrRef.current;
-            if (start.id != null && e.pointerId !== start.id) return;
-
-            const dx = e.clientX - start.x;
-            const dy = e.clientY - start.y;
-            const dist = Math.hypot(dx, dy);
-
-            if (dragModeRef.current == null) {
-                if (dist < AXIS_THRESHOLD) return;
-                // Mostly vertical → let the page scroll; abandon knob drag.
-                if (Math.abs(dy) > Math.abs(dx) * 1.15) {
-                    dragModeRef.current = 'scroll';
-                    endDrag(knobRef.current, start.id);
-                    return;
-                }
-                dragModeRef.current = 'spin';
-                document.body.style.touchAction = 'none';
-            }
-
-            if (dragModeRef.current !== 'spin') return;
-            if (e.cancelable) e.preventDefault();
-            applyRotationFromPoint(e.clientX, e.clientY);
-        };
-
-        const handlePointerUp = (e) => {
-            const start = startPtrRef.current;
-            if (start.id != null && e.pointerId !== start.id) return;
-            endDrag(knobRef.current || e.target, e.pointerId);
-        };
-
-        window.addEventListener('pointermove', handlePointerMove, { passive: false });
-        window.addEventListener('pointerup', handlePointerUp);
-        window.addEventListener('pointercancel', handlePointerUp);
-        return () => {
-            window.removeEventListener('pointermove', handlePointerMove);
-            window.removeEventListener('pointerup', handlePointerUp);
-            window.removeEventListener('pointercancel', handlePointerUp);
-        };
-    }, [isDragging, applyRotationFromPoint, endDrag]);
-
-    const ticks = Array.from({ length: TOTAL_TICKS + 1 });
-
-    // Start half-revealed (knob sits at 50%); a one-time nudge hints it's draggable.
-    const [revealCount, setRevealCount] = useState(Math.floor(capabilities.length / 2));
-    useMotionValueEvent(displayValue, 'change', (v) => {
-        setRevealCount(Math.round((v / 100) * capabilities.length));
-    });
-
-    useEffect(() => {
-        if (isDragging) return;
-        const t = setTimeout(() => {
-            const nudge = MID_DEG + DEGREES_PER_TICK * 2;
-            snappedRotation.set(nudge);
-            setTimeout(() => snappedRotation.set(MID_DEG), 420);
-        }, 1400);
-        return () => clearTimeout(t);
-        // one-shot on mount
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const capPositions = [
-        { top: '8%', left: '3%' },
-        { top: '8%', right: '3%' },
-        { top: '28%', left: '2%' },
-        { top: '28%', right: '2%' },
-        { top: '52%', left: '3%' },
-        { top: '52%', right: '3%' },
-        { top: '74%', left: '6%' },
-        { top: '74%', right: '6%' },
-    ];
-
-    return (
-        <section className="relative overflow-hidden bg-[#0A0A0A]">
-            {/* Cave image hero — taller on small screens so labels + knob fit */}
-            <div className="relative w-full" style={{ aspectRatio: '16/9', minHeight: '420px', maxHeight: '85vh' }}>
-                <div className="absolute inset-0" style={{
-                    backgroundImage: 'url(https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1200&q=60&auto=format&fit=crop)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    filter: 'grayscale(100%) contrast(1.2) brightness(0.7)'
-                }} />
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/40 via-transparent to-[#0A0A0A]" />
-                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
-
-                <div className="absolute top-6 md:top-12 left-1/2 -translate-x-1/2 z-20">
-                    <SectionLabel>AI Capabilities</SectionLabel>
-                </div>
-
-                {/* Floating capability labels — reveal on all viewports as the knob turns */}
-                {capabilities.map((cap, i) => {
-                    const shown = i < revealCount;
-                    return (
-                        <div
-                            key={i}
-                            className="absolute z-20 transition-all duration-700 ease-out max-w-[42%] sm:max-w-none"
-                            style={{
-                                ...capPositions[i],
-                                opacity: shown ? 1 : 0,
-                                transform: shown ? 'scale(1)' : 'scale(0.8)',
-                                pointerEvents: shown ? 'auto' : 'none',
-                            }}
-                        >
-                            <a href={cap.href} className="group/cap inline-flex items-center gap-2 px-2.5 py-1.5 md:px-3 bg-black/60 backdrop-blur-sm border border-white/20 hover:border-amber-500 text-white text-[9px] md:text-xs font-ui uppercase tracking-[0.12em] md:tracking-[0.15em] transition-colors">
-                                <span className="w-1.5 h-1.5 bg-amber-500 flex-shrink-0" />
-                                <span className="leading-snug">{cap.label}</span>
-                                <ArrowUpRight size={11} className="opacity-0 group-hover/cap:opacity-100 transition-opacity hidden sm:inline" />
-                            </a>
-                        </div>
-                    );
-                })}
-
-                <div className="absolute inset-0 flex items-center justify-center z-10">
-                    <div className="relative w-52 h-52 md:w-64 md:h-64 select-none allow-round">
-                        <motion.div className="absolute inset-0 bg-orange-500 rounded-full blur-3xl" style={{ opacity: lightOpacity }} />
-
-                        <div className="absolute inset-0 pointer-events-none">
-                            {ticks.map((_, i) => {
-                                const angle = (i / TOTAL_TICKS) * (MAX_DEG - MIN_DEG) + MIN_DEG;
-                                return (
-                                    <div key={i} className="absolute top-0 left-1/2 w-1 h-full -translate-x-1/2" style={{ transform: `rotate(${angle}deg)` }}>
-                                        <KnobTick currentRotation={smoothRotation} angle={angle} />
-                                    </div>
-                                );
-                            })}
-                        </div>
-
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40">
-                            <motion.div
-                                ref={knobRef}
-                                className={`relative w-full h-full rounded-full z-20 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-                                style={{ rotate: smoothRotation, touchAction: 'none' }}
-                                onPointerDown={handlePointerDown}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                role="slider"
-                                aria-label="Drag to reveal AI capabilities"
-                                aria-valuemin={0}
-                                aria-valuemax={capabilities.length}
-                                aria-valuenow={revealCount}
-                            >
-                                <div className="w-full h-full rounded-full bg-neutral-900 shadow-[0_10px_30px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-neutral-800 flex items-center justify-center relative overflow-hidden">
-                                    <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent_50%),conic-gradient(from_0deg,transparent_0deg,#000_360deg)]" />
-                                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full bg-neutral-950 shadow-[inset_0_2px_5px_rgba(0,0,0,1)] border border-neutral-800/50 flex items-center justify-center">
-                                        <motion.div
-                                            className="absolute top-3 w-1.5 h-5 bg-orange-500 rounded-full"
-                                            style={{ boxShadow: indicatorShadow }}
-                                        />
-                                        <span className="font-ui text-[9px] text-zinc-500 tracking-[0.25em] mt-4">LEVEL</span>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </div>
-
-                        <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none">
-                            <span className="inline-flex items-center gap-1.5 text-[10px] text-amber-500 font-ui tracking-[0.25em] mb-2">
-                                <RotateCw size={12} className="animate-spin" style={{ animationDuration: '3.5s' }} />
-                                DRAG TO SPIN
-                            </span>
-                            <span className="text-[9px] text-zinc-500 font-ui tracking-[0.25em] mb-1">OUTPUT</span>
-                            <KnobDisplay value={displayValue} />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-10">
-                    <span className="text-zinc-400 text-sm font-ui font-bold tracking-[0.2em]">COREFIX&reg;</span>
                 </div>
             </div>
         </section>
@@ -628,36 +393,22 @@ const Process = () => {
                     >
                         <div className="flex items-start justify-between mb-6">
                             <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">· {step.num}</span>
-                            <span className={`text-xl leading-none transition-transform duration-300 ${activeStep === i ? 'text-amber-500 rotate-45' : 'text-zinc-500 group-hover:text-white'}`}>+</span>
+                            <span className={`text-xl leading-none transition-transform duration-300 ${activeStep === i ? 'text-amber-500 rotate-45' : 'text-zinc-400 group-hover:text-white'}`}>+</span>
                         </div>
                         <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">{step.title}</h3>
                         <p className="text-zinc-300 text-sm leading-relaxed max-w-md">{step.desc}</p>
-                        <AnimatePresence>
-                            {activeStep === i && (
-                                <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.35, ease: 'easeOut' }}
-                                    className="overflow-hidden"
-                                >
-                                    <ul className="mt-6 pt-6 border-t border-white/10 space-y-3">
-                                        {step.details.map((d, j) => (
-                                            <motion.li
-                                                key={j}
-                                                initial={{ opacity: 0, x: -12 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                transition={{ delay: 0.1 + j * 0.07, duration: 0.3 }}
-                                                className="flex items-start gap-3 text-zinc-300 text-sm"
-                                            >
-                                                <span className="w-1 h-1 bg-amber-500 mt-2 flex-shrink-0" />
-                                                {d}
-                                            </motion.li>
-                                        ))}
-                                    </ul>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                        <div
+                            className={`overflow-hidden transition-all duration-350 ${activeStep === i ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}
+                        >
+                            <ul className="mt-6 pt-6 border-t border-white/10 space-y-3">
+                                {step.details.map((d) => (
+                                    <li key={d} className="flex items-start gap-3 text-zinc-300 text-sm">
+                                        <span className="w-1 h-1 bg-amber-500 mt-2 flex-shrink-0" />
+                                        {d}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </button>
                 ))}
             </div>
@@ -689,7 +440,7 @@ const CountUp = ({ target, visible, prefix = '', suffix = '' }) => {
     return <span>{prefix}{val}{suffix}</span>;
 };
 
-// ── Featured Case Study — Point 1 Displays ──
+// ── Featured Case Study - Point 1 Displays ──
 const CaseStudy = () => {
     const ref = useRef(null);
     const [visible, setVisible] = useState(false);
@@ -727,7 +478,7 @@ const CaseStudy = () => {
                             {stats.map((stat, i) => (
                                 <div key={i}>
                                     <div className="text-3xl md:text-5xl font-bold text-white tracking-tight"><CountUp target={stat.value} visible={visible} prefix={stat.prefix || ''} /></div>
-                                    <div className="text-zinc-500 text-[10px] mt-3 font-ui uppercase tracking-[0.2em]">{stat.label}</div>
+                                    <div className="text-zinc-400 text-[10px] mt-3 font-ui uppercase tracking-[0.2em]">{stat.label}</div>
                                 </div>
                             ))}
                         </div>
@@ -997,7 +748,7 @@ const Team = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
                     <div className="team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden hover:border-amber-500/60 hover:-translate-y-1 transition-all duration-500">
                         <div className="relative aspect-[3/4] lg:aspect-auto lg:h-full overflow-hidden min-h-[420px]">
-                            <img src="/Hendrik.jpg" alt="Hendrik, founder of Corefix" loading="lazy" className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out" />
+                            <img src="/Hendrik.jpg" alt="Hendrik, founder of Corefix" width={800} height={532} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out" />
                             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
                             <div className="absolute bottom-6 left-6 right-6">
                                 <p className="text-white font-bold text-2xl">Hendrik</p>
@@ -1017,7 +768,7 @@ const Team = () => {
                                 <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500 mt-1">{String(i + 1).padStart(2, '0')}</span>
                                 <div>
                                     <h3 className="text-white font-bold text-lg mb-1">{c.role}</h3>
-                                    <p className="text-zinc-500 text-sm leading-relaxed">{c.desc}</p>
+                                    <p className="text-zinc-400 text-sm leading-relaxed">{c.desc}</p>
                                 </div>
                             </div>
                         ))}
@@ -1056,7 +807,7 @@ const FAQ = () => {
                         </div>
                     </div>
 
-                    {/* Right column — FAQ items */}
+                    {/* Right column - FAQ items */}
                     <div>
                         {faqs.map((faq, i) => (
                             <div key={i} className="border-b border-white/10 last:border-0">
@@ -1089,7 +840,7 @@ const Articles = () => {
     const ref = useRef(null);
     const articles = [
         { title: 'The Foundation of AI: Why Your Knowledge Base is Your Competitive Advantage', desc: 'Learn how to solve the "messy data" problem and build a centralized AI knowledge system.', date: 'JAN 2026', read: '4 MIN READ', img: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=60' },
-        { title: 'The Ethical AI Roadmap: Building Trust in an Automated World', desc: 'Navigate the ethical landscape of AI — from data privacy to bias mitigation.', date: 'DEC 2025', read: '10 MIN READ', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=60' },
+        { title: 'The Ethical AI Roadmap: Building Trust in an Automated World', desc: 'Navigate the ethical landscape of AI - from data privacy to bias mitigation.', date: 'DEC 2025', read: '10 MIN READ', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=60' },
         { title: 'The Crystal Ball: Using AI Simulation to De-Risk Your 2026 Strategy', desc: 'How AI digital twins and predictive simulation help business leaders plan ahead.', date: 'DEC 2025', read: '8 MIN READ', img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=60' },
     ];
 
@@ -1108,7 +859,7 @@ const Articles = () => {
             <div className="max-w-[1400px] mx-auto px-6">
                 <div className="mb-8"><SectionLabel>Articles</SectionLabel></div>
                 <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-16 leading-[1.05]">
-                    Insights & <span className="text-zinc-600">Field Notes</span>
+                    Insights & <span className="text-zinc-400">Field Notes</span>
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5">
                     {articles.map((a, i) => (
@@ -1118,13 +869,13 @@ const Articles = () => {
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/30 to-transparent" />
                             </div>
                             <div className="px-2 pb-2">
-                                <div className="flex items-center gap-3 text-zinc-600 text-[10px] font-ui uppercase tracking-[0.2em] mb-4">
+                                <div className="flex items-center gap-3 text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] mb-4">
                                     <span>{a.date}</span>
                                     <span className="w-1 h-1 bg-zinc-700" />
                                     <span>{a.read}</span>
                                 </div>
                                 <h3 className="text-white font-bold text-base md:text-lg leading-snug mb-3">{a.title}</h3>
-                                <p className="text-zinc-500 text-sm leading-relaxed">{a.desc}</p>
+                                <p className="text-zinc-400 text-sm leading-relaxed">{a.desc}</p>
                             </div>
                         </a>
                     ))}
@@ -1216,7 +967,7 @@ const Contact = () => {
                     <div>
                         <div className="contact-el mb-8"><SectionLabel>Let&apos;s Talk</SectionLabel></div>
                         <h2 className="contact-el text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] mb-8 leading-[0.95]">
-                            Book a Call<br /><span className="text-zinc-600">Right Here</span>
+                            Book a Call<br /><span className="text-zinc-400">Right Here</span>
                         </h2>
                         <p className="contact-el text-zinc-400 text-sm md:text-base max-w-md mb-8">Pick a time and it drops straight onto the calendar: a 30-minute intro, no pitch. Or let the voice agent above book it for you.</p>
                         <div className="contact-el flex flex-col gap-3 max-w-xs">
@@ -1229,7 +980,7 @@ const Contact = () => {
 
                     <div ref={calWrapRef} className="contact-el border border-white/15 bg-[#0A0A0A] overflow-hidden" style={{ minHeight: 640 }}>
                         {showCal ? (
-                            <Suspense fallback={<div className="flex items-center justify-center h-full min-h-[640px] text-zinc-500 text-sm font-ui uppercase tracking-[0.2em]">Loading calendar…</div>}>
+                            <Suspense fallback={<div className="flex items-center justify-center h-full min-h-[640px] text-zinc-400 text-sm font-ui uppercase tracking-[0.2em]">Loading calendar…</div>}>
                                 <CalEmbed
                                     namespace="intro-call"
                                     calLink={CAL_LINK}
@@ -1246,11 +997,11 @@ const Contact = () => {
                     </div>
                 </div>
 
-                {/* Secondary — written inquiry */}
+                {/* Secondary - written inquiry */}
                 <div className="mt-20 pt-16 border-t border-white/10 grid md:grid-cols-2 gap-16 items-start">
                     <div>
                         <h3 className="contact-el text-2xl md:text-4xl font-bold text-white tracking-[-0.02em] mb-4">Prefer to write?</h3>
-                        <p className="contact-el text-zinc-500 text-sm md:text-base max-w-md">Tell us what you want AI to fix and we&apos;ll come back with a clear, no-fluff plan of attack.</p>
+                        <p className="contact-el text-zinc-400 text-sm md:text-base max-w-md">Tell us what you want AI to fix and we&apos;ll come back with a clear, no-fluff plan of attack.</p>
                     </div>
 
                     {status === 'success' ? (
@@ -1285,7 +1036,7 @@ const Contact = () => {
                                     <option>Spec Studio</option>
                                     <option>Something Else</option>
                                 </select>
-                                <ChevronRight size={14} className="absolute right-5 top-1/2 -translate-y-1/2 rotate-90 text-zinc-500 pointer-events-none" aria-hidden="true" />
+                                <ChevronRight size={14} className="absolute right-5 top-1/2 -translate-y-1/2 rotate-90 text-zinc-400 pointer-events-none" aria-hidden="true" />
                             </div>
                             <label className="block">
                                 <span className="sr-only">Message</span>
@@ -1397,7 +1148,7 @@ function App() {
                 <VoiceSection />
                 <SpecStudioBand />
                 <Services />
-                <Capabilities />
+                <LazyCapabilities />
                 <Process />
                 <Testimonials />
                 <FreeAudit />

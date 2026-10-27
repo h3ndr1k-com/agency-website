@@ -839,8 +839,6 @@ const FreeAudit = () => {
     const offerItems = [
         'Answers every call and web lead in seconds, day or night',
         'Books qualified leads straight onto your calendar',
-        'If it doesn\'t catch a single lead in your first month, you get your money back.',
-        'No lock-in contract. Cancel anytime with a month\'s notice.',
     ];
 
     return (
@@ -858,11 +856,13 @@ const FreeAudit = () => {
                 </div>
 
                 <div className="price-card p-8 md:p-12 bg-[#0A0A0A] border border-white/15 relative max-w-3xl">
-                    <div className="absolute top-6 right-6 flex items-center gap-2 px-3 py-1 border border-amber-500/60 text-amber-500 text-[10px] font-bold font-ui uppercase tracking-[0.2em]">
-                        <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
-                        Month to month
+                    <div className="flex flex-col-reverse sm:flex-row sm:items-start sm:justify-between gap-4 mb-3">
+                        <h3 className="text-2xl font-bold text-white">Voice agent</h3>
+                        <div className="inline-flex self-start items-center gap-2 px-3 py-1 border border-amber-500/60 text-amber-500 text-[10px] font-bold font-ui uppercase tracking-[0.2em] shrink-0">
+                            <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
+                            Month to month
+                        </div>
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-3">Voice agent</h3>
                     <p className="text-zinc-400 text-sm mb-8 max-w-md">
                         For teams that lose jobs to voicemail and slow follow-up.
                     </p>

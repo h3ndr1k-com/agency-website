@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PhoneOff, Phone } from 'lucide-react';
+import { LiquidGlassButton } from './LiquidGlassButton';
 import { SectionGrid, SectionLabel } from './shared.jsx';
 import SiriWave from './SiriWave.jsx';
 
@@ -215,27 +216,27 @@ export default function VoiceSection() {
 
                     <div className="mt-8 flex items-start justify-center gap-8">
                         <div className="flex flex-col items-center gap-2">
-                            <button
-                                type="button"
+                            <LiquidGlassButton
+                                tone="amber"
+                                filterId="voice-dial-glass"
                                 onClick={startCall}
                                 disabled={!canDial}
                                 aria-label="Start a voice call with the Corefix AI agent"
-                                className="allow-round flex h-11 w-11 items-center justify-center overflow-visible bg-amber-500 text-black transition-colors hover:bg-amber-400 focus:outline-none disabled:bg-transparent disabled:text-zinc-600 disabled:border disabled:border-white/15"
                             >
                                 <Phone size={32} strokeWidth={1.75} className="shrink-0 overflow-visible" aria-hidden="true" />
-                            </button>
+                            </LiquidGlassButton>
                             <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-400">Dial</span>
                         </div>
                         <div className="flex flex-col items-center gap-2">
-                            <button
-                                type="button"
+                            <LiquidGlassButton
+                                tone="mute"
+                                filterId="voice-hangup-glass"
                                 onClick={endCall}
                                 disabled={!canHangUp}
                                 aria-label="End the voice call"
-                                className="allow-round flex h-11 w-11 items-center justify-center overflow-visible border border-white/20 text-white transition-colors hover:border-amber-500 hover:text-amber-500 focus:outline-none disabled:border-white/10 disabled:text-zinc-500"
                             >
                                 <PhoneOff size={32} strokeWidth={1.75} className="shrink-0 overflow-visible" aria-hidden="true" />
-                            </button>
+                            </LiquidGlassButton>
                             <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-400">Hang up</span>
                         </div>
                     </div>

@@ -100,76 +100,6 @@ function Hero() {
     );
 }
 
-/** Hand-drawn amber connector arrows between how-it-works steps (decorative). */
-function HandArrow({ variant }) {
-    // below: 1 -> 2 under the cards; above: 2 -> 3 over the cards
-    const isBelow = variant === 'below';
-    return (
-        <svg
-            viewBox="0 0 160 48"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            className={`pointer-events-none absolute z-20 hidden w-[min(28%,11rem)] text-amber-500 md:block ${
-                isBelow
-                    ? 'left-[16%] bottom-3 translate-y-1/2'
-                    : 'left-[55%] top-3 -translate-y-1/2'
-            }`}
-        >
-            <path
-                d={
-                    isBelow
-                        ? 'M6 18c18 14 34-10 52-2 16 7 28 16 46 8 14-6 28-14 48-6'
-                        : 'M6 30c20-16 36 8 54 2 18-6 30-18 48-10 16 7 30 14 46 4'
-                }
-                stroke="currentColor"
-                strokeWidth="2.25"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                vectorEffect="non-scaling-stroke"
-            />
-            <path
-                d={
-                    isBelow
-                        ? 'M136 12c6 4 12 8 16 14M152 26c-8 0-14 2-18 6'
-                        : 'M136 18c8-2 14-6 18-12M154 6c-4 6-10 10-18 12'
-                }
-                stroke="currentColor"
-                strokeWidth="2.25"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                vectorEffect="non-scaling-stroke"
-            />
-        </svg>
-    );
-}
-
-function HandArrowVertical() {
-    return (
-        <div className="flex justify-center bg-[#0A0A0A] py-3 md:hidden" aria-hidden="true">
-            <svg
-                viewBox="0 0 32 56"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-10 w-6 text-amber-500"
-            >
-                <path
-                    d="M16 4c-4 10 4 14 0 24s-6 12 0 20"
-                    stroke="currentColor"
-                    strokeWidth="2.25"
-                    strokeLinecap="round"
-                />
-                <path
-                    d="M8 40c4 4 8 8 8 12M24 40c-4 4-8 8-8 12"
-                    stroke="currentColor"
-                    strokeWidth="2.25"
-                    strokeLinecap="round"
-                />
-            </svg>
-        </div>
-    );
-}
-
 function HowItWorks() {
     return (
         <section id="how-it-works" className="py-24 md:py-32 relative overflow-hidden border-y border-white/10">
@@ -181,41 +111,18 @@ function HowItWorks() {
                 <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-14 max-w-3xl">
                     Live in three steps.
                 </h2>
-                <div className="relative">
-                    {/* Desktop: 3 columns + absolute hand-drawn connectors */}
-                    <div className="hidden md:grid md:grid-cols-3 gap-px bg-white/10 border border-white/10">
-                        {STEPS.map((step) => (
-                            <div key={step.num} className="bg-[#0A0A0A] p-8 md:p-10">
-                                <span className="text-amber-500 text-[10px] font-ui font-bold uppercase tracking-[0.25em]">
-                                    {step.num}
-                                </span>
-                                <h3 className="text-white text-xl font-bold mt-4 mb-3 tracking-tight">
-                                    {step.title}
-                                </h3>
-                                <p className="text-zinc-300 text-sm leading-relaxed">{step.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                    <HandArrow variant="below" />
-                    <HandArrow variant="above" />
-
-                    {/* Mobile: stacked cards with vertical hand-drawn arrows */}
-                    <div className="grid grid-cols-1 gap-px bg-white/10 border border-white/10 md:hidden">
-                        {STEPS.map((step, i) => (
-                            <div key={step.num} className="contents">
-                                {i > 0 && <HandArrowVertical />}
-                                <div className="bg-[#0A0A0A] p-8">
-                                    <span className="text-amber-500 text-[10px] font-ui font-bold uppercase tracking-[0.25em]">
-                                        {step.num}
-                                    </span>
-                                    <h3 className="text-white text-xl font-bold mt-4 mb-3 tracking-tight">
-                                        {step.title}
-                                    </h3>
-                                    <p className="text-zinc-300 text-sm leading-relaxed">{step.desc}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10">
+                    {STEPS.map((step) => (
+                        <div key={step.num} className="bg-[#0A0A0A] p-8 md:p-10">
+                            <span className="text-amber-500 text-[10px] font-ui font-bold uppercase tracking-[0.25em]">
+                                {step.num}
+                            </span>
+                            <h3 className="text-white text-xl font-bold mt-4 mb-3 tracking-tight">
+                                {step.title}
+                            </h3>
+                            <p className="text-zinc-300 text-sm leading-relaxed">{step.desc}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>

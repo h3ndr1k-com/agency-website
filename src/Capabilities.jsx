@@ -3,7 +3,7 @@ import { ArrowUpRight, RotateCw } from 'lucide-react';
 import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 
 const SectionLabel = ({ children }) => (
-    <span className="inline-flex items-center gap-2.5 px-5 py-2.5 border border-white/40 text-white text-xs font-ui uppercase tracking-[0.25em]">
+    <span className="inline-flex items-center gap-2.5 px-5 py-2.5 border border-white/50 text-white text-xs font-ui uppercase tracking-[0.25em]">
         <span className="w-1.5 h-1.5 bg-amber-500" />
         {children}
     </span>
@@ -227,7 +227,7 @@ export default function Capabilities() {
                         >
                             <a
                                 href={cap.href}
-                                className="group/cap inline-flex items-center gap-2 px-2.5 py-1.5 md:px-3 bg-black/60 backdrop-blur-sm border border-white/20 hover:border-amber-500 text-white text-[9px] md:text-xs font-ui uppercase tracking-[0.12em] md:tracking-[0.15em] transition-colors"
+                                className="group/cap inline-flex items-center gap-2 px-2.5 py-1.5 md:px-3 bg-black/60 backdrop-blur-sm border border-white/30 hover:border-amber-500 text-white text-[9px] md:text-xs font-ui uppercase tracking-[0.12em] md:tracking-[0.15em] transition-colors"
                             >
                                 <span className="w-1.5 h-1.5 bg-amber-500 flex-shrink-0" />
                                 <span className="leading-snug">{cap.label}</span>
@@ -276,9 +276,9 @@ export default function Capabilities() {
                                 aria-valuemax={capabilities.length}
                                 aria-valuenow={revealCount}
                             >
-                                <div className="w-full h-full rounded-full bg-neutral-900 shadow-[0_10px_30px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-neutral-800 flex items-center justify-center relative overflow-hidden">
+                                <div className="w-full h-full rounded-full bg-neutral-900 shadow-[0_10px_30px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-neutral-700 flex items-center justify-center relative overflow-hidden">
                                     <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent_50%),conic-gradient(from_0deg,transparent_0deg,#000_360deg)]" />
-                                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full bg-neutral-950 shadow-[inset_0_2px_5px_rgba(0,0,0,1)] border border-neutral-800/50 flex items-center justify-center">
+                                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full bg-neutral-950 shadow-[inset_0_2px_5px_rgba(0,0,0,1)] border border-neutral-700/60 flex items-center justify-center">
                                         <motion.div
                                             className="absolute top-3 w-1.5 h-5 bg-orange-500 rounded-full"
                                             style={{ boxShadow: indicatorShadow }}

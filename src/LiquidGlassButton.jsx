@@ -13,8 +13,8 @@ export function LiquidGlassButton({
 
     const toneClass =
         tone === 'amber'
-            ? 'bg-amber-500 text-black hover:bg-amber-400 disabled:bg-transparent disabled:text-zinc-600 disabled:border disabled:border-white/15'
-            : 'bg-white/10 text-white hover:bg-white/15 hover:text-amber-500 disabled:bg-transparent disabled:text-zinc-500 disabled:border disabled:border-white/10';
+            ? 'bg-amber-500 text-black hover:bg-amber-400 disabled:bg-transparent disabled:text-zinc-600 disabled:border disabled:border-white/25'
+            : 'bg-white/10 text-white hover:bg-white/15 hover:text-amber-500 disabled:bg-transparent disabled:text-zinc-500 disabled:border disabled:border-white/20';
 
     return (
         <button

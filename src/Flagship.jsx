@@ -85,7 +85,7 @@ export default function Flagship({ embed = false }) {
     }, []);
 
     return (
-        <section id="flagship" ref={ref} className="relative py-24 md:py-36 bg-[#080808] border-y border-white/20 overflow-hidden">
+        <section id="flagship" ref={ref} className="relative py-24 md:py-36 bg-[#080808] border-y border-white/30 overflow-hidden">
             <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 {!embed && (
@@ -115,7 +115,7 @@ export default function Flagship({ embed = false }) {
 
                 <div className="grid lg:grid-cols-2 gap-6 items-stretch">
                     {/* 3D fold simulation */}
-                    <div ref={canvasWrapRef} className="relative min-h-[420px] md:min-h-[540px] border border-white/20 bg-[#0A0A0A]/60">
+                    <div ref={canvasWrapRef} className="relative min-h-[420px] md:min-h-[540px] border border-white/30 bg-[#0A0A0A]/60">
                         {mounted3d && (
                             <Suspense fallback={null}>
                                 <div className="absolute inset-0">
@@ -135,8 +135,8 @@ export default function Flagship({ embed = false }) {
                     </div>
 
                     {/* Live review replay - real output from a real spec */}
-                    <div className="flag-report border border-white/20 bg-[#0A0A0A]/80 p-6 md:p-8 flex flex-col">
-                        <div className="flag-report-header flex items-center justify-between gap-4 pb-5 border-b border-white/10">
+                    <div className="flag-report border border-white/30 bg-[#0A0A0A]/80 p-6 md:p-8 flex flex-col">
+                        <div className="flag-report-header flex items-center justify-between gap-4 pb-5 border-b border-white/20">
                             <div className="flex items-center gap-3 min-w-0">
                                 <FileText size={16} className="text-amber-500 flex-shrink-0" />
                                 <span className="text-white text-sm font-bold truncate">Q-36167_Guillotine.pdf</span>
@@ -155,7 +155,7 @@ export default function Flagship({ embed = false }) {
 
                         <div className="space-y-3 py-2 flex-1">
                             {FLAGS.map((f, i) => (
-                                <div key={i} className="flag-item flex items-start gap-3 p-3 bg-white/[0.03] border-l-2 border-white/10" style={{ borderLeftColor: f.severity === 'BLOCKING' ? '#d13438' : '#F59E0B' }}>
+                                <div key={i} className="flag-item flex items-start gap-3 p-3 bg-white/[0.03] border-l-2 border-white/20" style={{ borderLeftColor: f.severity === 'BLOCKING' ? '#d13438' : '#F59E0B' }}>
                                     <span className={`px-1.5 py-0.5 text-[8px] font-ui font-bold uppercase tracking-[0.15em] flex-shrink-0 ${f.severity === 'BLOCKING' ? 'bg-red-500/15 text-red-400' : 'bg-amber-500/15 text-amber-500'}`}>
                                         {f.severity}
                                     </span>
@@ -167,7 +167,7 @@ export default function Flagship({ embed = false }) {
                             ))}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-x-6 gap-y-3 py-5 border-t border-white/10">
+                        <div className="grid grid-cols-2 gap-x-6 gap-y-3 py-5 border-t border-white/20">
                             {CATEGORIES.map((c, i) => (
                                 <div key={i} className="flag-cat">
                                     <div className="flex justify-between text-[9px] font-ui uppercase tracking-[0.15em] text-zinc-500 mb-1.5">
@@ -197,7 +197,7 @@ export default function Flagship({ embed = false }) {
                 </div>
 
                 {/* stats + CTA */}
-                <div className="flag-stats grid md:grid-cols-3 gap-px bg-white/10 mt-6 border border-white/20">
+                <div className="flag-stats grid md:grid-cols-3 gap-px bg-white/20 mt-6 border border-white/30">
                     {STATS.map((s, i) => (
                         <div key={i} className="flag-stat bg-[#0A0A0A] p-8">
                             <div className="text-4xl md:text-5xl font-black text-white tracking-tight mb-3">{s.value}</div>

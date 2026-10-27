@@ -109,7 +109,7 @@ const Problem = () => {
     ];
 
     return (
-        <section ref={ref} className="py-24 md:py-40 relative overflow-hidden border-t border-white/10">
+        <section ref={ref} className="py-24 md:py-40 relative overflow-hidden border-t border-white/20">
             <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -124,7 +124,7 @@ const Problem = () => {
                     </div>
                     <div className="space-y-6">
                         {painPoints.map((p, i) => (
-                            <div key={i} className="prob-el p-6 md:p-8 border border-white/10 bg-white/[0.02] hover:border-amber-500/50 transition-colors group">
+                            <div key={i} className="prob-el p-6 md:p-8 border border-white/20 bg-white/[0.02] hover:border-amber-500/50 transition-colors group">
                                 <div className="flex flex-col gap-2">
                                     <span className="text-xl md:text-2xl font-black text-white tracking-tight group-hover:text-amber-500 transition-colors">{p.title}</span>
                                     <span className="text-zinc-300 text-sm leading-snug">{p.label}</span>
@@ -227,7 +227,7 @@ const Framework = () => {
                 </p>
 
                 {/* Phase timeline nav */}
-                <div className="fw-phases grid grid-cols-2 md:grid-cols-4 gap-px bg-white/5 mb-16">
+                <div className="fw-phases grid grid-cols-2 md:grid-cols-4 gap-px bg-white/15 mb-16">
                     {phases.map((phase, i) => (
                         <button
                             key={i}
@@ -268,7 +268,7 @@ const Framework = () => {
                             className="absolute inset-0 w-full h-full object-cover grayscale contrast-110 brightness-75"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
-                        <div className="absolute top-5 left-5 px-3 py-1.5 bg-black/60 backdrop-blur-sm border border-white/20 text-[10px] font-ui uppercase tracking-[0.2em] text-white/80">
+                        <div className="absolute top-5 left-5 px-3 py-1.5 bg-black/60 backdrop-blur-sm border border-white/30 text-[10px] font-ui uppercase tracking-[0.2em] text-white/80">
                             Phase {active.num}
                         </div>
                     </div>
@@ -312,9 +312,9 @@ const Deliverables = () => {
                     <p className="text-zinc-400 text-sm md:text-base">Every engagement ends with artifacts your team can act on immediately  - no shelf-ware.</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/15">
                     {items.map((item, i) => (
-                        <div key={i} className="del-card p-8 md:p-10 bg-[#0A0A0A] hover:bg-[#111] transition-colors group border-b border-white/5 last:border-0 md:[&:nth-last-child(-n+2)]:border-0 lg:[&:nth-last-child(-n+3)]:border-0">
+                        <div key={i} className="del-card p-8 md:p-10 bg-[#0A0A0A] hover:bg-[#111] transition-colors group border-b border-white/15 last:border-0 md:[&:nth-last-child(-n+2)]:border-0 lg:[&:nth-last-child(-n+3)]:border-0">
                             <div className="flex items-start justify-between mb-6">
                                 <span className="text-2xl text-zinc-400 group-hover:text-amber-500 transition-colors">{item.icon}</span>
                                 <span className="text-[10px] font-ui text-zinc-400 tracking-[0.25em]">0{i + 1}</span>
@@ -350,7 +350,7 @@ const Audience = () => {
     ];
 
     return (
-        <section ref={ref} className="py-24 md:py-40 bg-[#050505] border-y border-white/10 relative overflow-hidden">
+        <section ref={ref} className="py-24 md:py-40 bg-[#050505] border-y border-white/20 relative overflow-hidden">
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 <div className="aud-el mb-6"><SectionLabel>Who This Is For</SectionLabel></div>
                 <h2 className="aud-el text-4xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05] mb-20 max-w-4xl">
@@ -359,10 +359,10 @@ const Audience = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {profiles.map((p, i) => (
-                        <div key={i} className="aud-el group p-8 md:p-10 bg-[#0A0A0A] border border-white/10 hover:border-amber-500/50 transition-all">
+                        <div key={i} className="aud-el group p-8 md:p-10 bg-[#0A0A0A] border border-white/20 hover:border-amber-500/50 transition-all">
                             <div className="flex items-start justify-between mb-6">
                                 <h3 className="text-xl md:text-2xl font-bold text-white">{p.title}</h3>
-                                <span className="text-[10px] font-ui text-zinc-400 tracking-[0.15em] uppercase border border-zinc-800 px-3 py-1">{p.tag}</span>
+                                <span className="text-[10px] font-ui text-zinc-400 tracking-[0.15em] uppercase border border-zinc-700 px-3 py-1">{p.tag}</span>
                             </div>
                             <p className="text-zinc-400 text-sm leading-relaxed">{p.desc}</p>
                         </div>
@@ -395,7 +395,7 @@ const Engagement = () => {
                     Transparent. <span className="text-zinc-400">Fixed-scope.</span>
                 </h2>
 
-                <div className="eng-el grid lg:grid-cols-3 gap-px bg-white/5">
+                <div className="eng-el grid lg:grid-cols-3 gap-px bg-white/15">
                     <div className="p-8 md:p-12 bg-[#0A0A0A]">
                         <span className="text-[10px] font-ui text-amber-500 tracking-[0.25em] font-bold">TIMELINE</span>
                         <div className="text-5xl md:text-6xl font-black text-white tracking-tight mt-4">4</div>
@@ -419,7 +419,7 @@ const Engagement = () => {
                     </div>
                 </div>
 
-                <div className="eng-el mt-16 p-8 md:p-12 bg-[#111] border border-white/10 flex flex-col md:flex-row justify-between gap-8 items-start md:items-center">
+                <div className="eng-el mt-16 p-8 md:p-12 bg-[#111] border border-white/20 flex flex-col md:flex-row justify-between gap-8 items-start md:items-center">
                     <div>
                         <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Ready to get clarity on your AI strategy?</h3>
                         <p className="text-zinc-400 text-sm">Share your challenge. We'll come back with a plan  - no obligations.</p>
@@ -447,7 +447,7 @@ const Trust = () => {
     }, []);
 
     return (
-        <section ref={ref} className="py-24 md:py-40 bg-[#050505] border-y border-white/5 relative overflow-hidden">
+        <section ref={ref} className="py-24 md:py-40 bg-[#050505] border-y border-white/15 relative overflow-hidden">
             <SectionGrid />
             <div className="max-w-5xl mx-auto px-6 relative z-10">
                 <div className="trust-el mb-6"><SectionLabel>Client Story</SectionLabel></div>
@@ -457,14 +457,14 @@ const Trust = () => {
                 <blockquote className="trust-el text-2xl md:text-4xl font-bold text-white leading-[1.2] tracking-[-0.01em] mb-12 max-w-4xl">
                     "We spent 6 months going back and forth on our AI roadmap. Corefix gave us a clear, prioritized plan in 4 weeks  - and the first system was live within 3 months."
                 </blockquote>
-                <div className="trust-el flex items-center gap-4 pt-8 border-t border-white/10">
+                <div className="trust-el flex items-center gap-4 pt-8 border-t border-white/20">
                     <div>
                         <span className="text-white font-bold text-base">Jason W.</span>
                         <span className="text-zinc-400 text-sm ml-3">&mdash; SaaS Founder, Series A</span>
                     </div>
                 </div>
 
-                <div className="trust-el grid grid-cols-3 gap-6 mt-16 pt-12 border-t border-white/10">
+                <div className="trust-el grid grid-cols-3 gap-6 mt-16 pt-12 border-t border-white/20">
                     {[
                         { val: '4 weeks', label: 'Strategy to roadmap' },
                         { val: '3 months', label: 'First system live' },
@@ -496,7 +496,7 @@ const ServiceFAQ = () => {
 
                 <div>
                     {faqs.map((faq, i) => (
-                        <div key={i} className="border-b border-white/10 last:border-0">
+                        <div key={i} className="border-b border-white/20 last:border-0">
                             <button
                                 onClick={() => setOpen(open === i ? null : i)}
                                 className="w-full flex items-center justify-between py-5 md:py-6 text-left group"
@@ -533,7 +533,7 @@ const FinalCTA = () => {
     }, []);
 
     return (
-        <section ref={ref} className="py-32 md:py-48 bg-[#050505] relative overflow-hidden border-t border-white/10">
+        <section ref={ref} className="py-32 md:py-48 bg-[#050505] relative overflow-hidden border-t border-white/20">
             <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 text-center relative z-10">
                 <div className="cta-el mb-6 flex justify-center"><SectionLabel>Next Step</SectionLabel></div>

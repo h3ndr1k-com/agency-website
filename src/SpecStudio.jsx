@@ -125,7 +125,7 @@ function CaseStudy() {
     ];
 
     return (
-        <section id="case-study" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/5">
+        <section id="case-study" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/15">
             <div className="max-w-[1400px] mx-auto px-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
@@ -147,7 +147,7 @@ function CaseStudy() {
                             No mailbox access. No workflow disruption. A spec goes in; a cited,
                             client-presentable verdict comes out.
                         </p>
-                        <div className="grid grid-cols-3 gap-4 border-t border-white/10 pt-10">
+                        <div className="grid grid-cols-3 gap-4 border-t border-white/20 pt-10">
                             {stats.map((stat, i) => (
                                 <div key={i}>
                                     <div className="text-3xl md:text-5xl font-bold text-white tracking-tight">
@@ -213,9 +213,9 @@ function Walkthrough() {
     }, []);
 
     return (
-        <section id="walkthrough" ref={ref} className="py-24 md:py-32 border-b border-white/5">
+        <section id="walkthrough" ref={ref} className="py-24 md:py-32 border-b border-white/15">
             <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1.55fr)_minmax(19rem,0.7fr)] gap-8 lg:gap-16 items-center">
-                <div className="vsl-reveal relative aspect-video bg-[#111] border border-white/10 overflow-hidden">
+                <div className="vsl-reveal relative aspect-video bg-[#111] border border-white/20 overflow-hidden">
                     <video
                         controls
                         playsInline
@@ -269,7 +269,7 @@ function SpecFAQ() {
                 </h2>
                 <div className="max-w-3xl">
                     {faqs.map((faq, i) => (
-                        <div key={i} className="border-b border-white/10 last:border-0">
+                        <div key={i} className="border-b border-white/20 last:border-0">
                             <button
                                 type="button"
                                 onClick={() => setOpen(open === i ? null : i)}
@@ -299,7 +299,7 @@ function SpecFAQ() {
 
 function ClosingCTA() {
     return (
-        <section className="py-24 md:py-32 border-t border-white/10">
+        <section className="py-24 md:py-32 border-t border-white/20">
             <div className="max-w-[1400px] mx-auto px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
                 <div>
                     <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-4">

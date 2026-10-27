@@ -117,7 +117,7 @@ export default function VoiceSection() {
     const mmss = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 
     return (
-        <section id="voice-demo" ref={ref} className="py-24 md:py-40 bg-[#080808] border-y border-white/20 relative overflow-hidden">
+        <section id="voice-demo" ref={ref} className="py-24 md:py-40 bg-[#080808] border-y border-white/30 relative overflow-hidden">
             <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10 flex flex-col items-center text-center">
                 <div className="voice-el mb-8"><SectionLabel>Live Demo</SectionLabel></div>
@@ -140,14 +140,14 @@ export default function VoiceSection() {
                         href="https://cal.com/corefix.ai/30min"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-5 py-3 border border-white/40 text-zinc-300 font-ui text-xs uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors"
+                        className="inline-flex items-center gap-2 px-5 py-3 border border-white/50 text-zinc-300 font-ui text-xs uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors"
                     >
                         No mic? Book on the calendar
                     </a>
                 </div>
 
                 {/* Orb console */}
-                <div className="voice-el relative w-full min-w-0 max-w-xl p-6 sm:p-10 md:p-14 border border-white/20 bg-[#0A0A0A]">
+                <div className="voice-el relative w-full min-w-0 max-w-xl p-6 sm:p-10 md:p-14 border border-white/30 bg-[#0A0A0A]">
                     <span className="absolute -top-[2px] -left-[2px] w-4 h-4 border-t-2 border-l-2 border-amber-500" />
                     <span className="absolute -top-[2px] -right-[2px] w-4 h-4 border-t-2 border-r-2 border-amber-500" />
                     <span className="absolute -bottom-[2px] -left-[2px] w-4 h-4 border-b-2 border-l-2 border-amber-500" />
@@ -165,7 +165,7 @@ export default function VoiceSection() {
 
                     <div className="relative mx-auto mt-1 w-full min-w-0 max-w-md text-left">
                         <div
-                            className={`border border-white/15 border-t-2 bg-[#121212] px-4 py-4 sm:px-5 ${canDial ? 'cursor-pointer' : ''} ${live ? 'border-t-amber-500' : status === 'error' ? 'border-t-red-400' : 'border-t-amber-500/70'}`}
+                            className={`border border-white/25 border-t-2 bg-[#121212] px-4 py-4 sm:px-5 ${canDial ? 'cursor-pointer' : ''} ${live ? 'border-t-amber-500' : status === 'error' ? 'border-t-red-400' : 'border-t-amber-500/70'}`}
                             onClick={canDial ? startCall : undefined}
                             onKeyDown={canDial ? (e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {

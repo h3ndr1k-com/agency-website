@@ -85,7 +85,7 @@ const SectionGrid = () => (
 const CornerButton = ({ href, children, filled, className = '' }) => {
     const base = filled
         ? 'bg-white text-black hover:bg-amber-500'
-        : 'bg-black/40 backdrop-blur-sm text-white border border-white/60 hover:bg-white hover:text-black';
+        : 'bg-black/40 backdrop-blur-sm text-white border border-white/70 hover:bg-white hover:text-black';
     const external = typeof href === 'string' && href.startsWith('http');
     const extProps = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
     return (
@@ -99,7 +99,7 @@ const CornerButton = ({ href, children, filled, className = '' }) => {
 
 // ── Section label pill ──
 const SectionLabel = ({ children }) => (
-    <span className="inline-flex items-center gap-2.5 px-5 py-2.5 border border-white/40 text-white text-xs font-ui uppercase tracking-[0.25em]">
+    <span className="inline-flex items-center gap-2.5 px-5 py-2.5 border border-white/50 text-white text-xs font-ui uppercase tracking-[0.25em]">
         <span className="w-1.5 h-1.5 bg-amber-500" />
         {children}
     </span>
@@ -117,7 +117,7 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/30 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-[#0A0A0A]/40 backdrop-blur-md'}`}>
+        <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/40 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-[#0A0A0A]/40 backdrop-blur-md'}`}>
             <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
                 <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-lg flex items-center gap-3">
                     <svg viewBox="0 0 32 32" className="w-7 h-7" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
@@ -148,7 +148,7 @@ const Navbar = () => {
                 </button>
             </div>
             {menuOpen && (
-                <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/5 px-6 py-8 flex flex-col gap-6">
+                <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/15 px-6 py-8 flex flex-col gap-6">
                     {[['Voice Demo', '#voice-demo'], ['Spec Studio', '/spec-studio'], ['About', '#team']].map(([item, href]) => (
                         href.startsWith('/')
                             ? <Link key={item} to={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</Link>
@@ -195,7 +195,7 @@ const Hero = () => {
             <div className="absolute top-40 md:top-52 right-6 md:right-[calc((100%-1400px)/2+24px)] z-40">
                 <div className="hero-chrome flex flex-col gap-2 items-end">
                     {tags.map(tag => {
-                        const cls = 'group/tag inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/20 bg-black/30 backdrop-blur-sm hover:border-amber-500 hover:text-white transition-colors';
+                        const cls = 'group/tag inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/30 bg-black/30 backdrop-blur-sm hover:border-amber-500 hover:text-white transition-colors';
                         const inner = (<>{tag.label}<ArrowUpRight size={11} className="opacity-0 group-hover/tag:opacity-100 transition-opacity" /></>);
                         return tag.route
                             ? <Link key={tag.label} to={tag.href} className={cls}>{inner}</Link>
@@ -238,14 +238,14 @@ const Hero = () => {
 };
 
 const SpecStudioBand = () => (
-    <section className="py-16 md:py-20 border-y border-white/10 bg-[#080808]">
+    <section className="py-16 md:py-20 border-y border-white/20 bg-[#080808]">
         <div className="max-w-[1400px] mx-auto px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <p className="text-white text-xl md:text-3xl font-bold tracking-[-0.02em] max-w-3xl">
                 Display or packaging manufacturer? See Spec Studio.
             </p>
             <Link
                 to="/spec-studio"
-                className="inline-flex items-center gap-2 px-6 py-4 border border-white/50 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-4 border border-white/60 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-colors"
             >
                 Spec Studio <ChevronRight size={14} />
             </Link>
@@ -296,7 +296,7 @@ const Services = () => {
                         const Card = svc.link ? Link : 'div';
                         const cardProps = svc.link ? { to: svc.link } : {};
                         return (
-                            <Card key={i} {...cardProps} className="svc-card group p-8 md:p-10 bg-[#0A0A0A] border border-white/40 hover:border-amber-500 hover:bg-[#111] transition-colors block cursor-pointer">
+                            <Card key={i} {...cardProps} className="svc-card group p-8 md:p-10 bg-[#0A0A0A] border border-white/50 hover:border-amber-500 hover:bg-[#111] transition-colors block cursor-pointer">
                                 <div className="flex items-start gap-6">
                                     <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">{svc.num}</span>
                                     <div className="flex-1">
@@ -315,7 +315,7 @@ const Services = () => {
                     })}
                 </div>
 
-                <div className="mt-12 p-8 md:p-12 bg-[#111] border border-white/40 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
+                <div className="mt-12 p-8 md:p-12 bg-[#111] border border-white/50 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
                     <p className="text-zinc-200 text-base md:text-lg max-w-2xl">Start with a conversation. Tell us about your business, your goals, and the problems you want solved.</p>
                     <CornerButton href={CAL_URL} filled className="whitespace-nowrap">
                         Let&apos;s Talk <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
@@ -369,7 +369,7 @@ const Process = () => {
     ];
 
     return (
-        <section id="process" ref={ref} className="py-24 md:py-32 overflow-hidden border-y border-white/20">
+        <section id="process" ref={ref} className="py-24 md:py-32 overflow-hidden border-y border-white/30">
             <div className="mb-20 overflow-hidden">
                 <div ref={marqueeRef} className="flex whitespace-nowrap">
                     {Array(6).fill(null).map((_, i) => (
@@ -389,7 +389,7 @@ const Process = () => {
                     <button
                         key={i}
                         onClick={() => setActiveStep(activeStep === i ? null : i)}
-                        className={`proc-step text-left w-full p-8 md:p-10 bg-[#0A0A0A] border transition-colors group ${activeStep === i ? 'border-amber-500 bg-[#111]' : 'border-white/40 hover:border-amber-500 hover:bg-[#111]'}`}
+                        className={`proc-step text-left w-full p-8 md:p-10 bg-[#0A0A0A] border transition-colors group ${activeStep === i ? 'border-amber-500 bg-[#111]' : 'border-white/50 hover:border-amber-500 hover:bg-[#111]'}`}
                     >
                         <div className="flex items-start justify-between mb-6">
                             <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">· {step.num}</span>
@@ -400,7 +400,7 @@ const Process = () => {
                         <div
                             className={`overflow-hidden transition-all duration-350 ${activeStep === i ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}
                         >
-                            <ul className="mt-6 pt-6 border-t border-white/10 space-y-3">
+                            <ul className="mt-6 pt-6 border-t border-white/20 space-y-3">
                                 {step.details.map((d) => (
                                     <li key={d} className="flex items-start gap-3 text-zinc-300 text-sm">
                                         <span className="w-1 h-1 bg-amber-500 mt-2 flex-shrink-0" />
@@ -460,7 +460,7 @@ const CaseStudy = () => {
     ];
 
     return (
-        <section id="case-study" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/5">
+        <section id="case-study" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/15">
             <div className="max-w-[1400px] mx-auto px-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
@@ -474,7 +474,7 @@ const CaseStudy = () => {
                         <p className="text-zinc-400 text-base leading-relaxed mb-10 italic border-l-2 border-amber-500 pl-6">
                             No mailbox access. No workflow disruption. A spec goes in; a cited, client-presentable verdict comes out.
                         </p>
-                        <div className="grid grid-cols-3 gap-4 border-t border-white/10 pt-10">
+                        <div className="grid grid-cols-3 gap-4 border-t border-white/20 pt-10">
                             {stats.map((stat, i) => (
                                 <div key={i}>
                                     <div className="text-3xl md:text-5xl font-bold text-white tracking-tight"><CountUp target={stat.value} visible={visible} prefix={stat.prefix || ''} /></div>
@@ -516,9 +516,9 @@ const SpecReviewerVSL = () => {
     }, []);
 
     return (
-        <section id="spec-reviewer-walkthrough" ref={ref} className="py-24 md:py-32 border-b border-white/5">
+        <section id="spec-reviewer-walkthrough" ref={ref} className="py-24 md:py-32 border-b border-white/15">
             <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1.55fr)_minmax(19rem,0.7fr)] gap-8 lg:gap-16 items-center">
-                <div className="vsl-reveal relative aspect-video bg-[#111] border border-white/10 overflow-hidden">
+                <div className="vsl-reveal relative aspect-video bg-[#111] border border-white/20 overflow-hidden">
                     <video
                         controls
                         playsInline
@@ -562,7 +562,7 @@ const Testimonials = () => {
                     <span className="text-amber-500 font-ui text-6xl md:text-8xl leading-none block mb-8 select-none" aria-hidden="true">&ldquo;</span>
                     <h3 className="text-3xl md:text-5xl font-bold text-white mb-10 tracking-[-0.02em] leading-[1.1] max-w-4xl">{t.title}</h3>
                     <p className="text-zinc-300 text-base md:text-lg leading-relaxed mb-12 max-w-3xl">{t.quote}</p>
-                    <div className="flex items-center gap-4 pt-8 border-t border-white/10">
+                    <div className="flex items-center gap-4 pt-8 border-t border-white/20">
                         <span className="text-white font-bold text-base">{t.name}</span>
                         <span className="text-zinc-400 text-sm">· {t.role}</span>
                         <picture>
@@ -604,7 +604,7 @@ const FreeAudit = () => {
     ];
 
     return (
-        <section id="audit" ref={ref} className="py-24 md:py-40 border-y border-white/5">
+        <section id="audit" ref={ref} className="py-24 md:py-40 border-y border-white/15">
             <div className="max-w-[1400px] mx-auto px-6">
                 <div className="mb-8"><SectionLabel>The Offer</SectionLabel></div>
                 <div className="grid md:grid-cols-2 gap-8 mb-16 items-end">
@@ -617,7 +617,7 @@ const FreeAudit = () => {
                     </p>
                 </div>
 
-                <div className="price-card p-8 md:p-12 bg-[#0A0A0A] border border-white/15 relative max-w-3xl">
+                <div className="price-card p-8 md:p-12 bg-[#0A0A0A] border border-white/25 relative max-w-3xl">
                     <div className="flex flex-col-reverse sm:flex-row sm:items-start sm:justify-between gap-4 mb-3">
                         <h3 className="text-2xl font-bold text-white">Voice agent</h3>
                         <div className="inline-flex self-start items-center gap-2 px-3 py-1 border border-amber-500/60 text-amber-500 text-[10px] font-bold font-ui uppercase tracking-[0.2em] shrink-0">
@@ -642,7 +642,7 @@ const FreeAudit = () => {
                     <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex text-center px-8 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4">
                         Book a call
                     </a>
-                    <button type="button" onClick={() => document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })} className="ml-0 md:ml-3 inline-flex text-center px-8 py-4 border border-zinc-600 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors mb-10">
+                    <button type="button" onClick={() => document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })} className="ml-0 md:ml-3 inline-flex text-center px-8 py-4 border border-zinc-500 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors mb-10">
                         Or talk to the demo agent
                     </button>
                     <ul className="space-y-4">
@@ -696,7 +696,7 @@ const WhyUs = () => {
                     </p>
                     <div className="why-el flex flex-wrap gap-2">
                         {attributes.map(attr => (
-                            <span key={attr} className="px-4 py-2 text-[11px] font-ui uppercase tracking-[0.18em] text-zinc-300 border border-zinc-700 bg-white/[0.02] hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors cursor-default">
+                            <span key={attr} className="px-4 py-2 text-[11px] font-ui uppercase tracking-[0.18em] text-zinc-300 border border-zinc-600 bg-white/[0.02] hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors cursor-default">
                                 {attr}
                             </span>
                         ))}
@@ -746,7 +746,7 @@ const Team = () => {
                 </h2>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-                    <div className="team-card group relative bg-[#0A0A0A] border border-white/10 overflow-hidden hover:border-amber-500/60 hover:-translate-y-1 transition-all duration-500">
+                    <div className="team-card group relative bg-[#0A0A0A] border border-white/20 overflow-hidden hover:border-amber-500/60 hover:-translate-y-1 transition-all duration-500">
                         <div className="relative aspect-[3/4] lg:aspect-auto lg:h-full overflow-hidden min-h-[420px]">
                             <img src="/Hendrik.jpg" alt="Hendrik, founder of Corefix" width={800} height={532} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out" />
                             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
@@ -758,13 +758,13 @@ const Team = () => {
                     </div>
 
                     <div className="flex flex-col gap-6">
-                        <div className="team-card p-8 md:p-10 bg-[#0A0A0A] border border-white/10 flex-1">
+                        <div className="team-card p-8 md:p-10 bg-[#0A0A0A] border border-white/20 flex-1">
                             <p className="text-zinc-300 text-base md:text-lg leading-relaxed">
                                 No account managers, no hand-offs, no junior devs learning on your dime. The person who takes your first call is the person who architects, builds, and stands behind the system. Behind him: an orchestrated fleet of AI agents doing the heavy lifting, the same capability Corefix sells, applied to itself.
                             </p>
                         </div>
                         {crew.map((c, i) => (
-                            <div key={i} className="team-card p-6 md:p-8 bg-[#0A0A0A] border border-white/10 flex items-start gap-6 group hover:border-amber-500 transition-colors">
+                            <div key={i} className="team-card p-6 md:p-8 bg-[#0A0A0A] border border-white/20 flex items-start gap-6 group hover:border-amber-500 transition-colors">
                                 <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500 mt-1">{String(i + 1).padStart(2, '0')}</span>
                                 <div>
                                     <h3 className="text-white font-bold text-lg mb-1">{c.role}</h3>
@@ -810,7 +810,7 @@ const FAQ = () => {
                     {/* Right column - FAQ items */}
                     <div>
                         {faqs.map((faq, i) => (
-                            <div key={i} className="border-b border-white/10 last:border-0">
+                            <div key={i} className="border-b border-white/20 last:border-0">
                                 <button
                                     type="button"
                                     onClick={() => setOpen(open === i ? null : i)}
@@ -861,7 +861,7 @@ const Articles = () => {
                 <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-16 leading-[1.05]">
                     Insights & <span className="text-zinc-400">Field Notes</span>
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/15">
                     {articles.map((a, i) => (
                         <a key={i} href="#" className="article-card group block bg-[#0A0A0A] hover:bg-[#111] transition-colors p-4">
                             <div className="relative aspect-[4/5] overflow-hidden mb-5">
@@ -960,7 +960,7 @@ const Contact = () => {
     };
 
     return (
-        <section id="contact" ref={ref} className="py-24 md:py-40 bg-[#0A0A0A] border-y border-white/5 relative overflow-hidden">
+        <section id="contact" ref={ref} className="py-24 md:py-40 bg-[#0A0A0A] border-y border-white/15 relative overflow-hidden">
             <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 <div className="grid md:grid-cols-2 gap-16 items-start">
@@ -978,7 +978,7 @@ const Contact = () => {
                         </div>
                     </div>
 
-                    <div ref={calWrapRef} className="contact-el border border-white/15 bg-[#0A0A0A] overflow-hidden" style={{ minHeight: 640 }}>
+                    <div ref={calWrapRef} className="contact-el border border-white/25 bg-[#0A0A0A] overflow-hidden" style={{ minHeight: 640 }}>
                         {showCal ? (
                             <Suspense fallback={<div className="flex items-center justify-center h-full min-h-[640px] text-zinc-400 text-sm font-ui uppercase tracking-[0.2em]">Loading calendar…</div>}>
                                 <CalEmbed
@@ -998,7 +998,7 @@ const Contact = () => {
                 </div>
 
                 {/* Secondary - written inquiry */}
-                <div className="mt-20 pt-16 border-t border-white/10 grid md:grid-cols-2 gap-16 items-start">
+                <div className="mt-20 pt-16 border-t border-white/20 grid md:grid-cols-2 gap-16 items-start">
                     <div>
                         <h3 className="contact-el text-2xl md:text-4xl font-bold text-white tracking-[-0.02em] mb-4">Prefer to write?</h3>
                         <p className="contact-el text-zinc-400 text-sm md:text-base max-w-md">Tell us what you want AI to fix and we&apos;ll come back with a clear, no-fluff plan of attack.</p>
@@ -1019,19 +1019,19 @@ const Contact = () => {
                         <form className="contact-el space-y-3" onSubmit={handleSubmit}>
                             <label className="block">
                                 <span className="sr-only">Name</span>
-                                <input type="text" name="name" required placeholder="Name" autoComplete="name" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                                <input type="text" name="name" required placeholder="Name" autoComplete="name" className="w-full px-5 py-5 bg-[#111] border border-zinc-600 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
                             </label>
                             <label className="block">
                                 <span className="sr-only">Work Email</span>
-                                <input type="email" name="email" required placeholder="Work Email" autoComplete="email" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                                <input type="email" name="email" required placeholder="Work Email" autoComplete="email" className="w-full px-5 py-5 bg-[#111] border border-zinc-600 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
                             </label>
                             <label className="block">
                                 <span className="sr-only">Company</span>
-                                <input type="text" name="company" placeholder="Company" autoComplete="organization" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                                <input type="text" name="company" placeholder="Company" autoComplete="organization" className="w-full px-5 py-5 bg-[#111] border border-zinc-600 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
                             </label>
                             <div className="relative">
                                 <label htmlFor="interest" className="sr-only">What are you interested in?</label>
-                                <select id="interest" name="interest" defaultValue="Voice Agent" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm focus:border-zinc-500 focus:outline-none transition-colors appearance-none cursor-pointer">
+                                <select id="interest" name="interest" defaultValue="Voice Agent" className="w-full px-5 py-5 bg-[#111] border border-zinc-600 text-white text-sm focus:border-zinc-500 focus:outline-none transition-colors appearance-none cursor-pointer">
                                     <option>Voice Agent</option>
                                     <option>Spec Studio</option>
                                     <option>Something Else</option>
@@ -1040,7 +1040,7 @@ const Contact = () => {
                             </div>
                             <label className="block">
                                 <span className="sr-only">Message</span>
-                                <textarea name="message" required placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors resize-none" />
+                                <textarea name="message" required placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#111] border border-zinc-600 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors resize-none" />
                             </label>
                             <button type="submit" disabled={status === 'sending'} className="w-full px-8 py-6 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.3em] hover:bg-amber-500 transition-colors flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed">
                                 {status === 'sending' ? 'Sending...' : 'Submit'} {status !== 'sending' && <ArrowUpRight size={16} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />}
@@ -1066,7 +1066,7 @@ const Footer = () => (
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/10">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/20">
                 <div className="md:col-span-2 max-w-md">
                     <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6 hover:text-amber-500 transition-colors">
                         <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;

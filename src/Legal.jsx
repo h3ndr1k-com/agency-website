@@ -159,7 +159,7 @@ export function NotFound() {
                         href="https://cal.com/corefix.ai/30min"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-7 py-4 border border-white/60 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-white hover:text-black"
+                        className="px-7 py-4 border border-white/70 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-white hover:text-black"
                     >
                         Book a call
                     </a>

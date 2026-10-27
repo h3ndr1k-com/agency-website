@@ -116,7 +116,7 @@ function Hero() {
 
 function HowItWorks() {
     return (
-        <section id="how-it-works" className="py-24 md:py-32 relative overflow-hidden border-y border-white/10">
+        <section id="how-it-works" className="py-24 md:py-32 relative overflow-hidden border-y border-white/20">
             <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 <div className="mb-6">
@@ -125,7 +125,7 @@ function HowItWorks() {
                 <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-14 max-w-3xl">
                     Live in three steps.
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/20 border border-white/20">
                     {STEPS.map((step, i) => (
                         <FeatureCard key={step.num} feature={step} patternIndex={i} />
                     ))}
@@ -177,7 +177,7 @@ function VoiceCompare() {
                             ))}
                         </ul>
                     </div>
-                    <div className="border border-white/15 bg-[#080808] p-5 sm:p-8">
+                    <div className="border border-white/25 bg-[#080808] p-5 sm:p-8">
                         <h3 className="text-zinc-200 text-xs font-ui font-bold uppercase tracking-[0.2em] mb-5">
                             Typical answering service
                         </h3>
@@ -204,7 +204,7 @@ function VoiceCompare() {
 
 function Pricing() {
     return (
-        <section id="pricing" className="py-24 md:py-32 border-y border-white/5">
+        <section id="pricing" className="py-24 md:py-32 border-y border-white/15">
             <div className="max-w-[1400px] mx-auto px-6">
                 <div className="mb-8">
                     <SectionLabel>The Offer</SectionLabel>
@@ -219,7 +219,7 @@ function Pricing() {
                     </p>
                 </div>
 
-                <div className="p-8 md:p-12 bg-[#0A0A0A] border border-white/15 relative max-w-3xl">
+                <div className="p-8 md:p-12 bg-[#0A0A0A] border border-white/25 relative max-w-3xl">
                     <div className="flex flex-col-reverse sm:flex-row sm:items-start sm:justify-between gap-4 mb-3">
                         <h3 className="text-2xl font-bold text-white">Voice agent</h3>
                         <div className="inline-flex self-start items-center gap-2 px-3 py-1 border border-amber-500/60 text-amber-500 text-[10px] font-bold font-ui uppercase tracking-[0.2em] shrink-0">
@@ -255,7 +255,7 @@ function Pricing() {
                         onClick={() =>
                             document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })
                         }
-                        className="ml-0 md:ml-3 inline-flex text-center px-8 py-4 border border-zinc-600 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors"
+                        className="ml-0 md:ml-3 inline-flex text-center px-8 py-4 border border-zinc-500 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors"
                     >
                         Or talk to the demo agent
                     </button>
@@ -294,7 +294,7 @@ function FAQ() {
                     </div>
                     <div>
                         {faqs.map((faq, i) => (
-                            <div key={faq.q} className="border-b border-white/10 last:border-0">
+                            <div key={faq.q} className="border-b border-white/20 last:border-0">
                                 <button
                                     type="button"
                                     onClick={() => setOpen(open === i ? null : i)}

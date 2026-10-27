@@ -58,7 +58,7 @@ export const BrightGrid = ({ z = 'z-0' }) => (
 export const CornerButton = ({ href, to, children, filled, className = '', onClick }) => {
     const base = filled
         ? 'bg-white text-black hover:bg-amber-500'
-        : 'bg-transparent text-white border border-white/60 hover:bg-white hover:text-black';
+        : 'bg-transparent text-white border border-white/70 hover:bg-white hover:text-black';
     const classes = `relative inline-flex items-center gap-3 px-7 py-4 font-bold text-[11px] font-ui uppercase tracking-[0.2em] transition-all duration-200 group ${base} ${className}`;
     const corners = (
         <>
@@ -74,7 +74,7 @@ export const CornerButton = ({ href, to, children, filled, className = '', onCli
 
 // ── Section label pill ──
 export const SectionLabel = ({ children }) => (
-    <span className="inline-flex items-center gap-2.5 px-5 py-2.5 border border-white/40 text-white text-xs font-ui uppercase tracking-[0.25em]">
+    <span className="inline-flex items-center gap-2.5 px-5 py-2.5 border border-white/50 text-white text-xs font-ui uppercase tracking-[0.25em]">
         <span className="w-1.5 h-1.5 bg-amber-500" />
         {children}
     </span>
@@ -99,7 +99,7 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/10">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/20">
                 <div className="md:col-span-2 max-w-md">
                     <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6 hover:text-amber-500 transition-colors">
                         <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
@@ -149,7 +149,7 @@ export const ServiceNavbar = () => {
     }, []);
 
     return (
-        <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/30 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-[#0A0A0A]/40 backdrop-blur-md'}`}>
+        <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/40 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-[#0A0A0A]/40 backdrop-blur-md'}`}>
             <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
                 <Link to="/" className="font-ui font-black tracking-[0.18em] text-white text-lg flex items-center gap-3">
                     <svg viewBox="0 0 32 32" className="w-7 h-7"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>

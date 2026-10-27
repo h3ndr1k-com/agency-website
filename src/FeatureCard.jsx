@@ -28,7 +28,7 @@ export function FeatureCard({ feature, className = '', patternIndex = 0, ...prop
                         x="-12"
                         y="4"
                         squares={squares}
-                        className="absolute inset-0 h-full w-full fill-amber-500/10 stroke-white/20 mix-blend-overlay"
+                        className="absolute inset-0 h-full w-full fill-amber-500/10 stroke-white/30 mix-blend-overlay"
                     />
                 </div>
             </div>

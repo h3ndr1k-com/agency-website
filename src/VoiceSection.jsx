@@ -121,11 +121,29 @@ export default function VoiceSection() {
             <div className="max-w-[1400px] mx-auto px-6 relative z-10 flex flex-col items-center text-center">
                 <div className="voice-el mb-8"><SectionLabel>Live Demo</SectionLabel></div>
                 <h2 className="voice-el text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] mb-6 leading-[0.95] max-w-4xl text-balance">
-                    Don't take our word for it.<br /><span className="text-zinc-600">Talk to our AI.</span>
+                    Don&apos;t take our word for it.<br /><span className="text-zinc-500">Talk to our AI.</span>
                 </h2>
-                <p className="voice-el text-zinc-500 text-sm md:text-base max-w-lg mb-16">
-                    This is a live agent, not a recording. Ask it what we build &mdash; it answers, checks Hendrik's real calendar, and books your intro call mid-conversation.
+                <p className="voice-el text-zinc-400 text-sm md:text-base max-w-lg mb-6">
+                    This is a live agent, not a recording. Ask it what we build. It answers, checks Hendrik&apos;s real calendar, and books your intro call mid-conversation.
                 </p>
+                <div className="voice-el mb-12 flex flex-wrap items-center justify-center gap-4 text-sm">
+                    {PHONE ? (
+                        <a
+                            href={`tel:${PHONE.replace(/[^+\d]/g, '')}`}
+                            className="inline-flex items-center gap-2 px-5 py-3 border border-amber-500/60 text-amber-500 font-ui text-xs uppercase tracking-[0.2em] hover:bg-amber-500 hover:text-black transition-colors"
+                        >
+                            <Phone size={14} /> Demo line {PHONE}
+                        </a>
+                    ) : null}
+                    <a
+                        href="https://cal.com/corefix.ai/30min"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-5 py-3 border border-white/40 text-zinc-300 font-ui text-xs uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors"
+                    >
+                        No mic? Book on the calendar
+                    </a>
+                </div>
 
                 {/* Orb console */}
                 <div className="voice-el relative w-full min-w-0 max-w-xl p-6 sm:p-10 md:p-14 border border-white/20 bg-[#0A0A0A]">
@@ -170,11 +188,15 @@ export default function VoiceSection() {
                                     <p className="text-sm leading-relaxed text-zinc-400">
                                         {status === 'connecting' && 'Connecting…'}
                                         {status === 'error' && (
-                                            <>Mic blocked or network hiccup &mdash; <a href="#audit" onClick={(e) => e.stopPropagation()} className="text-amber-500 hover:underline">book the old-fashioned way</a>.</>
+                                            <>Mic blocked or network hiccup.{' '}
+                                                <a href="https://cal.com/corefix.ai/30min" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-amber-500 hover:underline">Book on the calendar</a>
+                                                {PHONE && <> or call {PHONE}</>}.</>
                                         )}
                                         {status === 'ended' && 'Call ended. Dial again if you want another pass.'}
-                                        {status === 'idle' && !CONFIGURED && 'Voice line warming up — grab an audit slot below, or dial to jump there.'}
-                                        {status === 'idle' && CONFIGURED && 'Standing by. Dial in and ask what we build — it can book the intro on Hendrik’s calendar.'}
+                                        {status === 'idle' && !CONFIGURED && (
+                                            <>Voice line warming up. <a href="https://cal.com/corefix.ai/30min" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-amber-500 hover:underline">Book a call</a>{PHONE ? ` or dial ${PHONE}` : ''}.</>
+                                        )}
+                                        {status === 'idle' && CONFIGURED && 'Standing by. Dial in and ask what we build. It can book the intro on Hendrik’s calendar.'}
                                         {(status === 'listening' || status === 'speaking') && STATUS_COPY[status]}
                                     </p>
                                 )}
@@ -219,17 +241,31 @@ export default function VoiceSection() {
                     </div>
                 </div>
 
-                <p className="voice-el text-zinc-600 text-[10px] font-ui uppercase tracking-[0.2em] mt-8 flex items-center gap-3 flex-wrap justify-center">
-                    <span>Voice &middot; ~2 min &middot; books straight to the calendar</span>
+                <p className="voice-el text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] mt-8 flex items-center gap-3 flex-wrap justify-center">
+                    <span>Voice · ~2 min · books straight to the calendar</span>
                     {PHONE && (
                         <>
-                            <span className="w-1 h-1 bg-zinc-700" />
+                            <span className="w-1 h-1 bg-zinc-600" />
                             <a href={`tel:${PHONE.replace(/[^+\d]/g, '')}`} className="inline-flex items-center gap-2 text-amber-500 hover:text-white transition-colors">
-                                <Phone size={11} /> or call {PHONE}
+                                <Phone size={11} /> {PHONE}
                             </a>
                         </>
                     )}
                 </p>
+                <p className="voice-el text-zinc-500 text-xs max-w-md mt-6 leading-relaxed">
+                    Privacy: the demo uses your microphone for a live WebRTC call processed by our voice provider (Vapi) so the agent can talk, check the calendar, and book. See our{' '}
+                    <a href="/privacy" className="text-amber-500 hover:underline">Privacy Policy</a>
+                    {' '}(draft). Prefer not to use a mic?{' '}
+                    <a href="https://cal.com/corefix.ai/30min" target="_blank" rel="noopener noreferrer" className="text-amber-500 hover:underline">Book here</a>
+                    {PHONE ? <> or call {PHONE}</> : null}.
+                </p>
+                <noscript>
+                    <p className="mt-6 text-zinc-300 text-sm">
+                        JavaScript is required for the in-browser voice demo.
+                        {PHONE ? <> Call {PHONE} or </> : ' '}
+                        <a href="https://cal.com/corefix.ai/30min">book on the calendar</a>.
+                    </p>
+                </noscript>
             </div>
         </section>
     );

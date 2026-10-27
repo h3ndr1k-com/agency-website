@@ -82,10 +82,10 @@ export const SectionLabel = ({ children }) => (
 
 const DEFAULT_FOOTER_LINKS = [
     ['Home', '/'],
-    ['Flagship', '/#flagship'],
-    ['Bolt-Ons', '/#services'],
-    ['Case Study', '/#case-study'],
-    ['Free Audit', '/#audit'],
+    ['Spec Studio', '/spec-studio'],
+    ['Voice Demo', '/#voice-demo'],
+    ['Missed-Call Check', '/#audit'],
+    ['Contact', '/#contact'],
 ];
 
 // ── Shared Footer ──
@@ -93,18 +93,18 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
     <footer className="bg-[#050505] pt-24 pb-10 px-6">
         <div className="max-w-[1400px] mx-auto">
             <div className="mb-20 overflow-hidden">
-                <h2 className="text-[18vw] md:text-[15vw] font-black uppercase tracking-tighter text-white/[0.15] leading-none select-none">
+                <p className="text-[18vw] md:text-[15vw] font-black uppercase tracking-tighter text-white/[0.15] leading-none select-none" aria-hidden="true">
                     COREFIX&reg;
-                </h2>
+                </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/10">
                 <div className="md:col-span-2 max-w-md">
-                    <h4 className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6">
-                        <svg viewBox="0 0 32 32" className="w-5 h-5"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
-                    </h4>
+                    <p className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6">
+                        <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
+                    </p>
                     <p className="text-zinc-400 text-sm leading-relaxed mb-8 max-w-sm">
-                        We design, build, and deploy reliable AI systems and automation workflows.
+                        Speed-to-lead voice agents and Spec Studio for manufacturers. Built and shipped by the person you talk to.
                     </p>
                     <a href="mailto:hendrik@corefix.app" className="block text-white font-bold text-base hover:text-amber-500 transition-colors">
                         HENDRIK@COREFIX.APP
@@ -112,27 +112,26 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
                 </div>
 
                 <div className="flex flex-col gap-3">
-                    <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
+                    <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
                     {links.map(([link, href]) => (
                         <a key={link} href={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
                     ))}
                 </div>
                 <div className="flex flex-col gap-3">
-                    <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
+                    <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
                     <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">LinkedIn</a>
-                    <a href="https://www.instagram.com/hendrikunfiltered/" target="_blank" rel="noopener noreferrer" className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">Instagram</a>
                 </div>
             </div>
 
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-green-500 animate-pulse" />
-                    <span className="font-ui text-[10px] text-zinc-500 tracking-[0.25em] uppercase">System Operational &mdash; {new Date().getFullYear()}</span>
+                    <span className="font-ui text-[10px] text-zinc-400 tracking-[0.25em] uppercase">System Operational · {new Date().getFullYear()}</span>
                 </div>
-                <p className="text-zinc-600 text-[10px] font-ui uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Corefix. All rights reserved.</p>
+                <p className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Corefix. All rights reserved.</p>
                 <div className="flex gap-6">
-                    <a href="#" className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
-                    <a href="#" className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
+                    <a href="/terms" className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
+                    <a href="/privacy" className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
                 </div>
             </div>
         </div>
@@ -156,10 +155,10 @@ export const ServiceNavbar = () => {
                     COREFIX&reg;
                 </Link>
                 <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
-                    <Link to="/#services" className="hover:text-white transition-colors">Services</Link>
+                    <Link to="/#voice-demo" className="hover:text-white transition-colors">Voice Demo</Link>
+                    <Link to="/spec-studio" className="hover:text-white transition-colors">Spec Studio</Link>
                     <Link to="/#process" className="hover:text-white transition-colors">Process</Link>
-                    <Link to="/#case-study" className="hover:text-white transition-colors">Case Study</Link>
-                    <Link to="/#audit" className="hover:text-white transition-colors">Free Audit</Link>
+                    <Link to="/#audit" className="hover:text-white transition-colors">Missed-Call Check</Link>
                     <Link to="/#contact" className="hover:text-white transition-colors">Contact</Link>
                 </div>
                 <Link to="/#contact" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">

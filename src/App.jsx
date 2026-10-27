@@ -1,17 +1,17 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronRight, ArrowUpRight, RotateCw } from 'lucide-react';
 import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent, AnimatePresence } from 'framer-motion';
-import Cal, { getCalApi } from '@calcom/embed-react';
-import Flagship from './Flagship.jsx';
 import VoiceSection from './VoiceSection.jsx';
+import SeoHead from './SeoHead.jsx';
+import { CAL_URL } from './seo.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const CAL_LINK = 'corefix.ai/30min';
-const CAL_URL = 'https://cal.com/corefix.ai/30min';
+const CalEmbed = lazy(() => import('@calcom/embed-react').then((m) => ({ default: m.default })));
 
 // ── Section Grid (decorative background grid for sections) ──
 const gridLineColor = 'rgba(255,255,255,0.05)';
@@ -90,7 +90,8 @@ const Navbar = () => {
                     COREFIX&reg;
                 </a>
                 <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
-                    <a href="#services" className="hover:text-white transition-colors">Services</a>
+                    <a href="#voice-demo" className="hover:text-white transition-colors">Voice Demo</a>
+                    <Link to="/spec-studio" className="hover:text-white transition-colors">Spec Studio</Link>
                     <a href="#team" className="hover:text-white transition-colors">About</a>
                 </div>
                 <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
@@ -98,8 +99,14 @@ const Navbar = () => {
                     <span className="absolute -bottom-[2px] -right-[2px] w-2.5 h-2.5 border-b-2 border-r-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     Let&apos;s Talk
                 </a>
-                <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-white">
-                    <div className="flex flex-col gap-1.5">
+                <button
+                    type="button"
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    className="md:hidden text-white"
+                    aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+                    aria-expanded={menuOpen}
+                >
+                    <div className="flex flex-col gap-1.5" aria-hidden="true">
                         <span className={`block w-6 h-[2px] bg-white transition-transform ${menuOpen ? 'rotate-45 translate-y-[5px]' : ''}`} />
                         <span className={`block w-6 h-[2px] bg-white transition-opacity ${menuOpen ? 'opacity-0' : ''}`} />
                         <span className={`block w-6 h-[2px] bg-white transition-transform ${menuOpen ? '-rotate-45 -translate-y-[5px]' : ''}`} />
@@ -108,8 +115,10 @@ const Navbar = () => {
             </div>
             {menuOpen && (
                 <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/5 px-6 py-8 flex flex-col gap-6">
-                    {[['Services', '#services'], ['About', '#team']].map(([item, href]) => (
-                        <a key={item} href={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</a>
+                    {[['Voice Demo', '#voice-demo'], ['Spec Studio', '/spec-studio'], ['About', '#team']].map(([item, href]) => (
+                        href.startsWith('/')
+                            ? <Link key={item} to={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</Link>
+                            : <a key={item} href={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</a>
                     ))}
                     <a href={CAL_URL} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="text-amber-500 text-lg font-ui uppercase tracking-widest hover:text-white">Let&apos;s Talk</a>
                 </div>
@@ -119,28 +128,29 @@ const Navbar = () => {
 };
 
 // ── Hero ──
+// LCP: hero H1 + subhead render visible immediately (no opacity-0 GSAP entrance).
 const Hero = () => {
     const ref = useRef(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.from('.hero-line', { y: 80, opacity: 0, duration: 1.2, stagger: 0.08, ease: 'power3.out', delay: 0.2 });
-            gsap.from('.hero-el', { y: 30, opacity: 0, duration: 0.9, stagger: 0.1, ease: 'power2.out', delay: 0.9 });
+            // Secondary chrome only — never fade the LCP copy.
+            gsap.from('.hero-chrome', { y: 20, opacity: 0, duration: 0.7, stagger: 0.08, ease: 'power2.out', delay: 0.15 });
         }, ref);
         return () => ctx.revert();
     }, []);
 
     const tags = [
+        { label: 'Voice Agents', href: '#voice-demo' },
+        { label: 'Spec Studio', href: '/spec-studio', route: true },
         { label: 'AI Strategy', href: '/services/ai-strategy', route: true },
-        { label: 'Custom Agents', href: '#voice-demo' },
-        { label: 'Spec Reviewer', href: '#flagship' },
         { label: 'Automation', href: '#services' },
     ];
 
     return (
         <section ref={ref} className="relative min-h-screen flex flex-col justify-end pb-12 md:pb-20 overflow-hidden pt-32">
             <div className="absolute inset-0 z-0" style={{
-                backgroundImage: 'url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=60&auto=format)',
+                backgroundImage: 'url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=60&auto=format&fit=crop)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 filter: 'grayscale(100%) contrast(1.1)'
@@ -148,9 +158,8 @@ const Hero = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0A0A]/30 to-[#0A0A0A] z-10 pointer-events-none" />
             <GridOverlay />
 
-            {/* Tags in top-right sky area — clickable */}
             <div className="absolute top-40 md:top-52 right-6 md:right-[calc((100%-1400px)/2+24px)] z-40">
-                <div className="hero-el flex flex-col gap-2 items-end">
+                <div className="hero-chrome flex flex-col gap-2 items-end">
                     {tags.map(tag => {
                         const cls = 'group/tag inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/20 bg-black/30 backdrop-blur-sm hover:border-amber-500 hover:text-white transition-colors';
                         const inner = (<>{tag.label}<ArrowUpRight size={11} className="opacity-0 group-hover/tag:opacity-100 transition-opacity" /></>);
@@ -159,35 +168,33 @@ const Hero = () => {
                             : <a key={tag.label} href={tag.href} className={cls}>{inner}</a>;
                     })}
                     <a
-                        href="#spec-reviewer-walkthrough"
+                        href="#voice-demo"
                         className="group/watch mt-3 inline-flex items-center gap-2 border border-amber-500 bg-amber-500 px-4 py-3 text-[10px] font-ui font-bold uppercase tracking-[0.18em] text-black transition-colors duration-200 hover:bg-white active:translate-y-px"
                     >
-                        Watch What It Can Do
+                        Try the live demo
                         <ChevronRight size={13} className="transition-transform duration-200 group-hover/watch:translate-x-1" aria-hidden="true" />
                     </a>
                 </div>
             </div>
 
-            {/* Hero heading — sits ABOVE the grid */}
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
-                <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase" style={{ WebkitTextStroke: '0' }}>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white">Your AI</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-white">Growth</span></span>
-                    <span className="block overflow-hidden"><span className="hero-line block text-[20vw] md:text-[13.5vw] lg:text-[12vw] text-zinc-500">Partner</span></span>
+                <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase text-white" style={{ WebkitTextStroke: '0' }}>
+                    <span className="block text-[14vw] md:text-[9vw] lg:text-[7.5vw]">Speed to lead</span>
+                    <span className="block text-[14vw] md:text-[9vw] lg:text-[7.5vw] text-zinc-500">is what we do.</span>
                 </h1>
             </div>
 
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
                 <div className="grid md:grid-cols-2 gap-8 mt-10 md:mt-14 items-end">
-                    <p className="hero-el max-w-xl text-zinc-400 text-sm md:text-base leading-relaxed pl-2">
-                        Production-ready AI systems that catch expensive errors, take live calls, and automate real work &mdash; built by the person you talk to.
+                    <p className="max-w-xl text-zinc-300 text-sm md:text-base leading-relaxed pl-2">
+                        The business that answers first gets the job. Our AI voice agent picks up every call and web lead in seconds, day or night, and books it on your calendar.
                     </p>
-                    <div className="hero-el flex justify-end gap-3 flex-wrap">
-                        <CornerButton href="#flagship">
-                            See the Work <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    <div className="hero-chrome flex justify-end gap-3 flex-wrap">
+                        <CornerButton href="#voice-demo">
+                            Hear it live <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                         </CornerButton>
                         <CornerButton href={CAL_URL} filled className="text-[13px] px-9 py-5">
-                            Let&apos;s Talk <ArrowUpRight size={15} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+                            Book a call <ArrowUpRight size={15} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                         </CornerButton>
                     </div>
                 </div>
@@ -196,48 +203,23 @@ const Hero = () => {
     );
 };
 
-// ── Clients + Toolchain strip ──
-const LogoMarquee = () => {
-    const clients = [
-        { name: 'POINT 1 DISPLAYS', tag: 'Display Manufacturing — Montreal' },
-        { name: 'EVITAS AI', tag: 'AI Consulting — Partner Network' },
-    ];
-    const stack = ['ANTHROPIC', 'OPENAI', 'VAPI', 'CAL.COM', 'ELEVENLABS', 'MAKE', 'N8N', 'SUPABASE', 'VERCEL'];
-    return (
-        <section className="py-20 bg-[#080808]">
-            <div className="max-w-[900px] mx-auto px-6">
-                <div className="flex justify-center mb-10">
-                    <SectionLabel>In Production With</SectionLabel>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 border-y border-white/40 divide-y sm:divide-y-0 sm:divide-x divide-white/20">
-                    {clients.map((c) => (
-                        <div key={c.name} className="py-10 px-6 text-center group">
-                            <div className="text-white font-ui font-black text-xl md:text-2xl tracking-[0.15em] uppercase group-hover:text-amber-500 transition-colors">
-                                {c.name}
-                            </div>
-                            <div className="text-zinc-600 text-[9px] font-ui uppercase tracking-[0.25em] mt-2">{c.tag}</div>
-                        </div>
-                    ))}
-                </div>
-                <div className="mt-8 overflow-hidden relative">
-                    <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#080808] to-transparent z-10 pointer-events-none" />
-                    <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#080808] to-transparent z-10 pointer-events-none" />
-                    <div className="flex animate-marquee whitespace-nowrap items-center">
-                        {[...stack, ...stack, ...stack].map((name, i) => (
-                            <div key={i} className="mx-8 flex-shrink-0 flex items-center gap-8">
-                                <span className="text-zinc-500 font-ui font-bold text-xs tracking-[0.25em] uppercase hover:text-zinc-300 transition-colors">{name}</span>
-                                {i % stack.length === stack.length - 1 && <span className="w-1.5 h-1.5 bg-amber-500/60" />}
-                            </div>
-                        ))}
-                    </div>
-                    <div className="text-center mt-4">
-                        <span className="text-zinc-700 text-[8px] font-ui uppercase tracking-[0.3em]">Toolchain</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-    );
-};
+const SpecStudioBand = () => (
+    <section className="py-16 md:py-20 border-y border-white/10 bg-[#080808]">
+        <div className="max-w-[1400px] mx-auto px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <p className="text-white text-xl md:text-3xl font-bold tracking-[-0.02em] max-w-3xl">
+                Display or packaging manufacturer? See Spec Studio.
+            </p>
+            <Link
+                to="/spec-studio"
+                className="inline-flex items-center gap-2 px-6 py-4 border border-white/50 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-colors"
+            >
+                Spec Studio <ChevronRight size={14} />
+            </Link>
+        </div>
+    </section>
+);
+
+// Tool logo carousel (Anthropic, Vapi, etc.) removed per speed-to-lead refocus.
 
 // ── Services ──
 const Services = () => {
@@ -258,9 +240,9 @@ const Services = () => {
     }, []);
 
     const services = [
-        { num: '01', title: 'Voice Agents That Take Calls', desc: 'Live agents that answer, qualify, and book straight into your calendar — like the one on this page.', link: '/services/custom-agents' },
+        { num: '01', title: 'Voice Agents That Take Calls', desc: 'Live agents that answer, qualify, and book straight into your calendar, like the one on this page.', link: '/services/custom-agents' },
         { num: '02', title: 'Email Triage & Workflow Automation', desc: 'Inbox classification, follow-up tracking, and automations wired into the systems you already run.' },
-        { num: '03', title: 'Document & Data Intelligence', desc: 'Systems that read your PDFs, drawings, and databases — and act on what they find.' },
+        { num: '03', title: 'Spec Studio', desc: 'AI pre-production review for print, packaging, and display manufacturers.', link: '/spec-studio' },
         { num: '04', title: 'AI Strategy & Advisory', desc: 'A clear, execution-ready plan for where AI actually saves you money. No slideware.', link: '/services/ai-strategy' },
     ];
 
@@ -803,7 +785,7 @@ const Testimonials = () => {
     );
 };
 
-// ── Free AI Audit funnel ──
+// ── Missed-call check + voice pilot ──
 const FreeAudit = () => {
     const ref = useRef(null);
 
@@ -811,23 +793,17 @@ const FreeAudit = () => {
         const ctx = gsap.context(() => {
             gsap.from('.price-card', {
                 scrollTrigger: { trigger: ref.current, start: 'top 65%' },
-                y: 60, opacity: 0, duration: 0.9, stagger: 0.15, ease: 'power3.out'
+                y: 60, opacity: 0, duration: 0.9, ease: 'power3.out'
             });
         }, ref);
         return () => ctx.revert();
     }, []);
 
     const auditItems = [
-        'A 30-minute teardown of how your business actually runs',
-        'A map of where hours and money leak out of your workflows',
-        'A shortlist of automations ranked by ROI — not by hype',
-        'A recorded walkthrough that’s yours to keep, either way',
-    ];
-    const buildItems = [
-        'Fixed-price proposal scoped from your audit — no surprise invoices',
-        'Flagship-grade engineering: tested against your real workflows',
-        'Staged delivery with working software every step',
-        'Production monitoring, tuning, and support after launch',
+        'We call your line after hours (or during a known gap)',
+        'You get a clear readout of what happened: answered, voicemail, or miss',
+        'We map how a speed-to-lead voice agent would catch those leads',
+        'No obligation. Keep the findings either way',
     ];
 
     return (
@@ -836,61 +812,41 @@ const FreeAudit = () => {
                 <div className="mb-8"><SectionLabel>The Offer</SectionLabel></div>
                 <div className="grid md:grid-cols-2 gap-8 mb-16 items-end">
                     <h2 className="text-4xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05]">
-                        Start with a free audit. <span className="text-zinc-600">Everything else is custom.</span>
+                        Free missed-call check:{' '}
+                        <span className="text-zinc-500">we call your line after hours and show you what happens.</span>
                     </h2>
-                    <p className="text-zinc-500 text-sm md:text-base">No pricing tiers, no retainers you don’t need. We find the money first &mdash; then scope the build that captures it.</p>
+                    <p className="text-zinc-400 text-sm md:text-base">
+                        See the gap with your own number. Then decide if a voice agent that answers in seconds is worth a pilot.
+                    </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5">
-                    <div className="price-card p-8 md:p-12 bg-[#0A0A0A] relative">
-                        <div className="absolute top-6 right-6 flex items-center gap-2 px-3 py-1 border border-amber-500/60 text-amber-500 text-[10px] font-bold font-ui uppercase tracking-[0.2em]">
-                            <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
-                            3 slots / month
-                        </div>
-                        <h3 className="text-2xl font-bold text-white mb-3">Free AI Audit</h3>
-                        <p className="text-zinc-500 text-sm mb-10 max-w-sm">For operators who suspect they’re bleeding hours &mdash; and want receipts before spending a dollar.</p>
-                        <div className="flex items-baseline gap-3 mb-10">
-                            <span className="text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight">$0</span>
-                            <span className="text-zinc-500 text-xs font-ui uppercase tracking-widest">No pitch.<br />No obligation.</span>
-                        </div>
-                        <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="block text-center w-full px-6 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4">
-                            Claim an Audit Slot
-                        </a>
-                        <button onClick={() => document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })} className="block text-center w-full px-6 py-4 border border-zinc-700 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors mb-10">
-                            Or Book It By Voice
-                        </button>
-                        <ul className="space-y-4">
-                            {auditItems.map((item, i) => (
-                                <li key={i} className="flex items-start gap-4 text-zinc-400 text-sm">
-                                    <div className="w-1 h-1 bg-amber-500 mt-2.5 flex-shrink-0" />
-                                    {item}
-                                </li>
-                            ))}
-                        </ul>
-                        <p className="text-zinc-600 text-xs mt-10 pt-6 border-t border-white/10">If we can’t find you real savings, we say so &mdash; and you keep the audit.</p>
+                <div className="price-card p-8 md:p-12 bg-[#0A0A0A] border border-white/15 relative max-w-3xl">
+                    <div className="absolute top-6 right-6 flex items-center gap-2 px-3 py-1 border border-amber-500/60 text-amber-500 text-[10px] font-bold font-ui uppercase tracking-[0.2em]">
+                        <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
+                        Free check
                     </div>
-
-                    <div className="price-card p-8 md:p-12 bg-white text-black relative">
-                        <div className="absolute top-6 right-6 px-3 py-1 bg-black text-white text-[10px] font-bold font-ui uppercase tracking-[0.2em]">After the audit</div>
-                        <h3 className="text-2xl font-bold mb-3">Custom Builds</h3>
-                        <p className="text-zinc-600 text-sm mb-10 max-w-sm">For companies ready to turn the audit’s findings into working systems.</p>
-                        <div className="flex items-baseline gap-3 mb-10">
-                            <span className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">Custom</span>
-                            <span className="text-zinc-500 text-xs font-ui uppercase tracking-widest">Scoped to<br />your operation</span>
-                        </div>
-                        <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="block text-center w-full px-6 py-4 bg-black text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-zinc-900 transition-colors mb-10">
-                            Book a Call
-                        </a>
-                        <ul className="space-y-4">
-                            {buildItems.map((item, i) => (
-                                <li key={i} className="flex items-start gap-4 text-zinc-600 text-sm">
-                                    <div className="w-1 h-1 bg-amber-500 mt-2.5 flex-shrink-0" />
-                                    {item}
-                                </li>
-                            ))}
-                        </ul>
-                        <p className="text-zinc-500 text-xs mt-10 pt-6 border-t border-black/10">Every engagement starts with the free audit. That’s the whole funnel.</p>
-                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-3">Missed-call check</h3>
+                    <p className="text-zinc-400 text-sm mb-8 max-w-md">
+                        For teams that know leads die in voicemail and want proof before a pilot.
+                    </p>
+                    <p className="text-white text-lg md:text-xl font-semibold mb-10">
+                        Pilot from $297, then $397/mo, month to month.
+                    </p>
+                    {/* Spec Studio stays unpriced on its own page. */}
+                    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex text-center px-8 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4">
+                        Book the free check
+                    </a>
+                    <button type="button" onClick={() => document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })} className="ml-0 md:ml-3 inline-flex text-center px-8 py-4 border border-zinc-600 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors mb-10">
+                        Or talk to the demo agent
+                    </button>
+                    <ul className="space-y-4">
+                        {auditItems.map((item, i) => (
+                            <li key={i} className="flex items-start gap-4 text-zinc-400 text-sm">
+                                <div className="w-1 h-1 bg-amber-500 mt-2.5 flex-shrink-0" />
+                                {item}
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             </div>
         </section>
@@ -937,7 +893,7 @@ const WhyUs = () => {
                 </div>
                 <div className="why-img relative group">
                     <div className="aspect-[3/4] overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=60" alt="" loading="lazy" className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out" />
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=60&auto=format&fit=crop" srcSet="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=60&auto=format&fit=crop 600w, https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=60&auto=format&fit=crop 900w" sizes="(max-width: 768px) 100vw, 50vw" width={800} height={1067} alt="" loading="lazy" className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out" />
                     </div>
                     <div className="absolute top-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
                         <span>// IMPACT</span>
@@ -1016,12 +972,11 @@ const Team = () => {
 const FAQ = () => {
     const [open, setOpen] = useState(null);
     const faqs = [
-        { q: 'What exactly happens in the free AI audit?', a: 'A 30-minute call where we tear down how your business runs, map where hours and money leak out, and shortlist automations by ROI. You get a recorded walkthrough either way. Three slots per month — that’s all one person can do properly.' },
-        { q: 'Why is there no pricing on this site?', a: 'Because every build is scoped from your audit, not from a menu. You get a fixed-price proposal before any work starts — no hourly billing, no surprise invoices.' },
-        { q: 'Is the Spec Reviewer only for display manufacturers?', a: 'It was built for print, packaging, and display production — but the pattern (grade incoming documents against your own standards, cite every flag) transfers to any industry that bleeds money on non-conformant paperwork.' },
-        { q: 'Is the voice agent on this page real?', a: 'Yes — it’s a live agent, not a recording. It checks the real calendar and books real meetings. It’s also exactly what we’d build for your business.' },
+        { q: 'What is the free missed-call check?', a: 'We call your line after hours (or during a known gap) and show you what happens: answered, voicemail, or a miss. Then we map how a speed-to-lead voice agent would catch those leads. No obligation.' },
+        { q: 'Why is there no pricing on this site?', a: 'The voice pilot is listed: Pilot from $297, then $397/mo, month to month. Spec Studio and deeper custom work are scoped after we see your workflows, so we do not publish a menu price for those.' },
+        { q: 'Is the voice agent on this page real?', a: 'Yes. It is a live agent, not a recording. It checks the real calendar and books real meetings. It is also exactly what we would build for your business.' },
         { q: 'Do you work under NDA?', a: 'Yes. Client engagements run under NDA by default, which is also why we describe some work in general terms.' },
-        { q: 'Who actually does the work?', a: 'Hendrik — the founder — scopes, builds, and ships every engagement personally, with an orchestrated fleet of AI agents doing the heavy lifting. No hand-offs to a junior team.' },
+        { q: 'Who actually does the work?', a: 'Hendrik, the founder, scopes, builds, and ships every engagement personally, with an orchestrated fleet of AI agents doing the heavy lifting. No hand-offs to a junior team.' },
     ];
 
     return (
@@ -1124,20 +1079,40 @@ const Articles = () => {
     );
 };
 
-// ── Contact ──
+// ── Contact (Cal.com embed lazy-loaded when section nears viewport) ──
 const Contact = () => {
     const ref = useRef(null);
+    const calWrapRef = useRef(null);
     const [status, setStatus] = useState('idle');
+    const [showCal, setShowCal] = useState(false);
 
     useEffect(() => {
-        const ctx = gsap.context(() => {
-            (async () => {
-                const api = await getCalApi({ namespace: 'intro-call' });
-                api('ui', { theme: 'dark', hideEventTypeDetails: false, layout: 'month_view' });
-            })();
-        }, ref);
-        return () => ctx.revert();
+        const node = calWrapRef.current;
+        if (!node) return undefined;
+        const obs = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setShowCal(true);
+                    obs.disconnect();
+                }
+            },
+            { rootMargin: '200px' }
+        );
+        obs.observe(node);
+        return () => obs.disconnect();
     }, []);
+
+    useEffect(() => {
+        if (!showCal) return undefined;
+        let cancelled = false;
+        (async () => {
+            const { getCalApi } = await import('@calcom/embed-react');
+            if (cancelled) return;
+            const api = await getCalApi({ namespace: 'intro-call' });
+            api('ui', { theme: 'dark', hideEventTypeDetails: false, layout: 'month_view' });
+        })();
+        return () => { cancelled = true; };
+    }, [showCal]);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -1188,22 +1163,31 @@ const Contact = () => {
                         <h2 className="contact-el text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] mb-8 leading-[0.95]">
                             Book a Call<br /><span className="text-zinc-600">Right Here</span>
                         </h2>
-                        <p className="contact-el text-zinc-500 text-sm md:text-base max-w-md mb-8">Pick a time and it drops straight onto the calendar &mdash; a 30-minute intro, no pitch. Or let the voice agent above book it for you.</p>
+                        <p className="contact-el text-zinc-400 text-sm md:text-base max-w-md mb-8">Pick a time and it drops straight onto the calendar: a 30-minute intro, no pitch. Or let the voice agent above book it for you.</p>
                         <div className="contact-el flex flex-col gap-3 max-w-xs">
                             <CornerButton href={CAL_URL} filled className="justify-center">
                                 Open Full Calendar <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                             </CornerButton>
-                            <a href="mailto:hendrik@corefix.app" className="text-zinc-500 text-xs font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors pl-1">Or email hendrik@corefix.app</a>
+                            <a href="mailto:hendrik@corefix.app" className="text-zinc-400 text-xs font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors pl-1">Or email hendrik@corefix.app</a>
                         </div>
                     </div>
 
-                    <div className="contact-el border border-white/15 bg-[#0A0A0A] overflow-hidden" style={{ minHeight: 640 }}>
-                        <Cal
-                            namespace="intro-call"
-                            calLink={CAL_LINK}
-                            style={{ width: '100%', height: '100%', minHeight: 640, overflow: 'scroll' }}
-                            config={{ layout: 'month_view', theme: 'dark' }}
-                        />
+                    <div ref={calWrapRef} className="contact-el border border-white/15 bg-[#0A0A0A] overflow-hidden" style={{ minHeight: 640 }}>
+                        {showCal ? (
+                            <Suspense fallback={<div className="flex items-center justify-center h-full min-h-[640px] text-zinc-500 text-sm font-ui uppercase tracking-[0.2em]">Loading calendar…</div>}>
+                                <CalEmbed
+                                    namespace="intro-call"
+                                    calLink={CAL_LINK}
+                                    style={{ width: '100%', height: '100%', minHeight: 640, overflow: 'scroll' }}
+                                    config={{ layout: 'month_view', theme: 'dark' }}
+                                />
+                            </Suspense>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center gap-4 h-full min-h-[640px] p-8 text-center">
+                                <p className="text-zinc-400 text-sm">Calendar loads when you scroll here.</p>
+                                <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="text-amber-500 text-xs font-ui uppercase tracking-[0.2em] hover:text-white">Open Cal.com instead</a>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -1227,20 +1211,32 @@ const Contact = () => {
                         </div>
                     ) : (
                         <form className="contact-el space-y-3" onSubmit={handleSubmit}>
-                            <input type="text" name="name" required placeholder="Name" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
-                            <input type="email" name="email" required placeholder="Work Email" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
-                            <input type="text" name="company" placeholder="Company" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                            <label className="block">
+                                <span className="sr-only">Name</span>
+                                <input type="text" name="name" required placeholder="Name" autoComplete="name" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                            </label>
+                            <label className="block">
+                                <span className="sr-only">Work Email</span>
+                                <input type="email" name="email" required placeholder="Work Email" autoComplete="email" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                            </label>
+                            <label className="block">
+                                <span className="sr-only">Company</span>
+                                <input type="text" name="company" placeholder="Company" autoComplete="organization" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors" />
+                            </label>
                             <div className="relative">
-                                <select name="interest" defaultValue="Free AI Audit" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm focus:border-zinc-500 focus:outline-none transition-colors appearance-none cursor-pointer">
-                                    <option>Free AI Audit</option>
-                                    <option>Spec Reviewer</option>
-                                    <option>Voice Agent</option>
-                                    <option>Custom Build</option>
+                                <label htmlFor="interest" className="sr-only">What are you interested in?</label>
+                                <select id="interest" name="interest" defaultValue="Missed-call check" className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm focus:border-zinc-500 focus:outline-none transition-colors appearance-none cursor-pointer">
+                                    <option>Missed-call check</option>
+                                    <option>Voice Agent Pilot</option>
+                                    <option>Spec Studio</option>
                                     <option>Something Else</option>
                                 </select>
-                                <ChevronRight size={14} className="absolute right-5 top-1/2 -translate-y-1/2 rotate-90 text-zinc-500 pointer-events-none" />
+                                <ChevronRight size={14} className="absolute right-5 top-1/2 -translate-y-1/2 rotate-90 text-zinc-500 pointer-events-none" aria-hidden="true" />
                             </div>
-                            <textarea name="message" required placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors resize-none" />
+                            <label className="block">
+                                <span className="sr-only">Message</span>
+                                <textarea name="message" required placeholder="What do you want to discuss?" rows={5} className="w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors resize-none" />
+                            </label>
                             <button type="submit" disabled={status === 'sending'} className="w-full px-8 py-6 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.3em] hover:bg-amber-500 transition-colors flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed">
                                 {status === 'sending' ? 'Sending...' : 'Submit'} {status !== 'sending' && <ArrowUpRight size={16} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />}
                             </button>
@@ -1260,18 +1256,18 @@ const Footer = () => (
     <footer className="bg-[#050505] pt-24 pb-10 px-6">
         <div className="max-w-[1400px] mx-auto">
             <div className="mb-20 overflow-hidden">
-                <h2 className="text-[18vw] md:text-[15vw] font-black uppercase tracking-tighter text-white/[0.15] leading-none select-none">
+                <p className="text-[18vw] md:text-[15vw] font-black uppercase tracking-tighter text-white/[0.15] leading-none select-none" aria-hidden="true">
                     COREFIX&reg;
-                </h2>
+                </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/10">
                 <div className="md:col-span-2 max-w-md">
-                    <h4 className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6">
-                        <svg viewBox="0 0 32 32" className="w-5 h-5"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
-                    </h4>
+                    <p className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6">
+                        <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
+                    </p>
                     <p className="text-zinc-400 text-sm leading-relaxed mb-8 max-w-sm">
-                        We design, build, and deploy reliable AI systems and automation workflows.
+                        Speed to lead is what we do. AI voice agents that answer first, plus Spec Studio for manufacturers.
                     </p>
                     <div className="space-y-3">
                         <a href="mailto:hendrik@corefix.app" className="block text-white font-bold text-base hover:text-amber-500 transition-colors">
@@ -1281,28 +1277,29 @@ const Footer = () => (
                 </div>
 
                 <div className="flex flex-col gap-3">
-                    <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
-                    {[['Home', '#'], ['Services', '#services'], ['About', '#team'], ['Insights', '#insights']].map(([link, href]) => (
-                        <a key={link} href={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
+                    <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
+                    {[['Home', '#'], ['Voice Demo', '#voice-demo'], ['Spec Studio', '/spec-studio'], ['About', '#team']].map(([link, href]) => (
+                        href.startsWith('/')
+                            ? <Link key={link} to={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</Link>
+                            : <a key={link} href={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
                     ))}
                     <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="text-amber-500 text-sm hover:text-white transition-colors font-ui uppercase tracking-wider py-2">Let&apos;s Talk</a>
                 </div>
                 <div className="flex flex-col gap-3">
-                    <span className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
+                    <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
                     <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">LinkedIn</a>
-                    <a href="https://www.instagram.com/hendrikunfiltered/" target="_blank" rel="noopener noreferrer" className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">Instagram</a>
                 </div>
             </div>
 
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-green-500 animate-pulse" />
-                    <span className="font-ui text-[10px] text-zinc-500 tracking-[0.25em] uppercase">System Operational &mdash; {new Date().getFullYear()}</span>
+                    <span className="font-ui text-[10px] text-zinc-400 tracking-[0.25em] uppercase">System Operational · {new Date().getFullYear()}</span>
                 </div>
-                <p className="text-zinc-600 text-[10px] font-ui uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Corefix. All rights reserved.</p>
+                <p className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Corefix. All rights reserved.</p>
                 <div className="flex gap-6">
-                    <a href="#" className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
-                    <a href="#" className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
+                    <a href="/terms" className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
+                    <a href="/privacy" className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
                 </div>
             </div>
         </div>
@@ -1339,23 +1336,23 @@ const GridOverlay = () => <BrightGrid z="z-30" />;
 function App() {
     return (
         <div className="w-full min-h-screen font-sans bg-[#0A0A0A] text-white selection:bg-amber-500 selection:text-black relative">
+            <SeoHead path="/" />
             <Navbar />
-            <Hero />
-            <LogoMarquee />
-            <Flagship />
-            <Services />
-            <Capabilities />
-            <Process />
-            <CaseStudy />
-            <Testimonials />
-            <VoiceSection />
-            <SpecReviewerVSL />
-            <FreeAudit />
-            <WhyUs />
-            <Team />
-            <FAQ />
-            <Articles />
-            <Contact />
+            <main>
+                <Hero />
+                <VoiceSection />
+                <SpecStudioBand />
+                <Services />
+                <Capabilities />
+                <Process />
+                <Testimonials />
+                <FreeAudit />
+                <WhyUs />
+                <Team />
+                <FAQ />
+                {/* Insights hidden until there are real posts */}
+                <Contact />
+            </main>
             <Footer />
         </div>
     );

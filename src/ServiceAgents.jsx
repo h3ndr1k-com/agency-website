@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight, ChevronRight, ArrowLeft, Zap, Mail, Users, BarChart3, Globe, Tv, Pen, MessageSquare, Target, Search } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { ServiceNavbar, Footer, SectionGrid, BrightGrid, SectionLabel, CornerButton } from './shared';
+import SeoHead from './SeoHead.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,7 +28,7 @@ const AgentsHero = () => {
         <section ref={ref} className="relative min-h-[110vh] flex flex-col justify-end pb-20 md:pb-32 overflow-hidden">
             <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
                 <div className="absolute inset-0" style={{
-                    backgroundImage: 'url(https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1920&q=60&auto=format)',
+                    backgroundImage: 'url(https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&q=60&auto=format&fit=crop)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     filter: 'grayscale(100%) contrast(1.2) brightness(0.4)',
@@ -642,15 +643,18 @@ export default function ServiceAgents() {
 
     return (
         <div className="w-full min-h-screen font-sans bg-[#0A0A0A] text-white selection:bg-amber-500 selection:text-black relative">
+            <SeoHead path="/services/custom-agents" />
             <ServiceNavbar />
-            <AgentsHero />
-            <TheProblem />
-            <Flagship />
-            <SalesAgents />
-            <OpsAgents />
-            <ContentAgents />
-            <OfferLadder />
-            <FinalCTA />
+            <main>
+                <AgentsHero />
+                <TheProblem />
+                <Flagship />
+                <SalesAgents />
+                <OpsAgents />
+                <ContentAgents />
+                <OfferLadder />
+                <FinalCTA />
+            </main>
             <Footer />
         </div>
     );

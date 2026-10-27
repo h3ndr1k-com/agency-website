@@ -27,7 +27,7 @@ const FOOTER_LINKS = [
     ['Contact', '/#contact'],
 ];
 
-const fieldClass = 'w-full px-5 py-5 bg-[#111] border border-zinc-700 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors';
+const fieldClass = 'w-full px-5 py-5 bg-[#111] border border-zinc-600 text-white text-sm placeholder-zinc-400 focus:border-zinc-500 focus:outline-none transition-colors';
 
 function readStoredIntake() {
     try {
@@ -48,16 +48,16 @@ function storeIntake(intake) {
 
 function SlotBadge({ slots, failed }) {
     if (failed) {
-        return <span className="px-3 py-1 border border-white/20 text-zinc-400 text-[10px] font-bold font-ui uppercase tracking-[0.2em]">Free slots unavailable</span>;
+        return <span className="px-3 py-1 border border-white/30 text-zinc-400 text-[10px] font-bold font-ui uppercase tracking-[0.2em]">Free slots unavailable</span>;
     }
     if (!slots) {
-        return <span className="px-3 py-1 border border-white/20 text-zinc-400 text-[10px] font-bold font-ui uppercase tracking-[0.2em]">Checking free slots</span>;
+        return <span className="px-3 py-1 border border-white/30 text-zinc-400 text-[10px] font-bold font-ui uppercase tracking-[0.2em]">Checking free slots</span>;
     }
     const label = `${slots.remaining} of ${slots.cap} free left`;
     if (slots.remaining > 0) {
         return <span className="px-3 py-1 bg-amber-500 text-black text-[10px] font-bold font-ui uppercase tracking-[0.2em]">{label}</span>;
     }
-    return <span className="px-3 py-1 border border-white/30 text-zinc-300 text-[10px] font-bold font-ui uppercase tracking-[0.2em]">{label}</span>;
+    return <span className="px-3 py-1 border border-white/40 text-zinc-300 text-[10px] font-bold font-ui uppercase tracking-[0.2em]">{label}</span>;
 }
 
 function Landing() {
@@ -226,7 +226,7 @@ function Landing() {
                             </div>
                         </div>
 
-                        <form id="book" onSubmit={onSubmit} className="ops-chrome lg:sticky lg:top-28 border border-white/15 bg-[#0A0A0A] p-6 md:p-8 space-y-3">
+                        <form id="book" onSubmit={onSubmit} className="ops-chrome lg:sticky lg:top-28 border border-white/25 bg-[#0A0A0A] p-6 md:p-8 space-y-3">
                             <p className="text-[10px] font-ui uppercase tracking-[0.25em] text-zinc-500 mb-4">Short intake</p>
                             {cancelled && (
                                 <p className="text-amber-500 text-xs font-ui uppercase tracking-[0.14em] mb-2">Checkout cancelled. Your details are still here.</p>
@@ -245,7 +245,7 @@ function Landing() {
                             </label>
                             <fieldset>
                                 <legend className="text-[10px] font-ui uppercase tracking-[0.22em] text-zinc-500 mb-2">Stack</legend>
-                                <div className="grid grid-cols-2 gap-px bg-white/10">
+                                <div className="grid grid-cols-2 gap-px bg-white/20">
                                     {STACKS.map((stack) => {
                                         const selected = form.stack === stack.value;
                                         return (
@@ -286,11 +286,11 @@ function Landing() {
                 </div>
             </section>
 
-            <section className="relative py-20 md:py-28 border-t border-white/10 overflow-hidden">
+            <section className="relative py-20 md:py-28 border-t border-white/20 overflow-hidden">
                 <SectionGrid />
                 <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                     <div className="mb-8"><SectionLabel>In the hour</SectionLabel></div>
-                    <div className="grid md:grid-cols-3 gap-px bg-white/10">
+                    <div className="grid md:grid-cols-3 gap-px bg-white/20">
                         {HOUR.map((step, index) => (
                             <div key={step} className="bg-[#0A0A0A] p-8 md:p-10">
                                 <div className="text-amber-500 font-ui text-xs tracking-[0.22em] mb-6">0{index + 1}</div>
@@ -398,7 +398,7 @@ function BookSession() {
                 )}
 
                 {auth.kind === 'denied' && (
-                    <div className="mt-12 max-w-xl border border-white/15 p-8">
+                    <div className="mt-12 max-w-xl border border-white/25 p-8">
                         <p className="text-white text-lg font-bold mb-3">{auth.message}</p>
                         <CornerButton to="/ai-ops-setup" filled>
                             Back to the setup page <ArrowUpRight size={14} />
@@ -411,7 +411,7 @@ function BookSession() {
                         <p className="mt-6 text-amber-500 text-xs font-ui uppercase tracking-[0.18em]">
                             {auth.kind === 'paid' ? 'Payment received · $97 CAD' : auth.kind === 'free' ? 'Free seat claimed' : 'Pick a time'}
                         </p>
-                        <div className="mt-8 border border-white/15 bg-[#0A0A0A] overflow-hidden" style={{ minHeight: 640 }}>
+                        <div className="mt-8 border border-white/25 bg-[#0A0A0A] overflow-hidden" style={{ minHeight: 640 }}>
                             <Cal
                                 namespace="ai-ops-setup"
                                 calLink={CAL_LINK}

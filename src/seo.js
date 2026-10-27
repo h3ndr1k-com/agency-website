@@ -2,6 +2,7 @@
 export const SITE = 'https://www.corefix.app';
 export const OG_IMAGE = `${SITE}/og-image.png`;
 export const OG_SPEC_STUDIO = `${SITE}/og-spec-studio.jpg`;
+export const OG_VOICE_AGENT = `${SITE}/og-voice-agent.jpg`;
 export const CAL_URL = 'https://cal.com/corefix.ai/30min';
 
 export const HOME_FAQS = [
@@ -65,7 +66,7 @@ export const STRATEGY_FAQS = [
     },
 ];
 
-/** Comparison points for voice agent vs a typical answering service (no named competitors). */
+/** Comparison points for voice agent vs a typical answering service (no named competitors, hedged). */
 export const VOICE_COMPARE = {
     corefix: [
         'Flat $297/mo USD',
@@ -76,10 +77,10 @@ export const VOICE_COMPARE = {
         'Texts the job details fast',
     ],
     typical: [
-        'Custom quotes instead of a flat price',
-        'Often billed per minute or per call',
-        'Usually a contract',
-        'Often takes a message instead of booking the job',
+        'Pricing is often custom rather than a single flat rate',
+        'Some services bill per minute or per call',
+        'Contracts are common',
+        'Many services take a message instead of booking the job',
     ],
 };
 
@@ -125,7 +126,7 @@ export const ROUTES = {
         path: '/services/ai-strategy',
         title: 'AI Strategy & Advisory | Corefix',
         description:
-            'An execution-ready AI plan for where automation actually saves money. No slideware. Book a call with Corefix.',
+            'An execution-ready AI plan for where automation actually saves money in your operation. No slideware. Book a strategy call with Corefix.',
         h1: 'AI Strategy & Advisory',
         ogType: 'website',
         ogImage: OG_IMAGE,
@@ -137,13 +138,13 @@ export const ROUTES = {
             'AI voice agent that answers every call and web lead day or night, books on your calendar, and texts job details fast. Flat $297/mo.',
         h1: 'Every call answered and booked, day or night.',
         ogType: 'website',
-        ogImage: OG_IMAGE,
+        ogImage: OG_VOICE_AGENT,
     },
     '/ai-ops-setup': {
         path: '/ai-ops-setup',
         title: 'AI Ops Setup Session | Get AI Working in 60 Minutes | Corefix',
         description:
-            'A focused 60-minute session to map time sinks and leave with a priority list plus a working starter. Book your AI Ops Setup.',
+            'A focused 60-minute session to map time sinks and leave with a priority list plus a working starter. Book your AI Ops Setup with Corefix.',
         h1: 'Get AI working in your business in 60 minutes',
         ogType: 'website',
         ogImage: OG_IMAGE,
@@ -152,7 +153,7 @@ export const ROUTES = {
         path: '/ai-ops-setup/book',
         title: 'Book your AI Ops Setup Session | Corefix',
         description:
-            'Confirm your AI Ops Setup Session booking with Corefix. Pick a time after checkout or free-seat claim.',
+            'Confirm your AI Ops Setup Session booking with Corefix. Pick a time after checkout or free-seat claim on the calendar.',
         h1: 'Book your AI Ops Setup Session',
         ogType: 'website',
         ogImage: OG_IMAGE,
@@ -161,7 +162,7 @@ export const ROUTES = {
         path: '/privacy',
         title: 'Privacy Policy (DRAFT) | Corefix',
         description:
-            'Draft privacy policy for Corefix: how we handle contact forms, calendar bookings, and voice demo calls.',
+            'Draft privacy policy for Corefix covering how we handle contact forms, calendar bookings, and live voice demo calls.',
         h1: 'Privacy Policy',
         ogType: 'website',
         ogImage: OG_IMAGE,
@@ -170,7 +171,7 @@ export const ROUTES = {
         path: '/terms',
         title: 'Terms of Use (DRAFT) | Corefix',
         description:
-            'Draft terms of use for the Corefix website, demos, and booked consultations.',
+            'Draft terms of use for the Corefix website, product demos, voice agents, and booked consultations with our team.',
         h1: 'Terms of Use',
         ogType: 'website',
         ogImage: OG_IMAGE,
@@ -303,6 +304,7 @@ export function jsonLdForPath(path) {
     }
     if (path === '/services/voice-agent') {
         const meta = ROUTES[path];
+        const page = canonicalFor(path);
         return [
             organizationJsonLd(),
             {
@@ -312,13 +314,21 @@ export function jsonLdForPath(path) {
                 serviceType: 'AI voice agent',
                 description: meta?.description,
                 provider: { '@type': 'Organization', name: 'Corefix', url: SITE },
-                url: canonicalFor(path),
+                url: page,
                 offers: {
                     '@type': 'Offer',
                     price: '297',
                     priceCurrency: 'USD',
                     description: '$297/mo USD. Month to month.',
                 },
+            },
+            {
+                '@context': 'https://schema.org',
+                '@type': 'BreadcrumbList',
+                itemListElement: [
+                    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+                    { '@type': 'ListItem', position: 2, name: 'Voice Agent', item: page },
+                ],
             },
             faqPageJsonLd(VOICE_FAQS),
         ];

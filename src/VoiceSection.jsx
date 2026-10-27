@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PhoneOff, Phone } from 'lucide-react';
+import { LiquidGlassButton } from './LiquidGlassButton';
 import { SectionGrid, SectionLabel } from './shared.jsx';
 import SiriWave from './SiriWave.jsx';
 
@@ -116,7 +117,7 @@ export default function VoiceSection() {
     const mmss = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 
     return (
-        <section id="voice-demo" ref={ref} className="py-24 md:py-40 bg-[#080808] border-y border-white/20 relative overflow-hidden">
+        <section id="voice-demo" ref={ref} className="py-24 md:py-40 bg-[#080808] border-y border-white/30 relative overflow-hidden">
             <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10 flex flex-col items-center text-center">
                 <div className="voice-el mb-8"><SectionLabel>Live Demo</SectionLabel></div>
@@ -139,20 +140,20 @@ export default function VoiceSection() {
                         href="https://cal.com/corefix.ai/30min"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-5 py-3 border border-white/40 text-zinc-300 font-ui text-xs uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors"
+                        className="inline-flex items-center gap-2 px-5 py-3 border border-white/50 text-zinc-300 font-ui text-xs uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors"
                     >
                         No mic? Book on the calendar
                     </a>
                 </div>
 
                 {/* Orb console */}
-                <div className="voice-el relative w-full min-w-0 max-w-xl p-6 sm:p-10 md:p-14 border border-white/20 bg-[#0A0A0A]">
+                <div className="voice-el relative w-full min-w-0 max-w-xl p-6 sm:p-10 md:p-14 border border-white/30 bg-[#0A0A0A]">
                     <span className="absolute -top-[2px] -left-[2px] w-4 h-4 border-t-2 border-l-2 border-amber-500" />
                     <span className="absolute -top-[2px] -right-[2px] w-4 h-4 border-t-2 border-r-2 border-amber-500" />
                     <span className="absolute -bottom-[2px] -left-[2px] w-4 h-4 border-b-2 border-l-2 border-amber-500" />
                     <span className="absolute -bottom-[2px] -right-[2px] w-4 h-4 border-b-2 border-r-2 border-amber-500" />
 
-                    <div className="flex flex-wrap justify-center sm:justify-between text-[8px] md:text-[9px] font-ui uppercase tracking-[0.25em] text-zinc-600 mb-4 gap-x-6 gap-y-2">
+                    <div className="flex flex-wrap justify-center sm:justify-between text-[8px] md:text-[9px] font-ui uppercase tracking-[0.25em] text-zinc-400 mb-4 gap-x-6 gap-y-2">
                         <span>Agent: Corefix-01</span>
                         <span>Channel: WebRTC</span>
                         <span className={live ? 'text-amber-500' : ''}>{live ? `Live ${mmss}` : 'Secure'}</span>
@@ -164,7 +165,7 @@ export default function VoiceSection() {
 
                     <div className="relative mx-auto mt-1 w-full min-w-0 max-w-md text-left">
                         <div
-                            className={`border border-white/15 border-t-2 bg-[#121212] px-4 py-4 sm:px-5 ${canDial ? 'cursor-pointer' : ''} ${live ? 'border-t-amber-500' : status === 'error' ? 'border-t-red-400' : 'border-t-amber-500/70'}`}
+                            className={`border border-white/25 border-t-2 bg-[#121212] px-4 py-4 sm:px-5 ${canDial ? 'cursor-pointer' : ''} ${live ? 'border-t-amber-500' : status === 'error' ? 'border-t-red-400' : 'border-t-amber-500/70'}`}
                             onClick={canDial ? startCall : undefined}
                             onKeyDown={canDial ? (e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
@@ -179,7 +180,7 @@ export default function VoiceSection() {
                         >
                             <div className="mb-3 flex items-center justify-between gap-3">
                                 <span className="text-[9px] font-ui uppercase tracking-[0.25em] text-amber-500">Corefix</span>
-                                <span className={`text-[9px] font-ui uppercase tracking-[0.25em] ${live ? 'text-amber-500' : status === 'error' ? 'text-red-400' : 'text-zinc-500'}`}>
+                                <span className={`text-[9px] font-ui uppercase tracking-[0.25em] ${live ? 'text-amber-500' : status === 'error' ? 'text-red-400' : 'text-zinc-400'}`}>
                                     {STATUS_COPY[status]}
                                 </span>
                             </div>
@@ -202,10 +203,10 @@ export default function VoiceSection() {
                                 )}
                                 {messages.map((msg, i) => (
                                     <div key={`${msg.role}-${i}`} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
-                                        <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-600">
+                                        <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-400">
                                             {msg.role === 'assistant' ? 'Corefix' : 'You'}
                                         </span>
-                                        <p className={`mt-1 text-sm leading-relaxed ${msg.final === false ? 'text-zinc-500' : 'text-zinc-200'}`}>{msg.text}</p>
+                                        <p className={`mt-1 text-sm leading-relaxed ${msg.final === false ? 'text-zinc-400' : 'text-zinc-200'}`}>{msg.text}</p>
                                     </div>
                                 ))}
                             </div>
@@ -215,28 +216,28 @@ export default function VoiceSection() {
 
                     <div className="mt-8 flex items-start justify-center gap-8">
                         <div className="flex flex-col items-center gap-2">
-                            <button
-                                type="button"
+                            <LiquidGlassButton
+                                tone="amber"
+                                filterId="voice-dial-glass"
                                 onClick={startCall}
                                 disabled={!canDial}
                                 aria-label="Start a voice call with the Corefix AI agent"
-                                className="allow-round flex h-11 w-11 items-center justify-center bg-amber-500 text-black transition-colors hover:bg-amber-400 focus:outline-none disabled:bg-transparent disabled:text-zinc-600 disabled:border disabled:border-white/15"
                             >
-                                <Phone size={16} strokeWidth={2.2} />
-                            </button>
-                            <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-500">Dial</span>
+                                <Phone size={32} strokeWidth={1.75} className="shrink-0 overflow-visible" aria-hidden="true" />
+                            </LiquidGlassButton>
+                            <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-400">Dial</span>
                         </div>
                         <div className="flex flex-col items-center gap-2">
-                            <button
-                                type="button"
+                            <LiquidGlassButton
+                                tone="mute"
+                                filterId="voice-hangup-glass"
                                 onClick={endCall}
                                 disabled={!canHangUp}
                                 aria-label="End the voice call"
-                                className="allow-round flex h-11 w-11 items-center justify-center border border-white/20 text-white transition-colors hover:border-amber-500 hover:text-amber-500 focus:outline-none disabled:border-white/10 disabled:text-zinc-700"
                             >
-                                <PhoneOff size={16} strokeWidth={2.2} />
-                            </button>
-                            <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-500">Hang up</span>
+                                <PhoneOff size={32} strokeWidth={1.75} className="shrink-0 overflow-visible" aria-hidden="true" />
+                            </LiquidGlassButton>
+                            <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-400">Hang up</span>
                         </div>
                     </div>
                 </div>
@@ -252,7 +253,7 @@ export default function VoiceSection() {
                         </>
                     )}
                 </p>
-                <p className="voice-el text-zinc-500 text-xs max-w-md mt-6 leading-relaxed">
+                <p className="voice-el text-zinc-400 text-xs max-w-md mt-6 leading-relaxed">
                     Privacy: the demo uses your microphone for a live WebRTC call processed by our voice provider (Vapi) so the agent can talk, check the calendar, and book. See our{' '}
                     <a href="/privacy" className="text-amber-500 hover:underline">Privacy Policy</a>
                     {' '}(draft). Prefer not to use a mic?{' '}

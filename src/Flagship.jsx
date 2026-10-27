@@ -35,7 +35,7 @@ const ANNOTATIONS = [
     { text: 'KONGSBERG READY', pos: 'bottom-4 right-4' },
 ];
 
-export default function Flagship() {
+export default function Flagship({ embed = false }) {
     const ref = useRef(null);
     const canvasWrapRef = useRef(null);
     const foldProgress = useRef({ current: 0 });
@@ -88,18 +88,25 @@ export default function Flagship() {
         <section id="flagship" ref={ref} className="relative py-24 md:py-36 bg-[#080808] border-y border-white/20 overflow-hidden">
             <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
-                <div className="flag-head mb-8"><SectionLabel>Flagship Product</SectionLabel></div>
-                <h2 className="flag-head font-display uppercase text-white leading-[0.9] tracking-[0.01em] text-[16vw] md:text-[9rem] lg:text-[11rem] select-none">
-                    Spec<span className="text-amber-500">_</span>Reviewer
-                </h2>
-                <div className="flag-head grid md:grid-cols-2 gap-8 mt-8 mb-20">
+                {!embed && (
+                    <>
+                        <div className="flag-head mb-8"><SectionLabel>Flagship Product</SectionLabel></div>
+                        <h2 className="flag-head font-display uppercase text-white leading-[0.9] tracking-[0.01em] text-[16vw] md:text-[9rem] lg:text-[11rem] select-none">
+                            Spec<span className="text-amber-500">_</span>Studio
+                        </h2>
+                    </>
+                )}
+                {embed && (
+                    <div className="flag-head mb-8"><SectionLabel>How it works</SectionLabel></div>
+                )}
+                <div className={`flag-head grid md:grid-cols-2 gap-8 ${embed ? 'mb-16' : 'mt-8 mb-20'}`}>
                     <p className="text-zinc-300 text-base md:text-lg leading-relaxed max-w-xl">
                         AI pre-production review for print, packaging &amp; display manufacturers.
-                        Every incoming spec gets graded before it ever reaches the floor &mdash;
-                        <span className="text-white font-semibold"> Pass, Needs Revision, or Reject</span> &mdash; with every flag citing the exact company standard it violates.
+                        Every incoming spec gets graded before it ever reaches the floor:{' '}
+                        <span className="text-white font-semibold">Pass, Needs Revision, or Reject</span>, with every flag citing the exact company standard it violates.
                     </p>
-                    <p className="text-zinc-500 text-sm leading-relaxed max-w-md md:justify-self-end md:text-right">
-                        Grounded in the manufacturer's own knowledge base &mdash; FEFCO codes, press specs, dieline standards, tooling rules. It flags what's missing or non-conformant. It never invents a spec.
+                    <p className="text-zinc-400 text-sm leading-relaxed max-w-md md:justify-self-end md:text-right">
+                        Grounded in the manufacturer&apos;s own knowledge base: FEFCO codes, press specs, dieline standards, tooling rules. It flags what&apos;s missing or non-conformant. It never invents a spec.
                     </p>
                 </div>
 
@@ -198,10 +205,10 @@ export default function Flagship() {
 
                 <div className="mt-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <p className="text-zinc-400 text-sm max-w-lg">
-                        Built for a production floor, not a demo day. Want it reading <span className="text-white">your</span> incoming specs?
+                        Built for a production floor, not a demo day. Want Spec Studio reading <span className="text-white">your</span> incoming specs?
                     </p>
-                    <CornerButton href="#audit" filled>
-                        Get a Free Audit <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    <CornerButton href="https://cal.com/corefix.ai/30min" filled>
+                        Book a demo <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                     </CornerButton>
                 </div>
             </div>

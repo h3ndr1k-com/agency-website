@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight, ChevronRight, ArrowLeft } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ServiceNavbar, Footer, SectionGrid, BrightGrid, SectionLabel, CornerButton } from './shared';
+import SeoHead from './SeoHead.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,7 +28,7 @@ const ServiceHero = () => {
         <section ref={ref} className="relative min-h-[110vh] flex flex-col justify-end pb-20 md:pb-32 overflow-hidden">
             <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
                 <div className="absolute inset-0" style={{
-                    backgroundImage: 'url(https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=60&auto=format)',
+                    backgroundImage: 'url(https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=60&auto=format&fit=crop)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     filter: 'grayscale(100%) contrast(1.2) brightness(0.5)',
@@ -575,16 +576,19 @@ export default function ServiceStrategy() {
 
     return (
         <div className="w-full min-h-screen font-sans bg-[#0A0A0A] text-white selection:bg-amber-500 selection:text-black relative">
+            <SeoHead path="/services/ai-strategy" />
             <ServiceNavbar />
-            <ServiceHero />
-            <Problem />
-            <Framework />
-            <Deliverables />
-            <Audience />
-            <Trust />
-            <Engagement />
-            <ServiceFAQ />
-            <FinalCTA />
+            <main>
+                <ServiceHero />
+                <Problem />
+                <Framework />
+                <Deliverables />
+                <Audience />
+                <Trust />
+                <Engagement />
+                <ServiceFAQ />
+                <FinalCTA />
+            </main>
             <Footer />
         </div>
     );

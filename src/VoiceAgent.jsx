@@ -1,8 +1,16 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, ChevronRight, Phone } from 'lucide-react';
+import {
+    ArrowUpRight,
+    CalendarCheck,
+    ChevronRight,
+    MessageSquareText,
+    Phone,
+    PhoneForwarded,
+} from 'lucide-react';
 import SeoHead from './SeoHead.jsx';
 import VoiceSection from './VoiceSection.jsx';
+import { FeatureCard } from './FeatureCard.jsx';
 import {
     ServiceNavbar,
     Footer,
@@ -25,17 +33,23 @@ const STEPS = [
     {
         num: '01',
         title: 'We wire it to your line and calendar',
-        desc: 'Your numbers, your calendar, your company name. The agent picks up as you.',
+        description:
+            'Your numbers, your calendar, your company name. The agent picks up as you.',
+        icon: PhoneForwarded,
     },
     {
         num: '02',
         title: 'It answers, qualifies, and books',
-        desc: 'Every call and web lead gets a live answer, day or night. Jobs land on your calendar.',
+        description:
+            'Every call and web lead gets a live answer, day or night. Jobs land on your calendar.',
+        icon: CalendarCheck,
     },
     {
         num: '03',
         title: 'You get the details fast',
-        desc: 'A text with the job details follows so your team can move without digging through voicemail.',
+        description:
+            'A text with the job details follows so your team can move without digging through voicemail.',
+        icon: MessageSquareText,
     },
 ];
 
@@ -112,16 +126,8 @@ function HowItWorks() {
                     Live in three steps.
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10">
-                    {STEPS.map((step) => (
-                        <div key={step.num} className="bg-[#0A0A0A] p-8 md:p-10">
-                            <span className="text-amber-500 text-[10px] font-ui font-bold uppercase tracking-[0.25em]">
-                                {step.num}
-                            </span>
-                            <h3 className="text-white text-xl font-bold mt-4 mb-3 tracking-tight">
-                                {step.title}
-                            </h3>
-                            <p className="text-zinc-300 text-sm leading-relaxed">{step.desc}</p>
-                        </div>
+                    {STEPS.map((step, i) => (
+                        <FeatureCard key={step.num} feature={step} patternIndex={i} />
                     ))}
                 </div>
             </div>

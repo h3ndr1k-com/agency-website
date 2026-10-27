@@ -2,7 +2,7 @@
 /**
  * Post-build prerender: write per-route HTML with unique head tags,
  * www canonicals, JSON-LD, and crawler-visible H1/copy/links inside #root.
- * React replaces #root on hydrate; crawlers that skip JS still see content.
+ * Client hydrates #root with hydrateRoot when markup is present.
  */
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -18,6 +18,7 @@ const {
     SITE,
     OG_IMAGE,
     canonicalFor,
+    ogImageFor,
     jsonLdForPath,
     crawlerHtml,
 } = seoMod;
@@ -26,11 +27,15 @@ const template = readFileSync(join(dist, 'index.html'), 'utf8');
 
 function applyHead(html, path) {
     const meta = ROUTES[path] || ROUTES['/404'];
-    const canonical = canonicalFor(meta.path === '/404' ? '/' : meta.path);
-    const jsonLd = jsonLdForPath(path === '/404' ? '/' : path);
+    const is404 = path === '/404' || meta.path === '/404';
+    // 404 must not point canonical/og:url at home
+    const canonical = is404 ? canonicalFor('/404') : canonicalFor(meta.path);
+    const jsonLd = is404 ? [] : jsonLdForPath(path);
+    const ogImage = is404 ? OG_IMAGE : ogImageFor(path);
     const robots = meta.noindex ? '\n  <meta name="robots" content="noindex, nofollow" />' : '';
 
     const jsonLdTags = (Array.isArray(jsonLd) ? jsonLd : [jsonLd])
+        .filter(Boolean)
         .map((block) => `  <script type="application/ld+json">${JSON.stringify(block)}</script>`)
         .join('\n');
 
@@ -50,16 +55,22 @@ function applyHead(html, path) {
         /property="og:description" content="[^"]*"/,
         `property="og:description" content="${escapeAttr(meta.description)}"`
     );
-    out = out.replace(/property="og:image" content="[^"]*"/, `property="og:image" content="${OG_IMAGE}"`);
+    out = out.replace(/property="og:image" content="[^"]*"/, `property="og:image" content="${ogImage}"`);
     out = out.replace(/name="twitter:title" content="[^"]*"/, `name="twitter:title" content="${escapeAttr(meta.title)}"`);
     out = out.replace(
         /name="twitter:description" content="[^"]*"/,
         `name="twitter:description" content="${escapeAttr(meta.description)}"`
     );
-    out = out.replace(/name="twitter:image" content="[^"]*"/, `name="twitter:image" content="${OG_IMAGE}"`);
+    out = out.replace(/name="twitter:image" content="[^"]*"/, `name="twitter:image" content="${ogImage}"`);
 
-    // Inject robots + JSON-LD before </head>
-    out = out.replace('</head>', `${robots}\n${jsonLdTags}\n</head>`);
+    // Spec Studio / home hero preload when relevant
+    let preload = '';
+    if (path === '/spec-studio') {
+        preload = `
+  <link rel="preload" as="image" href="/img/spec-studio-hero-800.webp" type="image/webp" imagesrcset="/img/spec-studio-hero-800.webp 800w, /img/spec-studio-hero-1200.webp 1200w" imagesizes="100vw" fetchpriority="high" />`;
+    }
+
+    out = out.replace('</head>', `${robots}\n${jsonLdTags}${preload}\n</head>`);
 
     const body = crawlerHtml(path === '/404' ? '/404' : path);
     out = out.replace(
@@ -100,7 +111,6 @@ for (const [path, file] of pages) writeRoute(path, file);
 // Real 404 document (Vercel serves /404.html with 404 status when present)
 writeRoute('/404', '404.html');
 
-// Ensure robots + sitemap copied (Vite copies public/ already; belt-and-suspenders)
 for (const f of ['robots.txt', 'sitemap.xml']) {
     const src = join(root, 'public', f);
     if (existsSync(src)) copyFileSync(src, join(dist, f));

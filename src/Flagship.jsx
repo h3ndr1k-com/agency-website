@@ -44,7 +44,7 @@ export default function Flagship({ embed = false }) {
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => { if (entry.isIntersecting) { setMounted3d(true); observer.disconnect(); } },
-            { rootMargin: '500px' }
+            { rootMargin: '120px' }
         );
         if (canvasWrapRef.current) observer.observe(canvasWrapRef.current);
         return () => observer.disconnect();
@@ -92,7 +92,7 @@ export default function Flagship({ embed = false }) {
                     <>
                         <div className="flag-head mb-8"><SectionLabel>Flagship Product</SectionLabel></div>
                         <h2 className="flag-head font-display uppercase text-white leading-[0.9] tracking-[0.01em] text-[16vw] md:text-[9rem] lg:text-[11rem] select-none">
-                            Spec<span className="text-amber-500">_</span>Studio
+                            Spec<span className="text-amber-500" aria-hidden="true">_</span>Studio
                         </h2>
                     </>
                 )}

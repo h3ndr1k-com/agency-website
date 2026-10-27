@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { SITE, OG_IMAGE, canonicalFor, jsonLdForPath, ROUTES } from './seo.js';
+import { SITE, OG_IMAGE, canonicalFor, ogImageFor, jsonLdForPath, ROUTES } from './seo.js';
 
 function upsertMeta(attr, key, content) {
     if (!content) return;
@@ -37,7 +37,9 @@ function upsertJsonLd(blocks) {
 export default function SeoHead({ path }) {
     useEffect(() => {
         const meta = ROUTES[path] || ROUTES['/'];
-        const canonical = canonicalFor(meta.path);
+        const is404 = path === '/404';
+        const canonical = is404 ? canonicalFor('/404') : canonicalFor(meta.path);
+        const image = is404 ? OG_IMAGE : ogImageFor(path);
         document.title = meta.title;
         upsertMeta('name', 'description', meta.description);
         if (meta.noindex) upsertMeta('name', 'robots', 'noindex, nofollow');
@@ -50,13 +52,13 @@ export default function SeoHead({ path }) {
         upsertMeta('property', 'og:url', canonical);
         upsertMeta('property', 'og:title', meta.title);
         upsertMeta('property', 'og:description', meta.description);
-        upsertMeta('property', 'og:image', OG_IMAGE);
+        upsertMeta('property', 'og:image', image);
         upsertMeta('property', 'og:site_name', 'Corefix');
         upsertMeta('name', 'twitter:card', 'summary_large_image');
         upsertMeta('name', 'twitter:title', meta.title);
         upsertMeta('name', 'twitter:description', meta.description);
-        upsertMeta('name', 'twitter:image', OG_IMAGE);
-        upsertJsonLd(jsonLdForPath(path));
+        upsertMeta('name', 'twitter:image', image);
+        upsertJsonLd(is404 ? [] : jsonLdForPath(path));
     }, [path]);
     return null;
 }

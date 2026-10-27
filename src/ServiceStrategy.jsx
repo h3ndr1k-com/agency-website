@@ -6,6 +6,7 @@ import { ArrowUpRight, ChevronRight, ArrowLeft } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ServiceNavbar, Footer, SectionGrid, BrightGrid, SectionLabel, CornerButton } from './shared';
 import SeoHead from './SeoHead.jsx';
+import { STRATEGY_FAQS } from './seo.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -490,13 +491,7 @@ const Trust = () => {
 // ── Service FAQ ──
 const ServiceFAQ = () => {
     const [open, setOpen] = useState(null);
-    const faqs = [
-        { q: 'What exactly do I get at the end of the sprint?', a: 'A complete strategy package: AI opportunity map, system architecture, implementation roadmap, risk assessment, vendor evaluation, and an executive summary. All actionable — no filler.' },
-        { q: 'Do I need technical knowledge to participate?', a: 'Not at all. We translate complex AI concepts into business language. You bring the domain expertise; we handle the technical analysis.' },
-        { q: 'What if we decide to build after the strategy sprint?', a: 'Your strategy sprint investment is credited toward any Build & Implementation engagement. The roadmap we create is designed to be executed — by us or your internal team.' },
-        { q: 'How is this different from a consulting firm?', a: 'We build AI systems. Our strategies are grounded in engineering reality, not theoretical frameworks. Every recommendation comes with a technical feasibility score and implementation path.' },
-        { q: 'Can we start sooner than 4 weeks?', a: 'We typically kick off within 1-2 weeks of agreement. The 4-week timeline is for the sprint itself. Limited spots available each quarter.' },
-    ];
+    const faqs = STRATEGY_FAQS;
 
     return (
         <section className="py-24 md:py-32 relative overflow-hidden">

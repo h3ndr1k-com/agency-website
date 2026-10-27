@@ -100,10 +100,10 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/10">
                 <div className="md:col-span-2 max-w-md">
-                    <p className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6">
+                    <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6 hover:text-amber-500 transition-colors">
                         <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
-                    </p>
-                    <p className="text-zinc-400 text-sm leading-relaxed mb-8 max-w-sm">
+                    </a>
+                    <p className="text-zinc-300 text-sm leading-relaxed mb-8 max-w-sm">
                         Speed-to-lead voice agents and Spec Studio for manufacturers. Built and shipped by the person you talk to.
                     </p>
                     <a href="mailto:hendrik@corefix.app" className="block text-white font-bold text-base hover:text-amber-500 transition-colors">
@@ -114,24 +114,24 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
                     {links.map(([link, href]) => (
-                        <a key={link} href={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
+                        <a key={link} href={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
                     ))}
                 </div>
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
-                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">LinkedIn</a>
+                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">LinkedIn</a>
                 </div>
             </div>
 
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-green-500 animate-pulse" />
-                    <span className="font-ui text-[10px] text-zinc-400 tracking-[0.25em] uppercase">System Operational · {new Date().getFullYear()}</span>
+                    <span className="font-ui text-[10px] text-zinc-300 tracking-[0.25em] uppercase">System Operational · {new Date().getFullYear()}</span>
                 </div>
-                <p className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Corefix. All rights reserved.</p>
+                <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Corefix. All rights reserved.</p>
                 <div className="flex gap-6">
-                    <a href="/terms" className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
-                    <a href="/privacy" className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
+                    <a href="/terms" className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
+                    <a href="/privacy" className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
                 </div>
             </div>
         </div>

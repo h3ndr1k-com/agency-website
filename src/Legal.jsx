@@ -2,11 +2,10 @@ import { Link } from 'react-router-dom';
 import SeoHead from './SeoHead.jsx';
 import { ServiceNavbar, Footer, SectionLabel } from './shared.jsx';
 
+// Nav links only (Terms/Privacy already sit in the shared footer bar)
 const FOOTER_LINKS = [
     ['Home', '/'],
     ['Spec Studio', '/spec-studio'],
-    ['Privacy', '/privacy'],
-    ['Terms', '/terms'],
     ['Contact', '/#contact'],
 ];
 

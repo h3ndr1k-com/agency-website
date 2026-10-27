@@ -49,4 +49,20 @@ function apiDevPlugin() {
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [react(), apiDevPlugin()],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (!id.includes('node_modules')) return
+                    if (id.includes('three') || id.includes('@react-three')) return 'three'
+                    if (id.includes('gsap')) return 'gsap'
+                    if (id.includes('framer-motion')) return 'framer'
+                    if (id.includes('@calcom')) return 'cal'
+                    if (id.includes('@vapi-ai')) return 'vapi'
+                    if (id.includes('lucide-react')) return 'icons'
+                    if (id.includes('react-dom') || id.includes('/react/') || id.includes('react-router')) return 'react-vendor'
+                },
+            },
+        },
+    },
 })

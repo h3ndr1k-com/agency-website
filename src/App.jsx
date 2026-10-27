@@ -6,7 +6,7 @@ import { ChevronRight, ArrowUpRight, RotateCw } from 'lucide-react';
 import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 import VoiceSection from './VoiceSection.jsx';
 import SeoHead from './SeoHead.jsx';
-import { CAL_URL } from './seo.js';
+import { CAL_URL, HOME_FAQS, VOICE_COMPARE } from './seo.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -85,11 +85,11 @@ const Navbar = () => {
     return (
         <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/30 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-[#0A0A0A]/40 backdrop-blur-md'}`}>
             <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
-                <a href="#" className="font-ui font-black tracking-[0.18em] text-white text-lg flex items-center gap-3">
-                    <svg viewBox="0 0 32 32" className="w-7 h-7"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
+                <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-lg flex items-center gap-3">
+                    <svg viewBox="0 0 32 32" className="w-7 h-7" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
                     COREFIX&reg;
                 </a>
-                <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
+                <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-300 uppercase tracking-[0.18em]">
                     <a href="#voice-demo" className="hover:text-white transition-colors">Voice Demo</a>
                     <Link to="/spec-studio" className="hover:text-white transition-colors">Spec Studio</Link>
                     <a href="#team" className="hover:text-white transition-colors">About</a>
@@ -180,13 +180,13 @@ const Hero = () => {
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
                 <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase text-white" style={{ WebkitTextStroke: '0' }}>
                     <span className="block text-[14vw] md:text-[9vw] lg:text-[7.5vw]">Speed to lead</span>
-                    <span className="block text-[14vw] md:text-[9vw] lg:text-[7.5vw] text-zinc-500">is what we do.</span>
+                    <span className="block text-[14vw] md:text-[9vw] lg:text-[7.5vw] text-zinc-300">is what we do.</span>
                 </h1>
             </div>
 
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
                 <div className="grid md:grid-cols-2 gap-8 mt-10 md:mt-14 items-end">
-                    <p className="max-w-xl text-zinc-300 text-sm md:text-base leading-relaxed pl-2">
+                    <p className="max-w-xl text-zinc-200 text-sm md:text-base leading-relaxed pl-2">
                         The business that answers first gets the job. Our AI voice agent picks up every call and web lead in seconds, day or night, and books it on your calendar.
                     </p>
                     <div className="hero-chrome flex justify-end gap-3 flex-wrap">
@@ -255,7 +255,7 @@ const Services = () => {
                 <h2 className="svc-title text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-[-0.02em] max-w-5xl leading-[1.05] mb-8">
                     One flagship. <span className="text-zinc-500">Modular bolt-ons.</span>
                 </h2>
-                <p className="svc-title text-zinc-300 mb-20 max-w-xl text-sm">Each one ships as a working system in your stack — not a proof of concept.</p>
+                <p className="svc-title text-zinc-300 mb-20 max-w-xl text-sm">Each one ships as a working system in your stack, not a proof of concept.</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {services.map((svc, i) => {
@@ -627,7 +627,7 @@ const Process = () => {
                         className={`proc-step text-left w-full p-8 md:p-10 bg-[#0A0A0A] border transition-colors group ${activeStep === i ? 'border-amber-500 bg-[#111]' : 'border-white/40 hover:border-amber-500 hover:bg-[#111]'}`}
                     >
                         <div className="flex items-start justify-between mb-6">
-                            <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">&mdash; {step.num}</span>
+                            <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">· {step.num}</span>
                             <span className={`text-xl leading-none transition-transform duration-300 ${activeStep === i ? 'text-amber-500 rotate-45' : 'text-zinc-500 group-hover:text-white'}`}>+</span>
                         </div>
                         <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">{step.title}</h3>
@@ -718,7 +718,7 @@ const CaseStudy = () => {
                             Point 1 Displays lost their pre-production designer. We replaced the review step with AI.
                         </h3>
                         <p className="text-zinc-400 text-base leading-relaxed mb-6 max-w-xl">
-                            The Montreal display manufacturer had a costly gap: every spec error that slipped into production burned roughly $500 &mdash; worst case $2,000. We ingested 17 of their real production standards &mdash; FEFCO codes, digital print guidelines, press specs, Kongsberg tooling rules &mdash; and built a reviewer that grades every incoming spec before the floor ever sees it.
+                            The Montreal display manufacturer had a costly gap: every spec error that slipped into production burned roughly $500, worst case $2,000. We ingested 17 of their real production standards (FEFCO codes, digital print guidelines, press specs, Kongsberg tooling rules) and built a reviewer that grades every incoming spec before the floor ever sees it.
                         </p>
                         <p className="text-zinc-400 text-base leading-relaxed mb-10 italic border-l-2 border-amber-500 pl-6">
                             No mailbox access. No workflow disruption. A spec goes in; a cited, client-presentable verdict comes out.
@@ -740,7 +740,7 @@ const CaseStudy = () => {
                             <span>2026</span>
                         </div>
                         <div className="absolute bottom-6 left-6 right-6">
-                            <span className="text-[10px] font-ui uppercase tracking-[0.25em] text-amber-500">POINT 1 DISPLAYS &mdash; MONTREAL</span>
+                            <span className="text-[10px] font-ui uppercase tracking-[0.25em] text-amber-500">POINT 1 DISPLAYS · MONTREAL</span>
                             <h4 className="text-white font-black text-3xl md:text-4xl mt-2 tracking-tight uppercase">Spec Reviewer in Production</h4>
                         </div>
                     </div>
@@ -799,7 +799,7 @@ const SpecReviewerVSL = () => {
 
 // ── Testimonial ──
 const Testimonials = () => {
-    const t = { title: "The first person I call for an urgent handoff.", quote: "When a client project needed an urgent handoff, Hendrik was the first person I called. He got up to speed fast, took the meeting, and delivered with confidence. Honestly, his technical depth made him a better fit than I would have been. That is the kind of partner you want in your corner.", name: 'Evan Gutman', role: 'Evitas AI', logo: '/evitas-ai-logo-white.png' };
+    const t = { title: "The first person I call for an urgent handoff.", quote: "When a client project needed an urgent handoff, Hendrik was the first person I called. He got up to speed fast, took the meeting, and delivered with confidence. Honestly, his technical depth made him a better fit than I would have been. That is the kind of partner you want in your corner.", name: 'Evan Gutman', role: 'Evitas AI' };
 
     return (
         <section className="py-24 md:py-40 relative overflow-hidden">
@@ -810,11 +810,22 @@ const Testimonials = () => {
                 <div>
                     <span className="text-amber-500 font-ui text-6xl md:text-8xl leading-none block mb-8 select-none" aria-hidden="true">&ldquo;</span>
                     <h3 className="text-3xl md:text-5xl font-bold text-white mb-10 tracking-[-0.02em] leading-[1.1] max-w-4xl">{t.title}</h3>
-                    <p className="text-zinc-400 text-base md:text-lg leading-relaxed mb-12 max-w-3xl">{t.quote}</p>
+                    <p className="text-zinc-300 text-base md:text-lg leading-relaxed mb-12 max-w-3xl">{t.quote}</p>
                     <div className="flex items-center gap-4 pt-8 border-t border-white/10">
                         <span className="text-white font-bold text-base">{t.name}</span>
-                        <span className="text-zinc-600 text-sm">&mdash; {t.role}</span>
-                        <img src={t.logo} alt="Evitas AI logo" className="h-5 w-auto ml-2 opacity-90" />
+                        <span className="text-zinc-400 text-sm">· {t.role}</span>
+                        <picture>
+                            <source srcSet="/img/evitas-ai-logo-white-400.webp" type="image/webp" />
+                            <img
+                                src="/img/evitas-ai-logo-white-400.png"
+                                alt="Evitas AI logo"
+                                width={200}
+                                height={40}
+                                className="h-5 w-auto ml-2 opacity-90"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </picture>
                     </div>
                 </div>
             </div>
@@ -848,9 +859,9 @@ const FreeAudit = () => {
                 <div className="grid md:grid-cols-2 gap-8 mb-16 items-end">
                     <h2 className="text-4xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05]">
                         Speed-to-lead voice agent.{' '}
-                        <span className="text-zinc-500">One price. Money-back if it doesn&apos;t catch a lead.</span>
+                        <span className="text-zinc-300">One price. Money-back if it doesn&apos;t catch a lead.</span>
                     </h2>
-                    <p className="text-zinc-400 text-sm md:text-base">
+                    <p className="text-zinc-300 text-sm md:text-base">
                         Spec Studio is scoped separately with no list price. Talk to the live demo above, then book a call.
                     </p>
                 </div>
@@ -863,17 +874,17 @@ const FreeAudit = () => {
                             Month to month
                         </div>
                     </div>
-                    <p className="text-zinc-400 text-sm mb-8 max-w-md">
+                    <p className="text-zinc-300 text-sm mb-8 max-w-md">
                         For teams that lose jobs to voicemail and slow follow-up.
                     </p>
                     <div className="flex items-baseline gap-3 mb-4">
                         <span className="text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight">$297/mo</span>
-                        <span className="text-zinc-500 text-xs font-ui uppercase tracking-widest">USD</span>
+                        <span className="text-zinc-400 text-xs font-ui uppercase tracking-widest">USD</span>
                     </div>
-                    <p className="text-zinc-300 text-sm mb-3 max-w-lg">
+                    <p className="text-zinc-200 text-sm mb-3 max-w-lg">
                         If it doesn&apos;t catch a single lead in your first month, you get your money back.
                     </p>
-                    <p className="text-zinc-400 text-sm mb-10 max-w-lg">
+                    <p className="text-zinc-300 text-sm mb-10 max-w-lg">
                         No lock-in contract. Cancel anytime with a month&apos;s notice.
                     </p>
                     {/* Spec Studio stays unpriced on its own page. */}
@@ -885,17 +896,66 @@ const FreeAudit = () => {
                     </button>
                     <ul className="space-y-4">
                         {offerItems.map((item, i) => (
-                            <li key={i} className="flex items-start gap-4 text-zinc-400 text-sm">
+                            <li key={i} className="flex items-start gap-4 text-zinc-300 text-sm">
                                 <div className="w-1 h-1 bg-amber-500 mt-2.5 flex-shrink-0" />
                                 {item}
                             </li>
                         ))}
                     </ul>
                 </div>
+
+                <VoiceCompare />
             </div>
         </section>
     );
 };
+
+// ── Voice agent vs typical answering service (no named competitors) ──
+const VoiceCompare = () => (
+    <section
+        id="compare"
+        aria-labelledby="compare-heading"
+        className="mt-16 md:mt-20 max-w-3xl"
+    >
+        <h3
+            id="compare-heading"
+            className="text-2xl md:text-3xl font-bold text-white tracking-[-0.02em] mb-3"
+        >
+            Corefix voice agent vs a typical answering service
+        </h3>
+        <p className="text-zinc-300 text-sm md:text-base mb-8 max-w-xl">
+            Same job on paper. Different pricing, commitment, and whether the lead actually lands on your calendar.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <div className="border border-amber-500/50 bg-amber-500/[0.06] p-5 sm:p-6">
+                <h4 className="text-white text-xs font-ui font-bold uppercase tracking-[0.2em] mb-4">
+                    Corefix voice agent
+                </h4>
+                <ul className="space-y-3">
+                    {VOICE_COMPARE.corefix.map((item) => (
+                        <li key={item} className="flex items-start gap-3 text-zinc-200 text-sm leading-relaxed">
+                            <span className="mt-1.5 w-1.5 h-1.5 bg-amber-500 flex-shrink-0" aria-hidden="true" />
+                            <span>{item}</span>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            <div className="border border-white/15 bg-[#0A0A0A] p-5 sm:p-6">
+                <h4 className="text-zinc-200 text-xs font-ui font-bold uppercase tracking-[0.2em] mb-4">
+                    Typical answering service
+                </h4>
+                <ul className="space-y-3">
+                    {VOICE_COMPARE.typical.map((item) => (
+                        <li key={item} className="flex items-start gap-3 text-zinc-300 text-sm leading-relaxed">
+                            <span className="mt-1.5 w-1.5 h-1.5 bg-zinc-500 flex-shrink-0" aria-hidden="true" />
+                            <span>{item}</span>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+    </section>
+);
 
 // ── Why Us ──
 const WhyUs = () => {
@@ -925,7 +985,7 @@ const WhyUs = () => {
                         Why<br />Us?
                     </h2>
                     <p className="why-el text-zinc-400 text-sm md:text-base leading-relaxed mb-12 max-w-lg">
-                        Most agencies sell you a deck and hand the build to whoever's free. Here, the person who scopes your system is the person who ships it &mdash; grounded in your real workflows, measured in dollars saved, running in production. Not experimental toys.
+                        Most agencies sell you a deck and hand the build to whoever&apos;s free. Here, the person who scopes your system is the person who ships it: grounded in your real workflows, measured in dollars saved, running in production. Not experimental toys.
                     </p>
                     <div className="why-el flex flex-wrap gap-2">
                         {attributes.map(attr => (
@@ -985,7 +1045,7 @@ const Team = () => {
                             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
                             <div className="absolute bottom-6 left-6 right-6">
                                 <p className="text-white font-bold text-2xl">Hendrik</p>
-                                <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">Founder &mdash; scopes it, builds it, ships it</p>
+                                <p className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">Founder · scopes it, builds it, ships it</p>
                             </div>
                         </div>
                     </div>
@@ -993,7 +1053,7 @@ const Team = () => {
                     <div className="flex flex-col gap-6">
                         <div className="team-card p-8 md:p-10 bg-[#0A0A0A] border border-white/10 flex-1">
                             <p className="text-zinc-300 text-base md:text-lg leading-relaxed">
-                                No account managers, no hand-offs, no junior devs learning on your dime. The person who takes your first call is the person who architects, builds, and stands behind the system. Behind him: an orchestrated fleet of AI agents doing the heavy lifting &mdash; the same capability Corefix sells, applied to itself.
+                                No account managers, no hand-offs, no junior devs learning on your dime. The person who takes your first call is the person who architects, builds, and stands behind the system. Behind him: an orchestrated fleet of AI agents doing the heavy lifting, the same capability Corefix sells, applied to itself.
                             </p>
                         </div>
                         {crew.map((c, i) => (
@@ -1015,13 +1075,7 @@ const Team = () => {
 // ── FAQ ──
 const FAQ = () => {
     const [open, setOpen] = useState(null);
-    const faqs = [
-        { q: 'What does the voice agent cost?', a: 'One price: $297/mo (USD). If it doesn\'t catch a single lead in your first month, you get your money back. No lock-in contract. Cancel anytime with a month\'s notice.' },
-        { q: 'Why is Spec Studio not priced here?', a: 'Spec Studio and deeper custom work are scoped after we see your workflows, so we do not publish a menu price for those. The voice agent is the listed offer at $297/mo.' },
-        { q: 'Is the voice agent on this page real?', a: 'Yes. It is a live agent, not a recording. It checks the real calendar and books real meetings. It is also exactly what we would build for your business.' },
-        { q: 'Do you work under NDA?', a: 'Yes. Client engagements run under NDA by default, which is also why we describe some work in general terms.' },
-        { q: 'Who actually does the work?', a: 'Hendrik, the founder, scopes, builds, and ships every engagement personally, with an orchestrated fleet of AI agents doing the heavy lifting. No hand-offs to a junior team.' },
-    ];
+    const faqs = HOME_FAQS;
 
     return (
         <section className="py-24 md:py-32 bg-[#0A0A0A] relative overflow-hidden">
@@ -1034,8 +1088,8 @@ const FAQ = () => {
                             <h2 className="text-4xl md:text-6xl lg:text-7xl font-display text-white tracking-tight leading-[0.95] uppercase mb-8">
                                 Everything You Need to Know Before We Build
                             </h2>
-                            <p className="text-zinc-400 text-sm leading-relaxed max-w-md">
-                                We don't sell AI concepts or recycled demos. We design and deploy production-ready AI systems grounded in your workflows, your data, and measurable business outcomes.
+                            <p className="text-zinc-300 text-sm leading-relaxed max-w-md">
+                                We don&apos;t sell AI concepts or recycled demos. We design and deploy production-ready AI systems grounded in your workflows, your data, and measurable business outcomes.
                             </p>
                         </div>
                         <div className="mt-10 flex items-center gap-6">
@@ -1051,18 +1105,19 @@ const FAQ = () => {
                         {faqs.map((faq, i) => (
                             <div key={i} className="border-b border-white/10 last:border-0">
                                 <button
+                                    type="button"
                                     onClick={() => setOpen(open === i ? null : i)}
                                     className="w-full flex items-center justify-between py-5 md:py-6 text-left group"
                                 >
                                     <span className="text-white text-[11px] md:text-xs font-ui font-semibold uppercase tracking-[0.12em] pr-6 leading-snug">
                                         {faq.q}
                                     </span>
-                                    <span className={`text-lg flex-shrink-0 transition-transform duration-300 ${open === i ? 'text-amber-500 rotate-45' : 'text-zinc-500 group-hover:text-white'}`}>
+                                    <span className={`text-lg flex-shrink-0 transition-transform duration-300 ${open === i ? 'text-amber-500 rotate-45' : 'text-zinc-400 group-hover:text-white'}`}>
                                         +
                                     </span>
                                 </button>
                                 <div className={`overflow-hidden transition-all duration-500 ${open === i ? 'max-h-40 pb-5' : 'max-h-0'}`}>
-                                    <p className="text-zinc-400 text-sm leading-relaxed pr-8">{faq.a}</p>
+                                    <p className="text-zinc-300 text-sm leading-relaxed pr-8">{faq.a}</p>
                                 </div>
                             </div>
                         ))}
@@ -1306,10 +1361,10 @@ const Footer = () => (
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/10">
                 <div className="md:col-span-2 max-w-md">
-                    <p className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6">
+                    <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6 hover:text-amber-500 transition-colors">
                         <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
-                    </p>
-                    <p className="text-zinc-400 text-sm leading-relaxed mb-8 max-w-sm">
+                    </a>
+                    <p className="text-zinc-300 text-sm leading-relaxed mb-8 max-w-sm">
                         Speed to lead is what we do. AI voice agents that answer first, plus Spec Studio for manufacturers.
                     </p>
                     <div className="space-y-3">
@@ -1321,28 +1376,28 @@ const Footer = () => (
 
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
-                    {[['Home', '#'], ['Voice Demo', '#voice-demo'], ['Spec Studio', '/spec-studio'], ['About', '#team']].map(([link, href]) => (
-                        href.startsWith('/')
-                            ? <Link key={link} to={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</Link>
-                            : <a key={link} href={href} className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
+                    {[['Home', '/'], ['Voice Demo', '#voice-demo'], ['Spec Studio', '/spec-studio'], ['About', '#team']].map(([link, href]) => (
+                        href.startsWith('/') && !href.startsWith('/#')
+                            ? <Link key={link} to={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</Link>
+                            : <a key={link} href={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
                     ))}
                     <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="text-amber-500 text-sm hover:text-white transition-colors font-ui uppercase tracking-wider py-2">Let&apos;s Talk</a>
                 </div>
                 <div className="flex flex-col gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
-                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-300 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">LinkedIn</a>
+                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">LinkedIn</a>
                 </div>
             </div>
 
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-green-500 animate-pulse" />
-                    <span className="font-ui text-[10px] text-zinc-400 tracking-[0.25em] uppercase">System Operational · {new Date().getFullYear()}</span>
+                    <span className="font-ui text-[10px] text-zinc-300 tracking-[0.25em] uppercase">System Operational · {new Date().getFullYear()}</span>
                 </div>
-                <p className="text-zinc-500 text-[10px] font-ui uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Corefix. All rights reserved.</p>
+                <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Corefix. All rights reserved.</p>
                 <div className="flex gap-6">
-                    <a href="/terms" className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
-                    <a href="/privacy" className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
+                    <a href="/terms" className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
+                    <a href="/privacy" className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
                 </div>
             </div>
         </div>

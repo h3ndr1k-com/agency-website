@@ -5,6 +5,12 @@
       "has": [{ "type": "host", "value": "corefix.app" }],
       "destination": "https://www.corefix.app/:path*",
       "permanent": true
+    },
+    {
+      "source": "/spec-studio/",
+      "destination": "/spec-studio",
+      "permanent": true
     }
-  ]
+  ],
+  "trailingSlash": false
 }

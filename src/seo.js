@@ -237,18 +237,9 @@ export function faqPageJsonLd(faqs) {
 
 export function specStudioJsonLd() {
     const page = canonicalFor('/spec-studio');
+    // No SoftwareApplication: rich results need offers.price + aggregateRating/review,
+    // and we will not invent ratings. Keep Service + VideoObject + FAQ + breadcrumbs.
     return [
-        {
-            '@context': 'https://schema.org',
-            '@type': 'SoftwareApplication',
-            name: 'Spec Studio',
-            applicationCategory: 'BusinessApplication',
-            operatingSystem: 'Web',
-            description:
-                'AI pre-production review for print, packaging, and display manufacturers. Grades incoming specs against company standards.',
-            provider: { '@type': 'Organization', name: 'Corefix', url: SITE },
-            url: page,
-        },
         {
             '@context': 'https://schema.org',
             '@type': 'Service',
@@ -267,6 +258,8 @@ export function specStudioJsonLd() {
             thumbnailUrl: `${SITE}/assets/spec-reviewer-vsl-poster.jpg`,
             contentUrl: `${SITE}/assets/spec-reviewer-vsl.mp4`,
             uploadDate: '2026-09-01T12:00:00-04:00',
+            // Real file length from ffprobe (205.005s)
+            duration: 'PT3M25S',
             publisher: { '@type': 'Organization', name: 'Corefix', url: SITE },
         },
         {
@@ -282,6 +275,7 @@ export function specStudioJsonLd() {
 }
 
 export function jsonLdForPath(path) {
+    if (path === '/404') return [];
     if (path === '/') {
         return [organizationJsonLd(), websiteJsonLd(), homeServiceJsonLd(), faqPageJsonLd(HOME_FAQS)];
     }

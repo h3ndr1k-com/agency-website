@@ -3,6 +3,7 @@
  * Post-build prerender: write per-route HTML with unique head tags,
  * www canonicals, JSON-LD, and crawler-visible H1/copy/links inside #root.
  * Client hydrates #root with hydrateRoot when markup is present.
+ * JSON-LD is written once here; SeoHead keeps it on first paint (no duplicate).
  */
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -28,15 +29,16 @@ const template = readFileSync(join(dist, 'index.html'), 'utf8');
 function applyHead(html, path) {
     const meta = ROUTES[path] || ROUTES['/404'];
     const is404 = path === '/404' || meta.path === '/404';
-    // 404 must not point canonical/og:url at home
-    const canonical = is404 ? canonicalFor('/404') : canonicalFor(meta.path);
     const jsonLd = is404 ? [] : jsonLdForPath(path);
     const ogImage = is404 ? OG_IMAGE : ogImageFor(path);
     const robots = meta.noindex ? '\n  <meta name="robots" content="noindex, nofollow" />' : '';
 
     const jsonLdTags = (Array.isArray(jsonLd) ? jsonLd : [jsonLd])
         .filter(Boolean)
-        .map((block) => `  <script type="application/ld+json">${JSON.stringify(block)}</script>`)
+        .map(
+            (block) =>
+                `  <script type="application/ld+json" data-corefix-jsonld="1">${JSON.stringify(block)}</script>`
+        )
         .join('\n');
 
     let out = html;
@@ -45,11 +47,20 @@ function applyHead(html, path) {
         /<meta name="description" content="[^"]*"\s*\/?>/,
         `<meta name="description" content="${escapeAttr(meta.description)}" />`
     );
-    out = out.replace(
-        /<link rel="canonical" href="[^"]*"\s*\/?>/,
-        `<link rel="canonical" href="${canonical}" />`
-    );
-    out = out.replace(/property="og:url" content="[^"]*"/, `property="og:url" content="${canonical}"`);
+
+    if (is404) {
+        // 404 must not claim a self-URL or home as canonical / og:url
+        out = out.replace(/<link rel="canonical" href="[^"]*"\s*\/?>\s*/g, '');
+        out = out.replace(/\s*<meta property="og:url" content="[^"]*"\s*\/?>/g, '');
+    } else {
+        const canonical = canonicalFor(meta.path);
+        out = out.replace(
+            /<link rel="canonical" href="[^"]*"\s*\/?>/,
+            `<link rel="canonical" href="${canonical}" />`
+        );
+        out = out.replace(/property="og:url" content="[^"]*"/, `property="og:url" content="${canonical}"`);
+    }
+
     out = out.replace(/property="og:title" content="[^"]*"/, `property="og:title" content="${escapeAttr(meta.title)}"`);
     out = out.replace(
         /property="og:description" content="[^"]*"/,
@@ -63,7 +74,6 @@ function applyHead(html, path) {
     );
     out = out.replace(/name="twitter:image" content="[^"]*"/, `name="twitter:image" content="${ogImage}"`);
 
-    // Spec Studio / home hero preload when relevant
     let preload = '';
     if (path === '/spec-studio') {
         preload = `
@@ -108,7 +118,8 @@ const pages = [
 
 for (const [path, file] of pages) writeRoute(path, file);
 
-// Real 404 document (Vercel serves /404.html with 404 status when present)
+// Vercel serves this file with HTTP 404 for unknown routes.
+// Direct /404.html may still be 200 (static file); body has no canonical/og:url/JSON-LD.
 writeRoute('/404', '404.html');
 
 for (const f of ['robots.txt', 'sitemap.xml']) {

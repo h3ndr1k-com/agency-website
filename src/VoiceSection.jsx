@@ -222,7 +222,7 @@ export default function VoiceSection() {
                                 aria-label="Start a voice call with the Corefix AI agent"
                                 className="allow-round flex h-11 w-11 items-center justify-center overflow-visible bg-amber-500 text-black transition-colors hover:bg-amber-400 focus:outline-none disabled:bg-transparent disabled:text-zinc-600 disabled:border disabled:border-white/15"
                             >
-                                <Phone size={28} strokeWidth={2} className="shrink-0 overflow-visible" aria-hidden="true" />
+                                <Phone size={32} strokeWidth={1.75} className="shrink-0 overflow-visible" aria-hidden="true" />
                             </button>
                             <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-400">Dial</span>
                         </div>
@@ -234,7 +234,7 @@ export default function VoiceSection() {
                                 aria-label="End the voice call"
                                 className="allow-round flex h-11 w-11 items-center justify-center overflow-visible border border-white/20 text-white transition-colors hover:border-amber-500 hover:text-amber-500 focus:outline-none disabled:border-white/10 disabled:text-zinc-500"
                             >
-                                <PhoneOff size={28} strokeWidth={2} className="shrink-0 overflow-visible" aria-hidden="true" />
+                                <PhoneOff size={32} strokeWidth={1.75} className="shrink-0 overflow-visible" aria-hidden="true" />
                             </button>
                             <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-400">Hang up</span>
                         </div>

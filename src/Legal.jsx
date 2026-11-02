@@ -121,6 +121,10 @@ export function Terms() {
                 or agreement. Voice-agent pricing shown on the site may change; Spec Studio is scoped
                 without a published list price.
             </p>
+            <p>
+                Voice-agent fair use: the US$297/mo plan includes 500 call minutes per month. Minutes
+                beyond that are billed at US$0.30 per minute.
+            </p>
             <h2 className="text-white text-xl font-bold pt-4">Acceptable use</h2>
             <p>
                 Do not abuse the voice demo, scrape the site aggressively, or submit unlawful or

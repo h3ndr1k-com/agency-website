@@ -242,6 +242,9 @@ function Pricing() {
                     <p className="text-zinc-300 text-sm mb-10 max-w-lg">
                         No lock-in contract. Cancel anytime with a month&apos;s notice.
                     </p>
+                    <p className="text-zinc-500 text-xs mb-10 -mt-8 max-w-lg">
+                        Fair use: 500 minutes/month included, then US$0.30/min.
+                    </p>
                     <a
                         href={CAL_URL}
                         target="_blank"

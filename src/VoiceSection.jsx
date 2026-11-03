@@ -17,16 +17,49 @@ const STATUS_COPY = {
     idle: 'Standing by',
     connecting: 'Connecting…',
     listening: 'Listening',
-    speaking: 'Corefix speaking',
+    speaking: 'CoreFix speaking',
     ended: 'Call ended',
     error: 'Connection failed',
 };
+
+/** Soft two-tone cling via Web Audio — no external asset/CDN. */
+function playHangUpChime() {
+    try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        const tone = (freq, start, dur, peak) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.0001, start);
+            gain.gain.exponentialRampToValueAtTime(peak, start + 0.018);
+            gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + dur + 0.04);
+        };
+        // Soft high cling (C6 → E6), low peak so it stays polite
+        tone(1046.5, now, 0.32, 0.07);
+        tone(1318.5, now + 0.09, 0.42, 0.05);
+        window.setTimeout(() => {
+            ctx.close().catch(() => {});
+        }, 900);
+    } catch {
+        // Audio blocked or unavailable — visual hang-up feedback still applies
+    }
+}
 
 export default function VoiceSection() {
     const ref = useRef(null);
     const threadRef = useRef(null);
     const vapiRef = useRef(null);
     const timerRef = useRef(null);
+    const idleResetRef = useRef(null);
+    const hangUpFeedbackAtRef = useRef(0);
     const [status, setStatus] = useState('idle');
     const [seconds, setSeconds] = useState(0);
     const [messages, setMessages] = useState([]);
@@ -41,18 +74,52 @@ export default function VoiceSection() {
         return () => ctx.revert();
     }, []);
 
+    // Dev-only visual states for hang-up UX QA (?voiceDemo=ended|active)
+    useEffect(() => {
+        if (!import.meta.env.DEV) return;
+        const mode = new URLSearchParams(window.location.search).get('voiceDemo');
+        if (mode === 'ended') {
+            setMessages([]);
+            setStatus('ended');
+        } else if (mode === 'active') {
+            setStatus('listening');
+            setMessages([
+                { role: 'assistant', text: 'Hey — this is CoreFix. What are you looking to automate?', final: true },
+                { role: 'user', text: 'Inbound calls for our clinic.', final: true },
+            ]);
+        }
+    }, []);
+
     useEffect(() => () => {
         clearInterval(timerRef.current);
+        clearTimeout(idleResetRef.current);
         vapiRef.current?.stop();
     }, []);
 
     const live = status === 'listening' || status === 'speaking';
+
+    const finishCall = useCallback(() => {
+        clearInterval(timerRef.current);
+        clearTimeout(idleResetRef.current);
+        setMessages([]);
+        setStatus('ended');
+        const now = Date.now();
+        // Deduplicate when hang-up button + Vapi call-end both fire
+        if (now - hangUpFeedbackAtRef.current > 600) {
+            hangUpFeedbackAtRef.current = now;
+            playHangUpChime();
+        }
+        idleResetRef.current = setTimeout(() => {
+            setStatus((s) => (s === 'ended' ? 'idle' : s));
+        }, 4500);
+    }, []);
 
     const startCall = useCallback(async () => {
         if (!CONFIGURED) {
             document.querySelector('#audit')?.scrollIntoView({ behavior: 'smooth' });
             return;
         }
+        clearTimeout(idleResetRef.current);
         setStatus('connecting');
         setMessages([]);
         setSeconds(0);
@@ -69,9 +136,7 @@ export default function VoiceSection() {
                     timerRef.current = setInterval(() => setSeconds((s) => s + 1), 1000);
                 });
                 vapi.on('call-end', () => {
-                    clearInterval(timerRef.current);
-                    setStatus('ended');
-                    setTimeout(() => setStatus((s) => (s === 'ended' ? 'idle' : s)), 5000);
+                    finishCall();
                 });
                 vapi.on('speech-start', () => setStatus('speaking'));
                 vapi.on('speech-end', () => setStatus('listening'));
@@ -100,11 +165,14 @@ export default function VoiceSection() {
         } catch {
             setStatus('error');
         }
-    }, []);
+    }, [finishCall]);
 
     const endCall = useCallback(() => {
+        const wasLive = status === 'connecting' || status === 'listening' || status === 'speaking';
         vapiRef.current?.stop();
-    }, []);
+        // call-end covers live sessions; connecting abort may not emit it
+        if (wasLive) finishCall();
+    }, [status, finishCall]);
 
     useEffect(() => {
         const thread = threadRef.current;
@@ -113,8 +181,22 @@ export default function VoiceSection() {
 
     const canDial = status !== 'connecting' && !live;
     const canHangUp = live || status === 'connecting';
+    // Flat-line idle: ended, or standing by with no transcript
+    const bubbleCollapsed = status === 'ended' || (status === 'idle' && messages.length === 0);
 
     const mmss = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+    const statusTone = live || status === 'ended'
+        ? 'text-amber-500'
+        : status === 'error'
+            ? 'text-red-400'
+            : 'text-zinc-400';
+    const borderTone = live
+        ? 'border-t-amber-500'
+        : status === 'error'
+            ? 'border-t-red-400'
+            : status === 'ended'
+                ? 'border-t-amber-500'
+                : 'border-t-amber-500/70';
 
     return (
         <section id="voice-demo" ref={ref} className="py-24 md:py-40 bg-[#080808] border-y border-white/30 relative overflow-hidden">
@@ -156,16 +238,15 @@ export default function VoiceSection() {
                     <div className="flex flex-wrap justify-center sm:justify-between text-[8px] md:text-[9px] font-ui uppercase tracking-[0.25em] text-zinc-400 mb-4 gap-x-6 gap-y-2">
                         <span>Agent: Corefix-01</span>
                         <span>Channel: WebRTC</span>
-                        <span className={live ? 'text-amber-500' : ''}>{live ? `Live ${mmss}` : 'Secure'}</span>
+                        <span className={live ? 'text-amber-500' : status === 'ended' ? 'text-amber-500' : ''}>
+                            {live ? `Live ${mmss}` : status === 'ended' ? 'Ended' : 'Secure'}
+                        </span>
                     </div>
 
-                    <div className="mx-auto w-full min-w-0 max-w-[420px]">
-                        <SiriWave variant="wave" size={420} renderScale={1.5} aria-hidden="true" />
-                    </div>
-
-                    <div className="relative mx-auto mt-1 w-full min-w-0 max-w-md text-left">
+                    {bubbleCollapsed ? (
+                        /* Collapsed hang-up / idle: no wave, no card — just a hovering thin line */
                         <div
-                            className={`border border-white/25 border-t-2 bg-[#121212] px-4 py-4 sm:px-5 ${canDial ? 'cursor-pointer' : ''} ${live ? 'border-t-amber-500' : status === 'error' ? 'border-t-red-400' : 'border-t-amber-500/70'}`}
+                            className={`mx-auto mt-10 mb-2 w-full min-w-0 max-w-sm ${canDial ? 'cursor-pointer' : ''}`}
                             onClick={canDial ? startCall : undefined}
                             onKeyDown={canDial ? (e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
@@ -173,46 +254,94 @@ export default function VoiceSection() {
                                     startCall();
                                 }
                             } : undefined}
-                            role={canDial ? 'button' : 'log'}
+                            role={canDial ? 'button' : 'status'}
                             tabIndex={canDial ? 0 : undefined}
                             aria-live="polite"
-                            aria-label={canDial ? 'Start a voice call with the Corefix AI agent' : 'Voice conversation'}
+                            aria-label={
+                                status === 'ended'
+                                    ? 'Call ended. Dial again to start a new voice call.'
+                                    : canDial
+                                        ? 'Start a voice call with the CoreFix AI agent'
+                                        : 'Voice line standing by'
+                            }
                         >
-                            <div className="mb-3 flex items-center justify-between gap-3">
-                                <span className="text-[9px] font-ui uppercase tracking-[0.25em] text-amber-500">Corefix</span>
-                                <span className={`text-[9px] font-ui uppercase tracking-[0.25em] ${live ? 'text-amber-500' : status === 'error' ? 'text-red-400' : 'text-zinc-400'}`}>
-                                    {STATUS_COPY[status]}
-                                </span>
-                            </div>
-                            <div ref={threadRef} className="max-h-36 space-y-3 overflow-y-auto">
-                                {messages.length === 0 && (
-                                    <p className="text-sm leading-relaxed text-zinc-400">
-                                        {status === 'connecting' && 'Connecting…'}
-                                        {status === 'error' && (
-                                            <>Mic blocked or network hiccup.{' '}
-                                                <a href="https://cal.com/corefix.ai/30min" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-amber-500 hover:underline">Book on the calendar</a>
-                                                {PHONE && <> or call {PHONE}</>}.</>
-                                        )}
-                                        {status === 'ended' && 'Call ended. Dial again if you want another pass.'}
-                                        {status === 'idle' && !CONFIGURED && (
-                                            <>Voice line warming up. <a href="https://cal.com/corefix.ai/30min" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-amber-500 hover:underline">Book a call</a>{PHONE ? ` or dial ${PHONE}` : ''}.</>
-                                        )}
-                                        {status === 'idle' && CONFIGURED && 'Standing by. Dial in and ask what we build. It can book the intro on Hendrik’s calendar.'}
-                                        {(status === 'listening' || status === 'speaking') && STATUS_COPY[status]}
-                                    </p>
-                                )}
-                                {messages.map((msg, i) => (
-                                    <div key={`${msg.role}-${i}`} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
-                                        <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-400">
-                                            {msg.role === 'assistant' ? 'Corefix' : 'You'}
-                                        </span>
-                                        <p className={`mt-1 text-sm leading-relaxed ${msg.final === false ? 'text-zinc-400' : 'text-zinc-200'}`}>{msg.text}</p>
-                                    </div>
-                                ))}
-                            </div>
+                            <p className={`mb-4 text-center text-[10px] font-ui uppercase tracking-[0.28em] ${statusTone}`}>
+                                {STATUS_COPY[status]}
+                            </p>
+                            <div
+                                className={`mx-auto h-px w-full max-w-[280px] transition-colors duration-300 ${
+                                    status === 'ended'
+                                        ? 'bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.45)]'
+                                        : 'bg-white/40 hover:bg-amber-500/80'
+                                }`}
+                                aria-hidden="true"
+                            />
+                            {status === 'ended' && (
+                                <p className="mt-5 text-center text-xs text-zinc-400">
+                                    Dial again if you want another pass.
+                                </p>
+                            )}
+                            {status === 'idle' && !CONFIGURED && (
+                                <p className="mt-5 text-center text-xs text-zinc-400">
+                                    Voice line warming up.{' '}
+                                    <a href="https://cal.com/corefix.ai/30min" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-amber-500 hover:underline">Book a call</a>
+                                    {PHONE ? ` or dial ${PHONE}` : ''}.
+                                </p>
+                            )}
                         </div>
-                        <span aria-hidden="true" className="absolute left-8 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-[#121212]" />
-                    </div>
+                    ) : (
+                        <>
+                            <div className="mx-auto w-full min-w-0 max-w-[420px]">
+                                <SiriWave variant="wave" size={420} renderScale={1.5} aria-hidden="true" />
+                            </div>
+
+                            <div className="relative mx-auto mt-1 w-full min-w-0 max-w-md text-left">
+                                <div
+                                    className={`border border-white/25 border-t-2 bg-[#121212] px-4 py-4 sm:px-5 transition-[border-color,box-shadow] duration-300 ${canDial ? 'cursor-pointer' : ''} ${borderTone}`}
+                                    onClick={canDial ? startCall : undefined}
+                                    onKeyDown={canDial ? (e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            startCall();
+                                        }
+                                    } : undefined}
+                                    role={canDial ? 'button' : 'log'}
+                                    tabIndex={canDial ? 0 : undefined}
+                                    aria-live="polite"
+                                    aria-label={canDial ? 'Start a voice call with the CoreFix AI agent' : 'Voice conversation'}
+                                >
+                                    <div className="mb-3 flex items-center justify-between gap-3">
+                                        <span className="text-[9px] font-ui uppercase tracking-[0.25em] text-amber-500">Corefix</span>
+                                        <span className={`text-[9px] font-ui uppercase tracking-[0.25em] ${statusTone}`}>
+                                            {STATUS_COPY[status]}
+                                        </span>
+                                    </div>
+                                    <div ref={threadRef} className="max-h-36 space-y-3 overflow-y-auto">
+                                        {messages.length === 0 && (
+                                            <p className="text-sm leading-relaxed text-zinc-400">
+                                                {status === 'connecting' && 'Connecting…'}
+                                                {status === 'error' && (
+                                                    <>Mic blocked or network hiccup.{' '}
+                                                        <a href="https://cal.com/corefix.ai/30min" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-amber-500 hover:underline">Book on the calendar</a>
+                                                        {PHONE && <> or call {PHONE}</>}.</>
+                                                )}
+                                                {(status === 'listening' || status === 'speaking') && STATUS_COPY[status]}
+                                            </p>
+                                        )}
+                                        {messages.map((msg, i) => (
+                                            <div key={`${msg.role}-${i}`} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
+                                                <span className="font-ui text-[9px] uppercase tracking-[0.2em] text-zinc-400">
+                                                    {msg.role === 'assistant' ? 'CoreFix' : 'You'}
+                                                </span>
+                                                <p className={`mt-1 text-sm leading-relaxed ${msg.final === false ? 'text-zinc-400' : 'text-zinc-200'}`}>{msg.text}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <span aria-hidden="true" className="absolute left-8 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-[#121212]" />
+                            </div>
+                        </>
+                    )}
 
                     <div className="mt-8 flex items-start justify-center gap-8">
                         <div className="flex flex-col items-center gap-2">
@@ -221,7 +350,7 @@ export default function VoiceSection() {
                                 filterId="voice-dial-glass"
                                 onClick={startCall}
                                 disabled={!canDial}
-                                aria-label="Start a voice call with the Corefix AI agent"
+                                aria-label="Start a voice call with the CoreFix AI agent"
                             >
                                 <Phone size={32} strokeWidth={1.75} className="shrink-0 overflow-visible" aria-hidden="true" />
                             </LiquidGlassButton>

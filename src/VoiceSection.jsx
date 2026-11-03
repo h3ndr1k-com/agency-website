@@ -243,60 +243,59 @@ export default function VoiceSection() {
                         </span>
                     </div>
 
-                    <div className="mx-auto w-full min-w-0 max-w-[420px]">
-                        <SiriWave variant="wave" size={420} renderScale={1.5} aria-hidden="true" />
-                    </div>
-
-                    <div className="relative mx-auto mt-1 w-full min-w-0 max-w-md text-left">
-                        {bubbleCollapsed ? (
-                            <div
-                                className={`group relative border-0 bg-transparent px-1 py-2 transition-[padding,opacity] duration-300 ease-out ${canDial ? 'cursor-pointer' : ''}`}
-                                onClick={canDial ? startCall : undefined}
-                                onKeyDown={canDial ? (e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        e.preventDefault();
-                                        startCall();
-                                    }
-                                } : undefined}
-                                role={canDial ? 'button' : 'status'}
-                                tabIndex={canDial ? 0 : undefined}
-                                aria-live="polite"
-                                aria-label={
-                                    status === 'ended'
-                                        ? 'Call ended. Dial again to start a new voice call.'
-                                        : canDial
-                                            ? 'Start a voice call with the CoreFix AI agent'
-                                            : 'Voice line standing by'
+                    {bubbleCollapsed ? (
+                        /* Collapsed hang-up / idle: no wave, no card — just a hovering thin line */
+                        <div
+                            className={`mx-auto mt-10 mb-2 w-full min-w-0 max-w-sm ${canDial ? 'cursor-pointer' : ''}`}
+                            onClick={canDial ? startCall : undefined}
+                            onKeyDown={canDial ? (e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    startCall();
                                 }
-                            >
-                                <div className="mb-3 flex items-center justify-between gap-3 px-1">
-                                    <span className="text-[9px] font-ui uppercase tracking-[0.25em] text-amber-500">Corefix</span>
-                                    <span className={`text-[9px] font-ui uppercase tracking-[0.25em] ${statusTone}`}>
-                                        {STATUS_COPY[status]}
-                                    </span>
-                                </div>
-                                {/* Flat line — collapsed speech bubble */}
-                                <div
-                                    className={`h-px w-full transition-colors duration-300 ${
-                                        status === 'ended' ? 'bg-amber-500' : 'bg-white/35 group-hover:bg-amber-500/70'
-                                    }`}
-                                    aria-hidden="true"
-                                />
-                                {status === 'ended' && (
-                                    <p className="mt-3 px-1 text-center text-xs text-zinc-400">
-                                        Dial again if you want another pass.
-                                    </p>
-                                )}
-                                {status === 'idle' && !CONFIGURED && (
-                                    <p className="mt-3 px-1 text-center text-xs text-zinc-400">
-                                        Voice line warming up.{' '}
-                                        <a href="https://cal.com/corefix.ai/30min" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-amber-500 hover:underline">Book a call</a>
-                                        {PHONE ? ` or dial ${PHONE}` : ''}.
-                                    </p>
-                                )}
+                            } : undefined}
+                            role={canDial ? 'button' : 'status'}
+                            tabIndex={canDial ? 0 : undefined}
+                            aria-live="polite"
+                            aria-label={
+                                status === 'ended'
+                                    ? 'Call ended. Dial again to start a new voice call.'
+                                    : canDial
+                                        ? 'Start a voice call with the CoreFix AI agent'
+                                        : 'Voice line standing by'
+                            }
+                        >
+                            <p className={`mb-4 text-center text-[10px] font-ui uppercase tracking-[0.28em] ${statusTone}`}>
+                                {STATUS_COPY[status]}
+                            </p>
+                            <div
+                                className={`mx-auto h-px w-full max-w-[280px] transition-colors duration-300 ${
+                                    status === 'ended'
+                                        ? 'bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.45)]'
+                                        : 'bg-white/40 hover:bg-amber-500/80'
+                                }`}
+                                aria-hidden="true"
+                            />
+                            {status === 'ended' && (
+                                <p className="mt-5 text-center text-xs text-zinc-400">
+                                    Dial again if you want another pass.
+                                </p>
+                            )}
+                            {status === 'idle' && !CONFIGURED && (
+                                <p className="mt-5 text-center text-xs text-zinc-400">
+                                    Voice line warming up.{' '}
+                                    <a href="https://cal.com/corefix.ai/30min" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-amber-500 hover:underline">Book a call</a>
+                                    {PHONE ? ` or dial ${PHONE}` : ''}.
+                                </p>
+                            )}
+                        </div>
+                    ) : (
+                        <>
+                            <div className="mx-auto w-full min-w-0 max-w-[420px]">
+                                <SiriWave variant="wave" size={420} renderScale={1.5} aria-hidden="true" />
                             </div>
-                        ) : (
-                            <>
+
+                            <div className="relative mx-auto mt-1 w-full min-w-0 max-w-md text-left">
                                 <div
                                     className={`border border-white/25 border-t-2 bg-[#121212] px-4 py-4 sm:px-5 transition-[border-color,box-shadow] duration-300 ${canDial ? 'cursor-pointer' : ''} ${borderTone}`}
                                     onClick={canDial ? startCall : undefined}
@@ -340,9 +339,9 @@ export default function VoiceSection() {
                                     </div>
                                 </div>
                                 <span aria-hidden="true" className="absolute left-8 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-[#121212]" />
-                            </>
-                        )}
-                    </div>
+                            </div>
+                        </>
+                    )}
 
                     <div className="mt-8 flex items-start justify-center gap-8">
                         <div className="flex flex-col items-center gap-2">

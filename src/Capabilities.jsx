@@ -191,10 +191,7 @@ export default function Capabilities() {
 
     return (
         <section className="relative overflow-hidden bg-[#0A0A0A]">
-            <div
-                className="relative w-full"
-                style={{ aspectRatio: '16/9', minHeight: '420px', maxHeight: '85vh' }}
-            >
+            <div className="relative w-full flex flex-col items-center gap-10 py-16 md:block md:py-0 md:aspect-video md:min-h-[420px] md:max-h-[85vh]">
                 <div
                     className="absolute inset-0"
                     style={{
@@ -208,18 +205,23 @@ export default function Capabilities() {
                 <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/40 via-transparent to-[#0A0A0A]" />
                 <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
 
-                <div className="absolute top-6 md:top-12 left-1/2 -translate-x-1/2 z-20">
+                <div className="relative order-1 z-20 md:absolute md:top-12 md:left-1/2 md:-translate-x-1/2">
                     <SectionLabel>AI Capabilities</SectionLabel>
                 </div>
 
+                {/* Mobile: 2-col grid under the knob. md+: scattered around it. */}
+                <div className="relative order-3 z-20 w-full px-6 grid grid-cols-2 gap-2 md:contents">
                 {capabilities.map((cap, i) => {
                     const shown = i < revealCount;
+                    const pos = capPositions[i];
                     return (
                         <div
                             key={cap.label}
-                            className="absolute z-20 transition-all duration-700 ease-out max-w-[42%] sm:max-w-none"
+                            className="relative z-20 transition-all duration-700 ease-out md:absolute md:top-[var(--cap-top)] md:left-[var(--cap-left)] md:right-[var(--cap-right)]"
                             style={{
-                                ...capPositions[i],
+                                '--cap-top': pos.top,
+                                '--cap-left': pos.left ?? 'auto',
+                                '--cap-right': pos.right ?? 'auto',
                                 opacity: shown ? 1 : 0,
                                 transform: shown ? 'scale(1)' : 'scale(0.8)',
                                 pointerEvents: shown ? 'auto' : 'none',
@@ -227,7 +229,7 @@ export default function Capabilities() {
                         >
                             <a
                                 href={cap.href}
-                                className="group/cap inline-flex items-center gap-2 px-2.5 py-1.5 md:px-3 bg-black/60 backdrop-blur-sm border border-white/30 hover:border-amber-500 text-white text-[9px] md:text-xs font-ui uppercase tracking-[0.12em] md:tracking-[0.15em] transition-colors"
+                                className="group/cap flex md:inline-flex h-full md:h-auto items-center gap-2 px-2.5 py-1.5 md:px-3 bg-black/60 backdrop-blur-sm border border-white/30 hover:border-amber-500 text-white text-[10px] md:text-xs font-ui uppercase tracking-[0.12em] md:tracking-[0.15em] transition-colors"
                             >
                                 <span className="w-1.5 h-1.5 bg-amber-500 flex-shrink-0" />
                                 <span className="leading-snug">{cap.label}</span>
@@ -239,8 +241,9 @@ export default function Capabilities() {
                         </div>
                     );
                 })}
+                </div>
 
-                <div className="absolute inset-0 flex items-center justify-center z-10">
+                <div className="relative order-2 mb-16 md:mb-0 md:absolute md:inset-0 flex items-center justify-center z-10">
                     <div className="relative w-52 h-52 md:w-64 md:h-64 select-none allow-round">
                         <motion.div
                             className="absolute inset-0 bg-orange-500 rounded-full blur-3xl"
@@ -292,7 +295,7 @@ export default function Capabilities() {
                         </div>
 
                         <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none">
-                            <span className="inline-flex items-center gap-1.5 text-[10px] text-amber-500 font-ui tracking-[0.25em] mb-2">
+                            <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[10px] text-amber-500 font-ui tracking-[0.25em] mb-2">
                                 <RotateCw size={12} className="animate-spin" style={{ animationDuration: '3.5s' }} />
                                 DRAG TO SPIN
                             </span>
@@ -304,7 +307,7 @@ export default function Capabilities() {
                     </div>
                 </div>
 
-                <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-10">
+                <div className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
                     <span className="text-zinc-400 text-sm font-ui font-bold tracking-[0.2em]">
                         COREFIX&reg;
                     </span>

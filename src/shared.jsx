@@ -142,6 +142,7 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
 // ── Shared Navbar (used on service pages) ──
 export const ServiceNavbar = () => {
     const [scrolled, setScrolled] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 50);
         window.addEventListener('scroll', onScroll, { passive: true });
@@ -167,7 +168,28 @@ export const ServiceNavbar = () => {
                     <span className="absolute -bottom-[2px] -right-[2px] w-2.5 h-2.5 border-b-2 border-r-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     Talk To Us
                 </Link>
+                <button
+                    type="button"
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    className="md:hidden text-white p-2 -mr-2"
+                    aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+                    aria-expanded={menuOpen}
+                >
+                    <div className="flex flex-col gap-1.5" aria-hidden="true">
+                        <span className={`block w-6 h-[2px] bg-white transition-transform ${menuOpen ? 'rotate-45 translate-y-[5px]' : ''}`} />
+                        <span className={`block w-6 h-[2px] bg-white transition-opacity ${menuOpen ? 'opacity-0' : ''}`} />
+                        <span className={`block w-6 h-[2px] bg-white transition-transform ${menuOpen ? '-rotate-45 -translate-y-[5px]' : ''}`} />
+                    </div>
+                </button>
             </div>
+            {menuOpen && (
+                <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/15 px-6 py-8 flex flex-col gap-6">
+                    {[['Home', '/'], ['Voice Agent', '/services/voice-agent'], ['Spec Studio', '/spec-studio'], ['Process', '/#process'], ['Pricing', '/#audit'], ['Contact', '/#contact']].map(([item, href]) => (
+                        <Link key={item} to={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</Link>
+                    ))}
+                    <Link to="/#contact" onClick={() => setMenuOpen(false)} className="text-amber-500 text-lg font-ui uppercase tracking-widest hover:text-white">Talk To Us</Link>
+                </div>
+            )}
         </nav>
     );
 };

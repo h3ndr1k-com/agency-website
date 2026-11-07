@@ -222,7 +222,7 @@ export default function VoiceSection() {
                         href="https://cal.com/corefix.ai/30min"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-5 py-3 border border-white/50 text-zinc-300 font-ui text-xs uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors"
+                        className="inline-flex items-center gap-2 px-5 py-3 min-h-[44px] border border-white/50 text-zinc-300 font-ui text-xs uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors"
                     >
                         No mic? Book on the calendar
                     </a>

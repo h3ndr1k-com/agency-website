@@ -187,7 +187,7 @@ function Landing() {
                 <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/55 via-[#0A0A0A]/68 to-[#0A0A0A] pointer-events-none" aria-hidden="true" />
                 <a
                     href="https://unsplash.com/photos/foggy-mountain-summit-1Z2niiBPg5A"
-                    className="absolute right-6 top-28 z-30 text-[10px] font-ui uppercase tracking-[0.18em] text-white/70 hover:text-white transition-colors"
+                    className="absolute right-4 top-[100px] z-30 inline-flex items-center min-h-[44px] px-2 text-[10px] font-ui uppercase tracking-[0.18em] text-white/70 hover:text-white transition-colors"
                 >
                     Photo · v2osk
                 </a>
@@ -197,7 +197,7 @@ function Landing() {
                     <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-16 items-start">
                         <div>
                             <div className="ops-chrome mb-8">
-                                <Link to="/" className="inline-flex items-center gap-2 text-zinc-300 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors group">
+                                <Link to="/" className="inline-flex items-center gap-2 min-h-[44px] text-zinc-300 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors group">
                                     <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back to Home
                                 </Link>
                             </div>

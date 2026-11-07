@@ -119,7 +119,7 @@ const Navbar = () => {
     return (
         <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/40 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-[#0A0A0A]/40 backdrop-blur-md'}`}>
             <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
-                <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-lg flex items-center gap-3">
+                <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-lg flex items-center gap-3 min-h-[44px]">
                     <svg viewBox="0 0 32 32" className="w-7 h-7" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
                     COREFIX&reg;
                 </a>
@@ -136,7 +136,7 @@ const Navbar = () => {
                 <button
                     type="button"
                     onClick={() => setMenuOpen(!menuOpen)}
-                    className="md:hidden text-white p-2 -mr-2"
+                    className="md:hidden text-white -mr-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center"
                     aria-label={menuOpen ? 'Close menu' : 'Open menu'}
                     aria-expanded={menuOpen}
                 >
@@ -192,10 +192,10 @@ const Hero = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0A0A]/30 to-[#0A0A0A] z-10 pointer-events-none" />
             <GridOverlay />
 
-            <div className="relative z-40 w-full max-w-[1400px] mx-auto px-6 mb-8 md:mb-0 md:absolute md:w-auto md:max-w-none md:mx-0 md:px-0 md:top-52 md:right-[max(24px,calc((100%-1400px)/2+24px))]">
-                <div className="hero-chrome flex flex-row flex-wrap gap-2 md:flex-col md:items-end">
+            <div className="relative z-40 w-full max-w-[1400px] mx-auto px-6 mb-8 tall:mb-0 tall:absolute tall:w-auto tall:max-w-none tall:mx-0 tall:px-0 tall:top-52 tall:right-[max(24px,calc((100%-1400px)/2+24px))]">
+                <div className="hero-chrome flex flex-row flex-wrap gap-2 tall:flex-col tall:items-end">
                     {tags.map(tag => {
-                        const cls = 'group/tag inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/30 bg-black/30 backdrop-blur-sm hover:border-amber-500 hover:text-white transition-colors';
+                        const cls = 'group/tag inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] tall:min-h-0 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/30 bg-black/30 backdrop-blur-sm hover:border-amber-500 hover:text-white transition-colors';
                         const inner = (<>{tag.label}<ArrowUpRight size={11} className="opacity-0 group-hover/tag:opacity-100 transition-opacity" /></>);
                         return tag.route
                             ? <Link key={tag.label} to={tag.href} className={cls}>{inner}</Link>
@@ -203,7 +203,7 @@ const Hero = () => {
                     })}
                     <a
                         href="#voice-demo"
-                        className="group/watch mt-3 hidden md:inline-flex items-center gap-2 border border-amber-500 bg-amber-500 px-4 py-3 text-[10px] font-ui font-bold uppercase tracking-[0.18em] text-black transition-colors duration-200 hover:bg-white active:translate-y-px"
+                        className="group/watch mt-3 hidden tall:inline-flex items-center gap-2 border border-amber-500 bg-amber-500 px-4 py-3 text-[10px] font-ui font-bold uppercase tracking-[0.18em] text-black transition-colors duration-200 hover:bg-white active:translate-y-px"
                     >
                         Try the live demo
                         <ChevronRight size={13} className="transition-transform duration-200 group-hover/watch:translate-x-1" aria-hidden="true" />
@@ -653,8 +653,8 @@ const FreeAudit = () => {
                             </li>
                         ))}
                     </ul>
-                    <p className="mt-10 text-zinc-300 text-sm">
-                        <Link to="/services/voice-agent" className="text-amber-500 hover:text-white transition-colors font-ui uppercase tracking-[0.15em] text-[11px] font-bold">
+                    <p className="mt-8 md:mt-10 text-zinc-300 text-sm">
+                        <Link to="/services/voice-agent" className="inline-flex items-center min-h-[44px] text-amber-500 hover:text-white transition-colors font-ui uppercase tracking-[0.15em] text-[11px] font-bold">
                             Full voice agent page →
                         </Link>
                     </p>
@@ -974,7 +974,7 @@ const Contact = () => {
                             <CornerButton href={CAL_URL} filled className="justify-center">
                                 Open Full Calendar <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                             </CornerButton>
-                            <a href="mailto:hendrik@corefix.app" className="text-zinc-400 text-xs font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors pl-1">Or email hendrik@corefix.app</a>
+                            <a href="mailto:hendrik@corefix.app" className="py-3.5 text-zinc-400 text-xs font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors pl-1">Or email hendrik@corefix.app</a>
                         </div>
                     </div>
 
@@ -1068,31 +1068,31 @@ const Footer = () => (
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-20 pb-12 border-b border-white/20">
                 <div className="md:col-span-2 max-w-md">
-                    <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6 hover:text-amber-500 transition-colors">
+                    <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 min-h-[44px] mb-4 md:mb-6 hover:text-amber-500 transition-colors">
                         <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
                     </a>
                     <p className="text-zinc-300 text-sm leading-relaxed mb-8 max-w-sm">
                         Speed to lead is what we do. AI voice agents that answer first, plus Spec Studio for manufacturers.
                     </p>
                     <div className="space-y-3">
-                        <a href="mailto:hendrik@corefix.app" className="block text-white font-bold text-base hover:text-amber-500 transition-colors">
+                        <a href="mailto:hendrik@corefix.app" className="block py-2.5 text-white font-bold text-base hover:text-amber-500 transition-colors">
                             HENDRIK@COREFIX.APP
                         </a>
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-0 md:gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
                     {[['Home', '/'], ['Voice Demo', '#voice-demo'], ['Spec Studio', '/spec-studio'], ['About', '#team']].map(([link, href]) => (
                         href.startsWith('/') && !href.startsWith('/#')
-                            ? <Link key={link} to={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</Link>
-                            : <a key={link} href={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
+                            ? <Link key={link} to={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">{link}</Link>
+                            : <a key={link} href={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">{link}</a>
                     ))}
-                    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="text-amber-500 text-sm hover:text-white transition-colors font-ui uppercase tracking-wider py-2">Let&apos;s Talk</a>
+                    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="text-amber-500 text-sm hover:text-white transition-colors font-ui uppercase tracking-wider py-3 md:py-2">Let&apos;s Talk</a>
                 </div>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-0 md:gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
-                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">LinkedIn</a>
+                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">LinkedIn</a>
                 </div>
             </div>
 
@@ -1102,9 +1102,9 @@ const Footer = () => (
                     <span className="font-ui text-[10px] text-zinc-300 tracking-[0.25em] uppercase">System Operational · {new Date().getFullYear()}</span>
                 </div>
                 <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Corefix. All rights reserved.</p>
-                <div className="flex gap-6">
-                    <a href="/terms" className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
-                    <a href="/privacy" className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
+                <div className="flex gap-4 md:gap-6">
+                    <a href="/terms" className="inline-flex items-center min-h-[44px] px-2 text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
+                    <a href="/privacy" className="inline-flex items-center min-h-[44px] px-2 text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
                 </div>
             </div>
         </div>

@@ -55,7 +55,7 @@ const ServiceHero = () => {
             <div className="sh-copy relative z-30">
                 <div className="max-w-[1400px] mx-auto px-6 w-full">
                     <div className="sh-el mb-8">
-                        <Link to="/" className="inline-flex items-center gap-2 text-zinc-400 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors group">
+                        <Link to="/" className="inline-flex items-center gap-2 min-h-[44px] text-zinc-400 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors group">
                             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back to Home
                         </Link>
                     </div>

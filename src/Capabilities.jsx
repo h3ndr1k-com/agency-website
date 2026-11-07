@@ -217,19 +217,20 @@ export default function Capabilities() {
                     return (
                         <div
                             key={cap.label}
-                            className="relative z-20 transition-all duration-700 ease-out md:absolute md:top-[var(--cap-top)] md:left-[var(--cap-left)] md:right-[var(--cap-right)]"
+                            className="relative z-20 transition-all duration-700 ease-out md:opacity-[var(--cap-o)] md:[transform:var(--cap-tf)] md:[pointer-events:var(--cap-pe)] md:absolute md:top-[var(--cap-top)] md:left-[var(--cap-left)] md:right-[var(--cap-right)]"
                             style={{
                                 '--cap-top': pos.top,
                                 '--cap-left': pos.left ?? 'auto',
                                 '--cap-right': pos.right ?? 'auto',
-                                opacity: shown ? 1 : 0,
-                                transform: shown ? 'scale(1)' : 'scale(0.8)',
-                                pointerEvents: shown ? 'auto' : 'none',
+                                // Reveal-on-spin applies from md up; on mobile all labels stay visible.
+                                '--cap-o': shown ? 1 : 0,
+                                '--cap-tf': shown ? 'scale(1)' : 'scale(0.8)',
+                                '--cap-pe': shown ? 'auto' : 'none',
                             }}
                         >
                             <a
                                 href={cap.href}
-                                className="group/cap flex md:inline-flex h-full md:h-auto items-center gap-2 px-2.5 py-1.5 md:px-3 bg-black/60 backdrop-blur-sm border border-white/30 hover:border-amber-500 text-white text-[10px] md:text-xs font-ui uppercase tracking-[0.12em] md:tracking-[0.15em] transition-colors"
+                                className="group/cap flex md:inline-flex h-full min-h-[44px] md:h-auto md:min-h-0 items-center gap-2 px-2.5 py-1.5 md:px-3 bg-black/60 backdrop-blur-sm border border-white/30 hover:border-amber-500 text-white text-[10px] md:text-xs font-ui uppercase tracking-[0.12em] md:tracking-[0.15em] transition-colors"
                             >
                                 <span className="w-1.5 h-1.5 bg-amber-500 flex-shrink-0" />
                                 <span className="leading-snug">{cap.label}</span>

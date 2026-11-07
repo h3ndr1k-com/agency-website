@@ -55,7 +55,7 @@ const ServiceHero = () => {
             <div className="sh-copy relative z-30">
                 <div className="max-w-[1400px] mx-auto px-6 w-full">
                     <div className="sh-el mb-8">
-                        <Link to="/" className="inline-flex items-center gap-2 text-zinc-400 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors group">
+                        <Link to="/" className="inline-flex items-center gap-2 min-h-[44px] text-zinc-400 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors group">
                             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back to Home
                         </Link>
                     </div>
@@ -79,7 +79,7 @@ const ServiceHero = () => {
                     </div>
                 </div>
 
-                <div className="sh-el absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+                <div className="sh-el absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2">
                     <span className="text-[9px] font-ui text-zinc-400 tracking-[0.3em] uppercase">Scroll</span>
                     <div className="sh-scroll-line w-[1px] h-8 bg-gradient-to-b from-amber-500 to-transparent" />
                 </div>

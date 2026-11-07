@@ -119,7 +119,7 @@ const Navbar = () => {
     return (
         <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/40 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-[#0A0A0A]/40 backdrop-blur-md'}`}>
             <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
-                <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-lg flex items-center gap-3">
+                <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-lg flex items-center gap-3 min-h-[44px]">
                     <svg viewBox="0 0 32 32" className="w-7 h-7" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
                     COREFIX&reg;
                 </a>
@@ -136,7 +136,7 @@ const Navbar = () => {
                 <button
                     type="button"
                     onClick={() => setMenuOpen(!menuOpen)}
-                    className="md:hidden text-white"
+                    className="md:hidden text-white -mr-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center"
                     aria-label={menuOpen ? 'Close menu' : 'Open menu'}
                     aria-expanded={menuOpen}
                 >
@@ -182,7 +182,7 @@ const Hero = () => {
     ];
 
     return (
-        <section ref={ref} className="relative min-h-screen flex flex-col justify-end pb-12 md:pb-20 overflow-hidden pt-32">
+        <section ref={ref} className="relative min-h-[100svh] flex flex-col justify-end pb-12 md:pb-20 overflow-hidden pt-28 md:pt-32">
             <div className="absolute inset-0 z-0" style={{
                 backgroundImage: 'url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=60&auto=format&fit=crop)',
                 backgroundSize: 'cover',
@@ -192,10 +192,10 @@ const Hero = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0A0A]/30 to-[#0A0A0A] z-10 pointer-events-none" />
             <GridOverlay />
 
-            <div className="absolute top-40 md:top-52 right-6 md:right-[calc((100%-1400px)/2+24px)] z-40">
-                <div className="hero-chrome flex flex-col gap-2 items-end">
+            <div className="relative z-40 w-full max-w-[1400px] mx-auto px-6 mb-8 tall:mb-0 tall:absolute tall:w-auto tall:max-w-none tall:mx-0 tall:px-0 tall:top-52 tall:right-[max(24px,calc((100%-1400px)/2+24px))]">
+                <div className="hero-chrome flex flex-row flex-wrap gap-2 tall:flex-col tall:items-end">
                     {tags.map(tag => {
-                        const cls = 'group/tag inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/30 bg-black/30 backdrop-blur-sm hover:border-amber-500 hover:text-white transition-colors';
+                        const cls = 'group/tag inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] tall:min-h-0 text-[10px] font-ui uppercase tracking-[0.18em] text-white/80 border border-white/30 bg-black/30 backdrop-blur-sm hover:border-amber-500 hover:text-white transition-colors';
                         const inner = (<>{tag.label}<ArrowUpRight size={11} className="opacity-0 group-hover/tag:opacity-100 transition-opacity" /></>);
                         return tag.route
                             ? <Link key={tag.label} to={tag.href} className={cls}>{inner}</Link>
@@ -203,7 +203,7 @@ const Hero = () => {
                     })}
                     <a
                         href="#voice-demo"
-                        className="group/watch mt-3 inline-flex items-center gap-2 border border-amber-500 bg-amber-500 px-4 py-3 text-[10px] font-ui font-bold uppercase tracking-[0.18em] text-black transition-colors duration-200 hover:bg-white active:translate-y-px"
+                        className="group/watch mt-3 hidden tall:inline-flex items-center gap-2 border border-amber-500 bg-amber-500 px-4 py-3 text-[10px] font-ui font-bold uppercase tracking-[0.18em] text-black transition-colors duration-200 hover:bg-white active:translate-y-px"
                     >
                         Try the live demo
                         <ChevronRight size={13} className="transition-transform duration-200 group-hover/watch:translate-x-1" aria-hidden="true" />
@@ -223,7 +223,7 @@ const Hero = () => {
                     <p className="max-w-xl text-zinc-200 text-sm md:text-base leading-relaxed pl-2">
                         The business that answers first gets the job. Our AI voice agent picks up every call and web lead in seconds, day or night, and books it on your calendar.
                     </p>
-                    <div className="hero-chrome flex justify-end gap-3 flex-wrap">
+                    <div className="hero-chrome flex md:justify-end gap-3 flex-wrap">
                         <CornerButton href="#voice-demo">
                             Hear it live <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                         </CornerButton>
@@ -289,7 +289,7 @@ const Services = () => {
                 <h2 className="svc-title text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-[-0.02em] max-w-5xl leading-[1.05] mb-8">
                     One flagship. <span className="text-zinc-400">Modular bolt-ons.</span>
                 </h2>
-                <p className="svc-title text-zinc-300 mb-20 max-w-xl text-sm">Each one ships as a working system in your stack, not a proof of concept.</p>
+                <p className="svc-title text-zinc-300 mb-12 md:mb-20 max-w-xl text-sm">Each one ships as a working system in your stack, not a proof of concept.</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {services.map((svc, i) => {
@@ -370,7 +370,7 @@ const Process = () => {
 
     return (
         <section id="process" ref={ref} className="py-24 md:py-32 overflow-hidden border-y border-white/30">
-            <div className="mb-20 overflow-hidden">
+            <div className="mb-12 md:mb-20 overflow-hidden">
                 <div ref={marqueeRef} className="flex whitespace-nowrap">
                     {Array(6).fill(null).map((_, i) => (
                         <span key={i} className="text-[6rem] md:text-[16rem] font-display uppercase tracking-tight text-white mx-2 select-none leading-none">
@@ -462,7 +462,7 @@ const CaseStudy = () => {
     return (
         <section id="case-study" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/15">
             <div className="max-w-[1400px] mx-auto px-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                     <div>
                         <div className="mb-6"><SectionLabel>Featured Case Study</SectionLabel></div>
                         <h3 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-8 leading-[1.05]">
@@ -478,7 +478,7 @@ const CaseStudy = () => {
                             {stats.map((stat, i) => (
                                 <div key={i}>
                                     <div className="text-3xl md:text-5xl font-bold text-white tracking-tight"><CountUp target={stat.value} visible={visible} prefix={stat.prefix || ''} /></div>
-                                    <div className="text-zinc-400 text-[10px] mt-3 font-ui uppercase tracking-[0.2em]">{stat.label}</div>
+                                    <div className="text-zinc-400 text-[10px] mt-3 font-ui uppercase tracking-[0.12em] md:tracking-[0.2em]">{stat.label}</div>
                                 </div>
                             ))}
                         </div>
@@ -562,7 +562,7 @@ const Testimonials = () => {
                     <span className="text-amber-500 font-ui text-6xl md:text-8xl leading-none block mb-8 select-none" aria-hidden="true">&ldquo;</span>
                     <h3 className="text-3xl md:text-5xl font-bold text-white mb-10 tracking-[-0.02em] leading-[1.1] max-w-4xl">{t.title}</h3>
                     <p className="text-zinc-300 text-base md:text-lg leading-relaxed mb-12 max-w-3xl">{t.quote}</p>
-                    <div className="flex items-center gap-4 pt-8 border-t border-white/20">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-8 border-t border-white/20">
                         <span className="text-white font-bold text-base">{t.name}</span>
                         <span className="text-zinc-400 text-sm">· {t.role}</span>
                         <picture>
@@ -639,10 +639,10 @@ const FreeAudit = () => {
                         No lock-in contract. Cancel anytime with a month&apos;s notice.
                     </p>
                     {/* Spec Studio stays unpriced on its own page. */}
-                    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex text-center px-8 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4">
+                    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex justify-center text-center w-full sm:w-auto px-8 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4">
                         Book a call
                     </a>
-                    <button type="button" onClick={() => document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })} className="ml-0 md:ml-3 inline-flex text-center px-8 py-4 border border-zinc-500 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors mb-10">
+                    <button type="button" onClick={() => document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })} className="ml-0 sm:ml-3 inline-flex justify-center text-center w-full sm:w-auto px-8 py-4 border border-zinc-500 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors mb-10">
                         Or talk to the demo agent
                     </button>
                     <ul className="space-y-4">
@@ -653,8 +653,8 @@ const FreeAudit = () => {
                             </li>
                         ))}
                     </ul>
-                    <p className="mt-10 text-zinc-300 text-sm">
-                        <Link to="/services/voice-agent" className="text-amber-500 hover:text-white transition-colors font-ui uppercase tracking-[0.15em] text-[11px] font-bold">
+                    <p className="mt-8 md:mt-10 text-zinc-300 text-sm">
+                        <Link to="/services/voice-agent" className="inline-flex items-center min-h-[44px] text-amber-500 hover:text-white transition-colors font-ui uppercase tracking-[0.15em] text-[11px] font-bold">
                             Full voice agent page →
                         </Link>
                     </p>
@@ -685,7 +685,7 @@ const WhyUs = () => {
 
     return (
         <section ref={ref} className="py-24 md:py-40 relative overflow-hidden">
-            <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
                 <div>
                     <div className="why-el mb-8"><SectionLabel>Why Us</SectionLabel></div>
                     <h2 className="why-el text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-[-0.04em] mb-8 leading-[0.85] uppercase">
@@ -741,7 +741,7 @@ const Team = () => {
             <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 <div className="mb-8"><SectionLabel>The Operator</SectionLabel></div>
-                <h2 className="text-5xl md:text-8xl lg:text-[9rem] font-display text-white tracking-tight leading-[0.85] uppercase mb-20">
+                <h2 className="text-5xl md:text-8xl lg:text-[9rem] font-display text-white tracking-tight leading-[0.85] uppercase mb-12 md:mb-20">
                     One Founder.<br />A Fleet of Agents.
                 </h2>
 
@@ -799,7 +799,7 @@ const FAQ = () => {
                                 We don&apos;t sell AI concepts or recycled demos. We design and deploy production-ready AI systems grounded in your workflows, your data, and measurable business outcomes.
                             </p>
                         </div>
-                        <div className="mt-10 flex items-center gap-6">
+                        <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
                             <span className="text-white font-display text-2xl md:text-3xl uppercase">Got More Questions?</span>
                             <CornerButton href={CAL_URL} filled>
                                 Reach Us
@@ -963,7 +963,7 @@ const Contact = () => {
         <section id="contact" ref={ref} className="py-24 md:py-40 bg-[#0A0A0A] border-y border-white/15 relative overflow-hidden">
             <SectionGrid />
             <div className="max-w-[1400px] mx-auto px-6 relative z-10">
-                <div className="grid md:grid-cols-2 gap-16 items-start">
+                <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
                     <div>
                         <div className="contact-el mb-8"><SectionLabel>Let&apos;s Talk</SectionLabel></div>
                         <h2 className="contact-el text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-[-0.03em] mb-8 leading-[0.95]">
@@ -974,7 +974,7 @@ const Contact = () => {
                             <CornerButton href={CAL_URL} filled className="justify-center">
                                 Open Full Calendar <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                             </CornerButton>
-                            <a href="mailto:hendrik@corefix.app" className="text-zinc-400 text-xs font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors pl-1">Or email hendrik@corefix.app</a>
+                            <a href="mailto:hendrik@corefix.app" className="py-3.5 text-zinc-400 text-xs font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors pl-1">Or email hendrik@corefix.app</a>
                         </div>
                     </div>
 
@@ -998,7 +998,7 @@ const Contact = () => {
                 </div>
 
                 {/* Secondary - written inquiry */}
-                <div className="mt-20 pt-16 border-t border-white/20 grid md:grid-cols-2 gap-16 items-start">
+                <div className="mt-16 md:mt-20 pt-12 md:pt-16 border-t border-white/20 grid md:grid-cols-2 gap-10 md:gap-16 items-start">
                     <div>
                         <h3 className="contact-el text-2xl md:text-4xl font-bold text-white tracking-[-0.02em] mb-4">Prefer to write?</h3>
                         <p className="contact-el text-zinc-400 text-sm md:text-base max-w-md">Tell us what you want AI to fix and we&apos;ll come back with a clear, no-fluff plan of attack.</p>
@@ -1058,53 +1058,53 @@ const Contact = () => {
 
 // ── Footer ──
 const Footer = () => (
-    <footer className="bg-[#050505] pt-24 pb-10 px-6">
+    <footer className="bg-[#050505] pt-16 md:pt-24 pb-10 px-6">
         <div className="max-w-[1400px] mx-auto">
-            <div className="mb-20 overflow-hidden">
+            <div className="mb-12 md:mb-20 overflow-hidden">
                 <p className="text-[18vw] md:text-[15vw] font-black uppercase tracking-tighter text-white/[0.15] leading-none select-none" aria-hidden="true">
                     COREFIX&reg;
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/20">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-20 pb-12 border-b border-white/20">
                 <div className="md:col-span-2 max-w-md">
-                    <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6 hover:text-amber-500 transition-colors">
+                    <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 min-h-[44px] mb-4 md:mb-6 hover:text-amber-500 transition-colors">
                         <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
                     </a>
                     <p className="text-zinc-300 text-sm leading-relaxed mb-8 max-w-sm">
                         Speed to lead is what we do. AI voice agents that answer first, plus Spec Studio for manufacturers.
                     </p>
                     <div className="space-y-3">
-                        <a href="mailto:hendrik@corefix.app" className="block text-white font-bold text-base hover:text-amber-500 transition-colors">
+                        <a href="mailto:hendrik@corefix.app" className="block py-2.5 text-white font-bold text-base hover:text-amber-500 transition-colors">
                             HENDRIK@COREFIX.APP
                         </a>
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-0 md:gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
                     {[['Home', '/'], ['Voice Demo', '#voice-demo'], ['Spec Studio', '/spec-studio'], ['About', '#team']].map(([link, href]) => (
                         href.startsWith('/') && !href.startsWith('/#')
-                            ? <Link key={link} to={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</Link>
-                            : <a key={link} href={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
+                            ? <Link key={link} to={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">{link}</Link>
+                            : <a key={link} href={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">{link}</a>
                     ))}
-                    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="text-amber-500 text-sm hover:text-white transition-colors font-ui uppercase tracking-wider py-2">Let&apos;s Talk</a>
+                    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="text-amber-500 text-sm hover:text-white transition-colors font-ui uppercase tracking-wider py-3 md:py-2">Let&apos;s Talk</a>
                 </div>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-0 md:gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
-                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">LinkedIn</a>
+                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">LinkedIn</a>
                 </div>
             </div>
 
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6 text-center">
                 <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-green-500 animate-pulse" />
                     <span className="font-ui text-[10px] text-zinc-300 tracking-[0.25em] uppercase">System Operational · {new Date().getFullYear()}</span>
                 </div>
                 <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Corefix. All rights reserved.</p>
-                <div className="flex gap-6">
-                    <a href="/terms" className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
-                    <a href="/privacy" className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
+                <div className="flex gap-4 md:gap-6">
+                    <a href="/terms" className="inline-flex items-center min-h-[44px] px-2 text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
+                    <a href="/privacy" className="inline-flex items-center min-h-[44px] px-2 text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
                 </div>
             </div>
         </div>

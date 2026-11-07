@@ -101,26 +101,26 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/20">
                 <div className="md:col-span-2 max-w-md">
-                    <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 mb-6 hover:text-amber-500 transition-colors">
+                    <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 min-h-[44px] mb-4 md:mb-6 hover:text-amber-500 transition-colors">
                         <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
                     </a>
                     <p className="text-zinc-300 text-sm leading-relaxed mb-8 max-w-sm">
                         Speed-to-lead voice agents and Spec Studio for manufacturers. Built and shipped by the person you talk to.
                     </p>
-                    <a href="mailto:hendrik@corefix.app" className="block text-white font-bold text-base hover:text-amber-500 transition-colors">
+                    <a href="mailto:hendrik@corefix.app" className="block py-2.5 text-white font-bold text-base hover:text-amber-500 transition-colors">
                         HENDRIK@COREFIX.APP
                     </a>
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-0 md:gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
                     {links.map(([link, href]) => (
-                        <a key={link} href={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">{link}</a>
+                        <a key={link} href={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">{link}</a>
                     ))}
                 </div>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-0 md:gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
-                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-2">LinkedIn</a>
+                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">LinkedIn</a>
                 </div>
             </div>
 
@@ -130,9 +130,9 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
                     <span className="font-ui text-[10px] text-zinc-300 tracking-[0.25em] uppercase">System Operational · {new Date().getFullYear()}</span>
                 </div>
                 <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Corefix. All rights reserved.</p>
-                <div className="flex gap-6">
-                    <a href="/terms" className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
-                    <a href="/privacy" className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
+                <div className="flex gap-4 md:gap-6">
+                    <a href="/terms" className="inline-flex items-center min-h-[44px] px-2 text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
+                    <a href="/privacy" className="inline-flex items-center min-h-[44px] px-2 text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
                 </div>
             </div>
         </div>
@@ -142,6 +142,7 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
 // ── Shared Navbar (used on service pages) ──
 export const ServiceNavbar = () => {
     const [scrolled, setScrolled] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 50);
         window.addEventListener('scroll', onScroll, { passive: true });
@@ -151,7 +152,7 @@ export const ServiceNavbar = () => {
     return (
         <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-white/40 ${scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-xl' : 'bg-[#0A0A0A]/40 backdrop-blur-md'}`}>
             <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
-                <Link to="/" className="font-ui font-black tracking-[0.18em] text-white text-lg flex items-center gap-3">
+                <Link to="/" className="font-ui font-black tracking-[0.18em] text-white text-lg flex items-center gap-3 min-h-[44px]">
                     <svg viewBox="0 0 32 32" className="w-7 h-7"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg>
                     COREFIX&reg;
                 </Link>
@@ -167,7 +168,28 @@ export const ServiceNavbar = () => {
                     <span className="absolute -bottom-[2px] -right-[2px] w-2.5 h-2.5 border-b-2 border-r-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     Talk To Us
                 </Link>
+                <button
+                    type="button"
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    className="md:hidden text-white -mr-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                    aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+                    aria-expanded={menuOpen}
+                >
+                    <div className="flex flex-col gap-1.5" aria-hidden="true">
+                        <span className={`block w-6 h-[2px] bg-white transition-transform ${menuOpen ? 'rotate-45 translate-y-[5px]' : ''}`} />
+                        <span className={`block w-6 h-[2px] bg-white transition-opacity ${menuOpen ? 'opacity-0' : ''}`} />
+                        <span className={`block w-6 h-[2px] bg-white transition-transform ${menuOpen ? '-rotate-45 -translate-y-[5px]' : ''}`} />
+                    </div>
+                </button>
             </div>
+            {menuOpen && (
+                <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/15 px-6 py-8 flex flex-col gap-6">
+                    {[['Home', '/'], ['Voice Agent', '/services/voice-agent'], ['Spec Studio', '/spec-studio'], ['Process', '/#process'], ['Pricing', '/#audit'], ['Contact', '/#contact']].map(([item, href]) => (
+                        <Link key={item} to={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</Link>
+                    ))}
+                    <Link to="/#contact" onClick={() => setMenuOpen(false)} className="text-amber-500 text-lg font-ui uppercase tracking-widest hover:text-white">Talk To Us</Link>
+                </div>
+            )}
         </nav>
     );
 };

@@ -80,7 +80,7 @@ function Hero() {
                 <div className="mb-6">
                     <Link
                         to="/"
-                        className="inline-flex items-center gap-2 text-zinc-300 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors mb-8"
+                        className="inline-flex items-center gap-2 min-h-[44px] text-zinc-300 text-xs font-ui uppercase tracking-[0.2em] hover:text-white transition-colors mb-4"
                     >
                         Corefix
                     </Link>

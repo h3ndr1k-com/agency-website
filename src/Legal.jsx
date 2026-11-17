@@ -5,7 +5,6 @@ import { ServiceNavbar, Footer, SectionLabel } from './shared.jsx';
 // Nav links only (Terms/Privacy already sit in the shared footer bar)
 const FOOTER_LINKS = [
     ['Home', '/'],
-    ['Spec Studio', '/spec-studio'],
     ['Contact', '/#contact'],
 ];
 
@@ -111,15 +110,13 @@ export function Terms() {
             <h2 className="text-white text-xl font-bold pt-4">The site and demos</h2>
             <p>
                 Content is for information. Demos (including the live voice agent) are
-                demonstrations of capability, not a guarantee of results for your business. Spec
-                Studio examples use real production patterns; your deployment is scoped separately.
+                demonstrations of capability, not a guarantee of results for your business.
             </p>
             <h2 className="text-white text-xl font-bold pt-4">Bookings and paid work</h2>
             <p>
                 Calendar bookings are introductory unless otherwise stated. Paid engagements
-                (including voice-agent pilots and Spec Studio) are governed by a separate proposal
-                or agreement. Voice-agent pricing shown on the site may change; Spec Studio is scoped
-                without a published list price.
+                (including voice-agent pilots) are governed by a separate proposal
+                or agreement. Voice-agent pricing shown on the site may change.
             </p>
             <p>
                 Voice-agent fair use: the US$297/mo plan includes 500 call minutes per month. Minutes

@@ -45,7 +45,7 @@ export default function Capabilities() {
         { label: 'Customer Support Automation', href: '#services' },
         { label: 'Voice & Call Agents', href: '#voice-demo' },
         { label: 'Internal Ops & Admin Automation', href: '#services' },
-        { label: 'Document & Data Intelligence', href: '/spec-studio' },
+        { label: 'Document & Data Intelligence', href: '#services' },
         { label: 'API & Tool Integrations', href: '#services' },
         { label: 'Sales & Lead Qualification Agents', href: '#voice-demo' },
         { label: 'Fine-tuned LLM Systems', href: '#services' },

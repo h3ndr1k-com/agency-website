@@ -125,7 +125,6 @@ const Navbar = () => {
                 </a>
                 <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-300 uppercase tracking-[0.18em]">
                     <a href="#voice-demo" className="hover:text-white transition-colors">Voice Demo</a>
-                    <Link to="/spec-studio" className="hover:text-white transition-colors">Spec Studio</Link>
                     <a href="#team" className="hover:text-white transition-colors">About</a>
                 </div>
                 <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
@@ -149,7 +148,7 @@ const Navbar = () => {
             </div>
             {menuOpen && (
                 <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/15 px-6 py-8 flex flex-col gap-6">
-                    {[['Voice Demo', '#voice-demo'], ['Spec Studio', '/spec-studio'], ['About', '#team']].map(([item, href]) => (
+                    {[['Voice Demo', '#voice-demo'], ['About', '#team']].map(([item, href]) => (
                         href.startsWith('/')
                             ? <Link key={item} to={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</Link>
                             : <a key={item} href={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</a>
@@ -176,7 +175,6 @@ const Hero = () => {
 
     const tags = [
         { label: 'Voice Agents', href: '/services/voice-agent', route: true },
-        { label: 'Spec Studio', href: '/spec-studio', route: true },
         { label: 'AI Strategy', href: '/services/ai-strategy', route: true },
         { label: 'Automation', href: '#services' },
     ];
@@ -237,22 +235,6 @@ const Hero = () => {
     );
 };
 
-const SpecStudioBand = () => (
-    <section className="py-16 md:py-20 border-y border-white/20 bg-[#080808]">
-        <div className="max-w-[1400px] mx-auto px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <p className="text-white text-xl md:text-3xl font-bold tracking-[-0.02em] max-w-3xl">
-                Display or packaging manufacturer? See Spec Studio.
-            </p>
-            <Link
-                to="/spec-studio"
-                className="inline-flex items-center gap-2 px-6 py-4 border border-white/60 text-white font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-colors"
-            >
-                Spec Studio <ChevronRight size={14} />
-            </Link>
-        </div>
-    </section>
-);
-
 // Tool logo carousel (Anthropic, Vapi, etc.) removed per speed-to-lead refocus.
 
 // ── Services ──
@@ -276,8 +258,7 @@ const Services = () => {
     const services = [
         { num: '01', title: 'Voice Agents That Take Calls', desc: 'Live agents that answer, qualify, and book straight into your calendar, like the one on this page.', link: '/services/voice-agent' },
         { num: '02', title: 'Email Triage & Workflow Automation', desc: 'Inbox classification, follow-up tracking, and automations wired into the systems you already run.' },
-        { num: '03', title: 'Spec Studio', desc: 'AI pre-production review for print, packaging, and display manufacturers.', link: '/spec-studio' },
-        { num: '04', title: 'AI Strategy & Advisory', desc: 'A clear, execution-ready plan for where AI actually saves you money. No slideware.', link: '/services/ai-strategy' },
+        { num: '03', title: 'AI Strategy & Advisory', desc: 'A clear, execution-ready plan for where AI actually saves you money. No slideware.', link: '/services/ai-strategy' },
     ];
 
     return (
@@ -440,114 +421,6 @@ const CountUp = ({ target, visible, prefix = '', suffix = '' }) => {
     return <span>{prefix}{val}{suffix}</span>;
 };
 
-// ── Featured Case Study - Point 1 Displays ──
-const CaseStudy = () => {
-    const ref = useRef(null);
-    const [visible, setVisible] = useState(false);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) setVisible(true);
-        }, { threshold: 0.3 });
-        if (ref.current) observer.observe(ref.current);
-        return () => observer.disconnect();
-    }, []);
-
-    const stats = [
-        { value: 500, prefix: '~$', label: 'Saved per caught spec error' },
-        { value: 17, label: 'Company standards in the knowledge base' },
-        { value: 8, label: 'Categories scored on every review' },
-    ];
-
-    return (
-        <section id="case-study" ref={ref} className="py-24 md:py-32 bg-[#0A0A0A] border-y border-white/15">
-            <div className="max-w-[1400px] mx-auto px-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                    <div>
-                        <div className="mb-6"><SectionLabel>Featured Case Study</SectionLabel></div>
-                        <h3 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] mb-8 leading-[1.05]">
-                            Point 1 Displays lost their pre-production designer. We replaced the review step with AI.
-                        </h3>
-                        <p className="text-zinc-400 text-base leading-relaxed mb-6 max-w-xl">
-                            The Montreal display manufacturer had a costly gap: every spec error that slipped into production burned roughly $500, worst case $2,000. We ingested 17 of their real production standards (FEFCO codes, digital print guidelines, press specs, Kongsberg tooling rules) and built a reviewer that grades every incoming spec before the floor ever sees it.
-                        </p>
-                        <p className="text-zinc-400 text-base leading-relaxed mb-10 italic border-l-2 border-amber-500 pl-6">
-                            No mailbox access. No workflow disruption. A spec goes in; a cited, client-presentable verdict comes out.
-                        </p>
-                        <div className="grid grid-cols-3 gap-4 border-t border-white/20 pt-10">
-                            {stats.map((stat, i) => (
-                                <div key={i}>
-                                    <div className="text-3xl md:text-5xl font-bold text-white tracking-tight"><CountUp target={stat.value} visible={visible} prefix={stat.prefix || ''} /></div>
-                                    <div className="text-zinc-400 text-[10px] mt-3 font-ui uppercase tracking-[0.12em] md:tracking-[0.2em]">{stat.label}</div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="relative aspect-square overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=900&q=60" alt="Corrugated packaging production" loading="lazy" className="absolute inset-0 w-full h-full object-cover grayscale" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent" />
-                        <div className="absolute top-6 left-6 right-6 flex justify-between text-[10px] font-ui uppercase tracking-[0.25em] text-white/60">
-                            <span>// FLAGSHIP DEPLOYMENT</span>
-                            <span>2026</span>
-                        </div>
-                        <div className="absolute bottom-6 left-6 right-6">
-                            <span className="text-[10px] font-ui uppercase tracking-[0.25em] text-amber-500">POINT 1 DISPLAYS · MONTREAL</span>
-                            <h4 className="text-white font-black text-3xl md:text-4xl mt-2 tracking-tight uppercase">Spec Reviewer in Production</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    );
-};
-
-// ── Spec Reviewer VSL ──
-const SpecReviewerVSL = () => {
-    const ref = useRef(null);
-
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            gsap.from('.vsl-reveal', {
-                scrollTrigger: { trigger: ref.current, start: 'top 72%' },
-                y: 36, opacity: 0, duration: 0.8, stagger: 0.12, ease: 'power3.out'
-            });
-        }, ref);
-        return () => ctx.revert();
-    }, []);
-
-    return (
-        <section id="spec-reviewer-walkthrough" ref={ref} className="py-24 md:py-32 border-b border-white/15">
-            <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1.55fr)_minmax(19rem,0.7fr)] gap-8 lg:gap-16 items-center">
-                <div className="vsl-reveal relative aspect-video bg-[#111] border border-white/20 overflow-hidden">
-                    <video
-                        controls
-                        playsInline
-                        preload="metadata"
-                        poster="/assets/spec-reviewer-vsl-poster.jpg"
-                        className="w-full h-full object-cover"
-                        aria-label="Spec Reviewer walkthrough video"
-                    >
-                        <source src="/assets/spec-reviewer-vsl.mp4" type="video/mp4" />
-                        Your browser does not support embedded video. Please use a modern browser to watch this walkthrough.
-                    </video>
-                </div>
-                <div className="vsl-reveal">
-                    <div className="mb-6"><SectionLabel>Before the Call</SectionLabel></div>
-                    <h2 className="text-3xl md:text-5xl font-bold text-white tracking-[-0.02em] leading-[1.05] mb-6">
-                        See the Spec Reviewer catch a real production issue.
-                    </h2>
-                    <p className="text-zinc-400 text-base leading-relaxed mb-8 max-w-md">
-                        A 3-minute walkthrough of the system, the standard it checks against, and the cited verdict your team receives before a job reaches production.
-                    </p>
-                    <a href="#audit" className="inline-flex items-center gap-3 px-6 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 active:translate-y-px transition-all">
-                        Get a Free Audit <ChevronRight size={15} aria-hidden="true" />
-                    </a>
-                </div>
-            </div>
-        </section>
-    );
-};
-
 // ── Testimonial ──
 const Testimonials = () => {
     const t = { title: "The first person I call for an urgent handoff.", quote: "When a client project needed an urgent handoff, Hendrik was the first person I called. He got up to speed fast, took the meeting, and delivered with confidence. Honestly, his technical depth made him a better fit than I would have been. That is the kind of partner you want in your corner.", name: 'Evan Gutman', role: 'Evitas AI' };
@@ -613,7 +486,7 @@ const FreeAudit = () => {
                         <span className="text-zinc-300">One price. Money-back if it doesn&apos;t catch a lead.</span>
                     </h2>
                     <p className="text-zinc-300 text-sm md:text-base">
-                        Spec Studio is scoped separately with no list price. Talk to the live demo above, then book a call.
+                        Talk to the live demo above, then book a call.
                     </p>
                 </div>
 
@@ -638,7 +511,6 @@ const FreeAudit = () => {
                     <p className="text-zinc-300 text-sm mb-10 max-w-lg">
                         No lock-in contract. Cancel anytime with a month&apos;s notice.
                     </p>
-                    {/* Spec Studio stays unpriced on its own page. */}
                     <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex justify-center text-center w-full sm:w-auto px-8 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4">
                         Book a call
                     </a>
@@ -1033,7 +905,6 @@ const Contact = () => {
                                 <label htmlFor="interest" className="sr-only">What are you interested in?</label>
                                 <select id="interest" name="interest" defaultValue="Voice Agent" className="w-full px-5 py-5 bg-[#111] border border-zinc-600 text-white text-sm focus:border-zinc-500 focus:outline-none transition-colors appearance-none cursor-pointer">
                                     <option>Voice Agent</option>
-                                    <option>Spec Studio</option>
                                     <option>Something Else</option>
                                 </select>
                                 <ChevronRight size={14} className="absolute right-5 top-1/2 -translate-y-1/2 rotate-90 text-zinc-400 pointer-events-none" aria-hidden="true" />
@@ -1072,7 +943,7 @@ const Footer = () => (
                         <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
                     </a>
                     <p className="text-zinc-300 text-sm leading-relaxed mb-8 max-w-sm">
-                        Speed to lead is what we do. AI voice agents that answer first, plus Spec Studio for manufacturers.
+                        Speed to lead is what we do. AI voice agents that answer first.
                     </p>
                     <div className="space-y-3">
                         <a href="mailto:hendrik@corefix.app" className="block py-2.5 text-white font-bold text-base hover:text-amber-500 transition-colors">
@@ -1083,7 +954,7 @@ const Footer = () => (
 
                 <div className="flex flex-col gap-0 md:gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
-                    {[['Home', '/'], ['Voice Demo', '#voice-demo'], ['Spec Studio', '/spec-studio'], ['About', '#team']].map(([link, href]) => (
+                    {[['Home', '/'], ['Voice Demo', '#voice-demo'], ['About', '#team']].map(([link, href]) => (
                         href.startsWith('/') && !href.startsWith('/#')
                             ? <Link key={link} to={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">{link}</Link>
                             : <a key={link} href={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">{link}</a>
@@ -1146,7 +1017,6 @@ function App() {
             <main>
                 <Hero />
                 <VoiceSection />
-                <SpecStudioBand />
                 <Services />
                 <LazyCapabilities />
                 <Process />

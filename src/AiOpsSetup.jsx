@@ -21,7 +21,6 @@ const HOUR = [
 
 const FOOTER_LINKS = [
     ['Home', '/'],
-    ['Spec Studio', '/spec-studio'],
     ['Voice Demo', '/#voice-demo'],
     ['Pricing', '/#audit'],
     ['Contact', '/#contact'],

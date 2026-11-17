@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import App from './App.jsx'
-import SpecStudio from './SpecStudio.jsx'
 import ServiceStrategy from './ServiceStrategy.jsx'
 import VoiceAgent from './VoiceAgent.jsx'
 import AiOpsSetup from './AiOpsSetup.jsx'
@@ -28,7 +27,6 @@ export default function AppShell() {
             <ScrollToHash />
             <Routes>
                 <Route path="/" element={<App />} />
-                <Route path="/spec-studio" element={<SpecStudio />} />
                 <Route path="/services/ai-strategy" element={<ServiceStrategy />} />
                 <Route path="/services/voice-agent" element={<VoiceAgent />} />
                 <Route path="/ai-ops-setup" element={<AiOpsSetup />} />

@@ -5,7 +5,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 /**
- * MPA clean URLs for preview: /spec-studio -> /spec-studio/index.html when that
+ * MPA clean URLs for preview: /services/voice-agent -> /services/voice-agent/index.html when that
  * file exists. Unknown paths stay 404 (no SPA fallback to home).
  */
 function prerenderCleanUrlsPlugin() {

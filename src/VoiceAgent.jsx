@@ -24,7 +24,6 @@ import { CAL_URL, VOICE_COMPARE, VOICE_FAQS } from './seo.js';
 const FOOTER_LINKS = [
     ['Home', '/'],
     ['Voice Agent', '/services/voice-agent'],
-    ['Spec Studio', '/spec-studio'],
     ['Pricing', '/services/voice-agent#pricing'],
     ['Contact', '/#contact'],
 ];

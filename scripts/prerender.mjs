@@ -89,10 +89,7 @@ function applyHead(html, path, body) {
     out = out.replace(/name="twitter:image" content="[^"]*"/, `name="twitter:image" content="${ogImage}"`);
 
     let preload = '';
-    if (path === '/spec-studio') {
-        preload = `
-  <link rel="preload" as="image" href="/img/spec-studio-hero-800.webp" type="image/webp" imagesrcset="/img/spec-studio-hero-800.webp 800w, /img/spec-studio-hero-1200.webp 1200w" imagesizes="100vw" fetchpriority="high" />`;
-    } else if (path === '/services/voice-agent') {
+    if (path === '/services/voice-agent') {
         preload = `
   <link rel="preload" as="image" href="/img/voice-agent-hero-800.webp" type="image/webp" imagesrcset="/img/voice-agent-hero-800.webp 800w, /img/voice-agent-hero-1200.webp 1200w" imagesizes="100vw" fetchpriority="high" />`;
     }
@@ -120,7 +117,6 @@ function writeRoute(path, fileRel) {
 
 const pages = [
     ['/', 'index.html'],
-    ['/spec-studio', 'spec-studio/index.html'],
     ['/services/ai-strategy', 'services/ai-strategy/index.html'],
     ['/services/voice-agent', 'services/voice-agent/index.html'],
     ['/ai-ops-setup', 'ai-ops-setup/index.html'],

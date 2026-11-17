@@ -1,7 +1,6 @@
 /** Per-route SEO + JSON-LD. Canonicals always use www (apex redirects permanently). */
 export const SITE = 'https://www.corefix.app';
 export const OG_IMAGE = `${SITE}/og-image.png`;
-export const OG_SPEC_STUDIO = `${SITE}/og-spec-studio.jpg`;
 export const OG_VOICE_AGENT = `${SITE}/og-voice-agent.jpg`;
 export const CAL_URL = 'https://cal.com/corefix.ai/30min';
 
@@ -9,10 +8,6 @@ export const HOME_FAQS = [
     {
         q: 'What does the voice agent cost?',
         a: 'One price: $297/mo (USD). If it doesn\'t catch a single lead in your first month, you get your money back. No lock-in contract. Cancel anytime with a month\'s notice.',
-    },
-    {
-        q: 'Why is Spec Studio not priced here?',
-        a: 'Spec Studio and deeper custom work are scoped after we see your workflows, so we do not publish a menu price for those. The voice agent is the listed offer at $297/mo.',
     },
     {
         q: 'Is the voice agent on this page real?',
@@ -25,21 +20,6 @@ export const HOME_FAQS = [
     {
         q: 'Who actually does the work?',
         a: 'Hendrik, the founder, scopes, builds, and ships every engagement personally, with an orchestrated fleet of AI agents doing the heavy lifting. No hand-offs to a junior team.',
-    },
-];
-
-export const SPEC_FAQS = [
-    {
-        q: 'Is Spec Studio only for display manufacturers?',
-        a: 'It was built for print, packaging, and display production, but the pattern (grade incoming documents against your own standards, cite every flag) transfers to any industry that bleeds money on non-conformant paperwork.',
-    },
-    {
-        q: 'Does Spec Studio invent specs?',
-        a: 'No. It is grounded in your own knowledge base (standards, press specs, dieline rules). It flags what is missing or non-conformant. It never invents a spec.',
-    },
-    {
-        q: 'How do we get started?',
-        a: 'Book a demo. We walk through a real sample against your standards and scope a fixed-price deployment if it fits.',
     },
 ];
 
@@ -112,15 +92,6 @@ export const ROUTES = {
         h1: 'Speed to lead is what we do.',
         ogType: 'website',
         ogImage: OG_IMAGE,
-    },
-    '/spec-studio': {
-        path: '/spec-studio',
-        title: 'Spec Studio | AI Pre-Production Review | Corefix',
-        description:
-            'Spec Studio grades print, packaging, and display specs against your standards before production. Catch costly errors early. Book a demo.',
-        h1: 'Spec Studio',
-        ogType: 'website',
-        ogImage: OG_SPEC_STUDIO,
     },
     '/services/ai-strategy': {
         path: '/services/ai-strategy',
@@ -255,52 +226,10 @@ export function faqPageJsonLd(faqs) {
     };
 }
 
-export function specStudioJsonLd() {
-    const page = canonicalFor('/spec-studio');
-    // No SoftwareApplication: rich results need offers.price + aggregateRating/review,
-    // and we will not invent ratings. Keep Service + VideoObject + FAQ + breadcrumbs.
-    return [
-        {
-            '@context': 'https://schema.org',
-            '@type': 'Service',
-            name: 'Spec Studio',
-            serviceType: 'AI pre-production spec review',
-            description:
-                'Grades print, packaging, and display specs against your standards before they reach the floor.',
-            provider: { '@type': 'Organization', name: 'Corefix', url: SITE },
-            url: page,
-        },
-        {
-            '@context': 'https://schema.org',
-            '@type': 'VideoObject',
-            name: 'Spec Studio walkthrough',
-            description: 'See Spec Studio catch a real production issue in a short walkthrough.',
-            thumbnailUrl: `${SITE}/assets/spec-reviewer-vsl-poster.jpg`,
-            contentUrl: `${SITE}/assets/spec-reviewer-vsl.mp4`,
-            uploadDate: '2026-09-01T12:00:00-04:00',
-            // Real file length from ffprobe (205.005s)
-            duration: 'PT3M25S',
-            publisher: { '@type': 'Organization', name: 'Corefix', url: SITE },
-        },
-        {
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-                { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
-                { '@type': 'ListItem', position: 2, name: 'Spec Studio', item: page },
-            ],
-        },
-        faqPageJsonLd(SPEC_FAQS),
-    ];
-}
-
 export function jsonLdForPath(path) {
     if (path === '/404') return [];
     if (path === '/') {
         return [organizationJsonLd(), websiteJsonLd(), homeServiceJsonLd(), faqPageJsonLd(HOME_FAQS)];
-    }
-    if (path === '/spec-studio') {
-        return [organizationJsonLd(), ...specStudioJsonLd()];
     }
     if (path === '/services/voice-agent') {
         const meta = ROUTES[path];
@@ -370,7 +299,6 @@ function navFooterLinks() {
   <nav aria-label="Primary">
     <a href="/">Corefix</a> ·
     <a href="/#voice-demo">Voice demo</a> ·
-    <a href="/spec-studio">Spec Studio</a> ·
     <a href="/services/ai-strategy">AI Strategy</a> ·
     <a href="/services/voice-agent">Voice Agent</a> ·
     <a href="/#contact">Contact</a> ·
@@ -384,7 +312,7 @@ function footerBlock() {
     return `
   <footer>
     <p><a href="/">Corefix</a></p>
-    <p><a href="/">Home</a> · <a href="/services/voice-agent">Voice Agent</a> · <a href="/spec-studio">Spec Studio</a> · <a href="/#voice-demo">Voice Demo</a> · <a href="/#audit">Pricing</a> · <a href="/#contact">Contact</a></p>
+    <p><a href="/">Home</a> · <a href="/services/voice-agent">Voice Agent</a> · <a href="/#voice-demo">Voice Demo</a> · <a href="/#audit">Pricing</a> · <a href="/#contact">Contact</a></p>
     <p><a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:hendrik@corefix.app">hendrik@corefix.app</a></p>
   </footer>`;
 }
@@ -434,28 +362,10 @@ ${navFooterLinks()}
   <p>The business that answers first gets the job. Our AI voice agent picks up every call and web lead in seconds, day or night, and books it on your calendar.</p>
   <p><a href="/#voice-demo">Try the live voice demo</a> · <a href="${CAL_URL}">Book a demo</a></p>
   <p>No mic? Book on the calendar: <a href="${CAL_URL}">${CAL_URL}</a></p>
-  <p><a href="/spec-studio">Display or packaging manufacturer? See Spec Studio.</a></p>
   <h2>Speed-to-lead voice agent pricing</h2>
   <p>$297/mo USD. If it doesn't catch a single lead in your first month, you get your money back. No lock-in contract. Cancel anytime with a month's notice.</p>
   <p><a href="/services/voice-agent">See the voice agent page</a> for how it works, comparison, and FAQ.</p>
 ${faqListHtml(HOME_FAQS, 'Everything you need to know before we build')}
-${footerBlock()}
-</main>`;
-    }
-
-    if (path === '/spec-studio') {
-        return `
-<main>
-${navFooterLinks()}
-  <nav aria-label="Breadcrumb"><a href="/">Home</a> / Spec Studio</nav>
-  <h1>${meta.h1}</h1>
-  <p>AI pre-production review for print, packaging, and display manufacturers. Every incoming spec gets graded before it reaches the floor: Pass, Needs Revision, or Reject, with every flag citing the company standard it violates.</p>
-  <p><a href="${CAL_URL}">Book a demo</a></p>
-  <h2>Point 1 Displays case study</h2>
-  <p>Montreal display manufacturer. Spec Studio replaced the pre-production review step after they lost their designer. Spec errors that reach production burn roughly $500, worst case $2,000.</p>
-  <h2>Walkthrough</h2>
-  <p>See Spec Studio catch a real production issue. <a href="/assets/spec-reviewer-vsl.mp4">Watch the walkthrough video</a>.</p>
-${faqListHtml(SPEC_FAQS, 'Spec Studio questions')}
 ${footerBlock()}
 </main>`;
     }
@@ -541,7 +451,7 @@ ${navFooterLinks()}
   <p><a href="/">Home</a> · <a href="${CAL_URL}">Book a call</a></p>
   <footer>
     <p><a href="/">Corefix</a></p>
-    <p><a href="/">Home</a> · <a href="/spec-studio">Spec Studio</a> · <a href="/#contact">Contact</a></p>
+    <p><a href="/">Home</a> · <a href="/#contact">Contact</a></p>
   </footer>
 </main>`;
     }

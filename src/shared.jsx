@@ -83,7 +83,6 @@ export const SectionLabel = ({ children }) => (
 const DEFAULT_FOOTER_LINKS = [
     ['Home', '/'],
     ['Voice Agent', '/services/voice-agent'],
-    ['Spec Studio', '/spec-studio'],
     ['Voice Demo', '/#voice-demo'],
     ['Pricing', '/#audit'],
     ['Contact', '/#contact'],
@@ -105,7 +104,7 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
                         <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
                     </a>
                     <p className="text-zinc-300 text-sm leading-relaxed mb-8 max-w-sm">
-                        Speed-to-lead voice agents and Spec Studio for manufacturers. Built and shipped by the person you talk to.
+                        Speed-to-lead voice agents. Built and shipped by the person you talk to.
                     </p>
                     <a href="mailto:hendrik@corefix.app" className="block py-2.5 text-white font-bold text-base hover:text-amber-500 transition-colors">
                         HENDRIK@COREFIX.APP
@@ -158,7 +157,6 @@ export const ServiceNavbar = () => {
                 </Link>
                 <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
                     <Link to="/services/voice-agent" className="hover:text-white transition-colors">Voice Agent</Link>
-                    <Link to="/spec-studio" className="hover:text-white transition-colors">Spec Studio</Link>
                     <Link to="/#process" className="hover:text-white transition-colors">Process</Link>
                     <Link to="/#audit" className="hover:text-white transition-colors">Pricing</Link>
                     <Link to="/#contact" className="hover:text-white transition-colors">Contact</Link>
@@ -184,7 +182,7 @@ export const ServiceNavbar = () => {
             </div>
             {menuOpen && (
                 <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/15 px-6 py-8 flex flex-col gap-6">
-                    {[['Home', '/'], ['Voice Agent', '/services/voice-agent'], ['Spec Studio', '/spec-studio'], ['Process', '/#process'], ['Pricing', '/#audit'], ['Contact', '/#contact']].map(([item, href]) => (
+                    {[['Home', '/'], ['Voice Agent', '/services/voice-agent'], ['Process', '/#process'], ['Pricing', '/#audit'], ['Contact', '/#contact']].map(([item, href]) => (
                         <Link key={item} to={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</Link>
                     ))}
                     <Link to="/#contact" onClick={() => setMenuOpen(false)} className="text-amber-500 text-lg font-ui uppercase tracking-widest hover:text-white">Talk To Us</Link>

@@ -3,11 +3,35 @@ export const SITE = 'https://www.corefix.app';
 export const OG_IMAGE = `${SITE}/og-image.png`;
 export const OG_VOICE_AGENT = `${SITE}/og-voice-agent.jpg`;
 export const CAL_URL = 'https://cal.com/corefix.ai/30min';
+/** YouTube channel for the footer. Leave empty to hide the link. */
+export const YOUTUBE_URL = '';
+export const PROCESS_STEPS = ['Diagnose', 'Design', 'Build', 'Proof'];
+export const HOME_DESCRIPTION =
+    'AI consulting for service businesses. Fixed-price engagements: we diagnose, design, build and prove AI systems that pay for themselves.';
+
+/** Service lines, shared by the homepage and /services. */
+export const SERVICES = [
+    { num: '01', title: 'Speed-to-Lead Systems', desc: 'A voice agent that answers every call and web lead in seconds, qualifies it, and books it on your calendar.', link: '/services/voice-agent' },
+    { num: '02', title: 'Email Triage & Workflow Automation', desc: 'Inbox classification, follow-up tracking, and automations wired into the systems you already run.' },
+    { num: '03', title: 'AI Strategy & Advisory', desc: 'A clear, execution-ready plan for where AI actually saves you money. No slideware.', link: '/services/ai-strategy' },
+];
+
+/** Systems already built and running. Industry only, never client names (NDA). */
+export const BUILDS = [
+    { title: 'Speed-to-Lead Lead Response', industry: 'Real estate', desc: 'New lead comes in, the agent gets a text, the lead gets a text or email with a one-tap link to an AI chat or call. Seconds, 24/7.', stack: ['n8n', 'Retell', 'Twilio'] },
+    { title: 'AI Call & Chat Transcript Routing', industry: 'Real estate', desc: 'Every AI call or chat is deduped, matched to the right agent, and emailed as a clean transcript.', stack: ['n8n', 'Retell'] },
+    { title: 'Portal Lead Intake', industry: 'Real estate', desc: 'Parses lead emails from listing portals and routes each one to the right agent automatically.', stack: ['n8n'] },
+    { title: 'Agent Onboarding', industry: 'Real estate', desc: 'One form sets a new agent up in the CRM, with routing, signature and contact preferences.', stack: ['n8n', 'Tally'] },
+    { title: 'Voice Agent with Live Booking', industry: 'Any service business', desc: 'Answers calls, qualifies, checks the real calendar and books the meeting mid-call. Try it on our homepage.', stack: ['Vapi', 'Cal.com'], link: '/#voice-demo' },
+    { title: 'Proposal Generator', industry: 'Professional services', desc: 'Turns discovery-call notes into a scoped, ready-to-send proposal draft.', stack: [] },
+    { title: 'Finance Dashboard', industry: 'Internal ops', desc: 'Pulls transactions into one live view of cash, spend and trends.', stack: [] },
+    { title: 'Workflow Error Alerting', industry: 'Every build', desc: 'Any failed step emails the exact node, error and a link to the run, so nothing breaks silently.', stack: ['n8n'] },
+];
 
 export const HOME_FAQS = [
     {
-        q: 'What does the voice agent cost?',
-        a: 'One price: $297/mo (USD). If it doesn\'t catch a single lead in your first month, you get your money back. No lock-in contract. Cancel anytime with a month\'s notice.',
+        q: 'How do you price?',
+        a: 'Every engagement is fixed-price. No hourly billing, no scope creep. You know the price before we start, and we quote it after a short intro call.',
     },
     {
         q: 'Is the voice agent on this page real?',
@@ -49,9 +73,8 @@ export const STRATEGY_FAQS = [
 /** Comparison points for voice agent vs a typical answering service (no named competitors, hedged). */
 export const VOICE_COMPARE = {
     corefix: [
-        'Flat $297/mo USD',
-        'If it doesn\'t catch a single lead in your first month, you get your money back',
-        'No lock-in contract. Cancel anytime with a month\'s notice',
+        'Fixed price, agreed before we start',
+        'No hourly billing, no per-minute surprises',
         'Answers 24/7 in the company\'s name',
         'Books jobs straight onto your calendar',
         'Texts the job details fast',
@@ -67,7 +90,7 @@ export const VOICE_COMPARE = {
 export const VOICE_FAQS = [
     {
         q: 'What does the voice agent cost?',
-        a: 'One price: $297/mo (USD). If it doesn\'t catch a single lead in your first month, you get your money back. No lock-in contract. Cancel anytime with a month\'s notice.',
+        a: 'Every engagement is fixed-price. No hourly billing, no scope creep. You know the price before we start, and we quote it after a short intro call.',
     },
     {
         q: 'Is the demo on this page real?',
@@ -86,10 +109,18 @@ export const VOICE_FAQS = [
 export const ROUTES = {
     '/': {
         path: '/',
-        title: 'Speed to lead is what we do | AI Voice Agents | Corefix',
+        title: 'AI That Pays for Itself | Fixed-Price AI Consulting | Corefix',
+        description: HOME_DESCRIPTION,
+        h1: 'AI that pays for itself.',
+        ogType: 'website',
+        ogImage: OG_IMAGE,
+    },
+    '/services': {
+        path: '/services',
+        title: 'Services & What We\'ve Built | Corefix',
         description:
-            'AI voice agents that answer every call and web lead in seconds, day or night, and book it on your calendar. Flat $297/mo.',
-        h1: 'Speed to lead is what we do.',
+            'Fixed-price AI systems for service businesses: speed-to-lead, workflow automation and AI strategy. See the automations already running.',
+        h1: 'What we build.',
         ogType: 'website',
         ogImage: OG_IMAGE,
     },
@@ -106,7 +137,7 @@ export const ROUTES = {
         path: '/services/voice-agent',
         title: 'AI Voice Agent | Every Call Answered and Booked | Corefix',
         description:
-            'AI voice agent that answers every call and web lead day or night, books on your calendar, and texts job details fast. Flat $297/mo.',
+            'AI voice agent that answers every call and web lead day or night, books on your calendar, and texts job details fast. Fixed-price setup.',
         h1: 'Every call answered and booked, day or night.',
         ogType: 'website',
         ogImage: OG_VOICE_AGENT,
@@ -201,10 +232,9 @@ export function homeServiceJsonLd() {
     return {
         '@context': 'https://schema.org',
         '@type': 'Service',
-        name: 'Speed-to-lead AI voice agents',
-        serviceType: 'AI voice agent',
-        description:
-            'AI voice agents that pick up every call and web lead in seconds, day or night, and book it on your calendar.',
+        name: 'Fixed-price AI consulting and implementation',
+        serviceType: 'AI consulting',
+        description: HOME_DESCRIPTION,
         provider: { '@type': 'Organization', name: 'Corefix', url: SITE },
         areaServed: 'North America',
         url: SITE,
@@ -231,6 +261,26 @@ export function jsonLdForPath(path) {
     if (path === '/') {
         return [organizationJsonLd(), websiteJsonLd(), homeServiceJsonLd(), faqPageJsonLd(HOME_FAQS)];
     }
+    if (path === '/services') {
+        return [
+            organizationJsonLd(),
+            {
+                '@context': 'https://schema.org',
+                '@type': 'ItemList',
+                name: 'Corefix services',
+                itemListElement: SERVICES.map((svc, i) => ({
+                    '@type': 'ListItem',
+                    position: i + 1,
+                    item: {
+                        '@type': 'Service',
+                        name: svc.title,
+                        description: svc.desc,
+                        provider: { '@type': 'Organization', name: 'Corefix', url: SITE },
+                    },
+                })),
+            },
+        ];
+    }
     if (path === '/services/voice-agent') {
         const meta = ROUTES[path];
         const page = canonicalFor(path);
@@ -244,12 +294,6 @@ export function jsonLdForPath(path) {
                 description: meta?.description,
                 provider: { '@type': 'Organization', name: 'Corefix', url: SITE },
                 url: page,
-                offers: {
-                    '@type': 'Offer',
-                    price: '297',
-                    priceCurrency: 'USD',
-                    description: '$297/mo USD. Month to month.',
-                },
             },
             {
                 '@context': 'https://schema.org',
@@ -312,7 +356,7 @@ function footerBlock() {
     return `
   <footer>
     <p><a href="/">Corefix</a></p>
-    <p><a href="/">Home</a> · <a href="/services/voice-agent">Voice Agent</a> · <a href="/#voice-demo">Voice Demo</a> · <a href="/#audit">Pricing</a> · <a href="/#contact">Contact</a></p>
+    <p><a href="/">Home</a> · <a href="/services/voice-agent">Voice Agent</a> · <a href="/#voice-demo">Voice Demo</a> · <a href="/#services">Services</a> · <a href="/#team">About</a> · <a href="/#contact">Contact</a></p>
     <p><a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="mailto:hendrik@corefix.app">hendrik@corefix.app</a></p>
   </footer>`;
 }
@@ -359,12 +403,18 @@ export function crawlerHtml(path) {
 <main>
 ${navFooterLinks()}
   <h1>${meta.h1}</h1>
-  <p>The business that answers first gets the job. Our AI voice agent picks up every call and web lead in seconds, day or night, and books it on your calendar.</p>
-  <p><a href="/#voice-demo">Try the live voice demo</a> · <a href="${CAL_URL}">Book a demo</a></p>
-  <p>No mic? Book on the calendar: <a href="${CAL_URL}">${CAL_URL}</a></p>
-  <h2>Speed-to-lead voice agent pricing</h2>
-  <p>$297/mo USD. If it doesn't catch a single lead in your first month, you get your money back. No lock-in contract. Cancel anytime with a month's notice.</p>
-  <p><a href="/services/voice-agent">See the voice agent page</a> for how it works, comparison, and FAQ.</p>
+  <p>Fixed-price AI systems for service businesses. Diagnosed, designed, built and proven by the person you talk to.</p>
+  <p><a href="${CAL_URL}">Book a call</a> · <a href="/#voice-demo">Hear the live voice demo</a></p>
+  <h2>Services</h2>
+  <ul>
+    <li><a href="/services/voice-agent">Speed-to-Lead Systems</a></li>
+    <li>Email Triage &amp; Workflow Automation</li>
+    <li><a href="/services/ai-strategy">AI Strategy &amp; Advisory</a></li>
+  </ul>
+  <h2>Our process</h2>
+  <p>Diagnose · Design · Build · Proof</p>
+  <h2>Simple, fixed-price engagements</h2>
+  <p>No hourly billing. No scope creep. You know the price before we start.</p>
 ${faqListHtml(HOME_FAQS, 'Everything you need to know before we build')}
 ${footerBlock()}
 </main>`;
@@ -389,7 +439,7 @@ ${footerBlock()}
 ${navFooterLinks()}
   <h1>${meta.h1}</h1>
   <p>${meta.description}</p>
-  <p>Speed to lead is what we do. An AI voice agent that picks up in your company's name, books the job on your calendar, and texts you the details fast.</p>
+  <p>An AI voice agent that picks up in your company's name, books the job on your calendar, and texts you the details fast.</p>
   <p><a href="/services/voice-agent#voice-demo">Try the live voice demo</a> · <a href="${CAL_URL}">Book a call</a></p>
   <p>No mic? Book on the calendar: <a href="${CAL_URL}">${CAL_URL}</a></p>
   <h2>How it works</h2>
@@ -399,8 +449,8 @@ ${navFooterLinks()}
     <li>You get the details fast</li>
   </ol>
 ${compareTableHtml()}
-  <h2>Pricing</h2>
-  <p>$297/mo USD. If it doesn't catch a single lead in your first month, you get your money back. No lock-in contract. Cancel anytime with a month's notice.</p>
+  <h2>How we price</h2>
+  <p>Fixed-price engagement. No hourly billing, no scope creep. You know the price before we start.</p>
 ${faqListHtml(VOICE_FAQS, 'Voice agent questions')}
   <p><a href="${CAL_URL}">Book a call</a></p>
 ${footerBlock()}

@@ -116,7 +116,7 @@ export default function VoiceSection() {
 
     const startCall = useCallback(async () => {
         if (!CONFIGURED) {
-            document.querySelector('#audit')?.scrollIntoView({ behavior: 'smooth' });
+            document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
             return;
         }
         clearTimeout(idleResetRef.current);

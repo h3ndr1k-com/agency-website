@@ -117,6 +117,7 @@ function writeRoute(path, fileRel) {
 
 const pages = [
     ['/', 'index.html'],
+    ['/services', 'services/index.html'],
     ['/services/ai-strategy', 'services/ai-strategy/index.html'],
     ['/services/voice-agent', 'services/voice-agent/index.html'],
     ['/ai-ops-setup', 'ai-ops-setup/index.html'],

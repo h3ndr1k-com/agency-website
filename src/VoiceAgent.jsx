@@ -18,13 +18,15 @@ import {
     BrightGrid,
     SectionLabel,
     CornerButton,
+    FIXED_PRICE_POINTS,
 } from './shared.jsx';
 import { CAL_URL, VOICE_COMPARE, VOICE_FAQS } from './seo.js';
 
 const FOOTER_LINKS = [
     ['Home', '/'],
     ['Voice Agent', '/services/voice-agent'],
-    ['Pricing', '/services/voice-agent#pricing'],
+    ['How We Price', '/services/voice-agent#pricing'],
+    ['Services', '/services'],
     ['Contact', '/#contact'],
 ];
 
@@ -92,7 +94,7 @@ function Hero() {
                 </h1>
                 <div className="grid md:grid-cols-2 gap-8 mt-10 items-end">
                     <p className="max-w-xl text-zinc-200 text-sm md:text-base leading-relaxed">
-                        Speed to lead is what we do. An AI voice agent that picks up in your company&apos;s
+                        The business that answers first gets the job. An AI voice agent that picks up in your company&apos;s
                         name, books the job on your calendar, and texts you the details fast.
                     </p>
                     <div className="flex justify-end flex-wrap gap-3">
@@ -206,62 +208,43 @@ function Pricing() {
         <section id="pricing" className="py-24 md:py-32 border-y border-white/15">
             <div className="max-w-[1400px] mx-auto px-6">
                 <div className="mb-8">
-                    <SectionLabel>The Offer</SectionLabel>
+                    <SectionLabel>How We Price</SectionLabel>
                 </div>
                 <div className="grid md:grid-cols-2 gap-8 mb-12 items-end">
                     <h2 className="text-4xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05]">
-                        Speed-to-lead voice agent.{' '}
-                        <span className="text-zinc-300">One price. Money-back if it doesn&apos;t catch a lead.</span>
+                        Simple, fixed-price engagements.
                     </h2>
                     <p className="text-zinc-300 text-sm md:text-base">
-                        Talk to the live demo above, then book a call.
+                        Talk to the live demo above, then book a call. You get a fixed quote for your setup before anything starts.
                     </p>
                 </div>
 
-                <div className="p-8 md:p-12 bg-[#0A0A0A] border border-white/25 relative max-w-3xl">
-                    <div className="flex flex-col-reverse sm:flex-row sm:items-start sm:justify-between gap-4 mb-3">
-                        <h3 className="text-2xl font-bold text-white">Voice agent</h3>
-                        <div className="inline-flex self-start items-center gap-2 px-3 py-1 border border-amber-500/60 text-amber-500 text-[10px] font-bold font-ui uppercase tracking-[0.2em] shrink-0">
-                            <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
-                            Month to month
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    {FIXED_PRICE_POINTS.map((pt, i) => (
+                        <div key={pt.title} className="p-8 bg-[#0A0A0A] border border-white/25">
+                            <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">{String(i + 1).padStart(2, '0')}</span>
+                            <h3 className="text-xl font-bold text-white mt-4 mb-2">{pt.title}</h3>
+                            <p className="text-zinc-300 text-sm leading-relaxed">{pt.desc}</p>
                         </div>
-                    </div>
-                    <p className="text-zinc-300 text-sm mb-8 max-w-md">
-                        For teams that lose jobs to voicemail and slow follow-up.
-                    </p>
-                    <div className="flex items-baseline gap-3 mb-4">
-                        <span className="text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight">
-                            $297/mo
-                        </span>
-                        <span className="text-zinc-400 text-xs font-ui uppercase tracking-widest">USD</span>
-                    </div>
-                    <p className="text-zinc-200 text-sm mb-3 max-w-lg">
-                        If it doesn&apos;t catch a single lead in your first month, you get your money back.
-                    </p>
-                    <p className="text-zinc-300 text-sm mb-10 max-w-lg">
-                        No lock-in contract. Cancel anytime with a month&apos;s notice.
-                    </p>
-                    <p className="text-zinc-500 text-xs mb-10 -mt-8 max-w-lg">
-                        Fair use: 500 minutes/month included, then US$0.30/min.
-                    </p>
-                    <a
-                        href={CAL_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex text-center px-8 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4"
-                    >
-                        Book a call
-                    </a>
-                    <button
-                        type="button"
-                        onClick={() =>
-                            document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })
-                        }
-                        className="ml-0 md:ml-3 inline-flex text-center px-8 py-4 border border-zinc-500 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors"
-                    >
-                        Or talk to the demo agent
-                    </button>
+                    ))}
                 </div>
+                <a
+                    href={CAL_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex justify-center text-center w-full sm:w-auto px-8 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4"
+                >
+                    Book a call
+                </a>
+                <button
+                    type="button"
+                    onClick={() =>
+                        document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })
+                    }
+                    className="ml-0 sm:ml-3 inline-flex justify-center text-center w-full sm:w-auto px-8 py-4 border border-zinc-500 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors"
+                >
+                    Or talk to the demo agent
+                </button>
             </div>
         </section>
     );

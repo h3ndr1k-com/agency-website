@@ -5,7 +5,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronRight, ArrowUpRight } from 'lucide-react';
 import VoiceSection from './VoiceSection.jsx';
 import SeoHead from './SeoHead.jsx';
-import { CAL_URL, HOME_FAQS } from './seo.js';
+import { CAL_URL, HOME_FAQS, SERVICES } from './seo.js';
+import { Footer, FIXED_PRICE_POINTS } from './shared.jsx';
+
+const HOME_NAV = [['Services', '/services'], ['About', '#team']];
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -124,8 +127,11 @@ const Navbar = () => {
                     COREFIX&reg;
                 </a>
                 <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-300 uppercase tracking-[0.18em]">
-                    <a href="#voice-demo" className="hover:text-white transition-colors">Voice Demo</a>
-                    <a href="#team" className="hover:text-white transition-colors">About</a>
+                    {HOME_NAV.map(([item, href]) => (
+                        href.startsWith('/')
+                            ? <Link key={item} to={href} className="hover:text-white transition-colors">{item}</Link>
+                            : <a key={item} href={href} className="hover:text-white transition-colors">{item}</a>
+                    ))}
                 </div>
                 <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
                     <span className="absolute -top-[2px] -left-[2px] w-2.5 h-2.5 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -148,7 +154,7 @@ const Navbar = () => {
             </div>
             {menuOpen && (
                 <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/15 px-6 py-8 flex flex-col gap-6">
-                    {[['Voice Demo', '#voice-demo'], ['About', '#team']].map(([item, href]) => (
+                    {HOME_NAV.map(([item, href]) => (
                         href.startsWith('/')
                             ? <Link key={item} to={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</Link>
                             : <a key={item} href={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</a>
@@ -174,7 +180,7 @@ const Hero = () => {
     }, []);
 
     const tags = [
-        { label: 'Voice Agents', href: '/services/voice-agent', route: true },
+        { label: 'Speed-to-Lead Systems', href: '/services/voice-agent', route: true },
         { label: 'AI Strategy', href: '/services/ai-strategy', route: true },
         { label: 'Automation', href: '#services' },
     ];
@@ -203,7 +209,7 @@ const Hero = () => {
                         href="#voice-demo"
                         className="group/watch mt-3 hidden tall:inline-flex items-center gap-2 border border-amber-500 bg-amber-500 px-4 py-3 text-[10px] font-ui font-bold uppercase tracking-[0.18em] text-black transition-colors duration-200 hover:bg-white active:translate-y-px"
                     >
-                        Try the live demo
+                        Hear the voice demo
                         <ChevronRight size={13} className="transition-transform duration-200 group-hover/watch:translate-x-1" aria-hidden="true" />
                     </a>
                 </div>
@@ -211,19 +217,19 @@ const Hero = () => {
 
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
                 <h1 className="font-display leading-[0.9] tracking-[0.01em] uppercase text-white" style={{ WebkitTextStroke: '0' }}>
-                    <span className="block text-[14vw] md:text-[9vw] lg:text-[7.5vw]">Speed to lead</span>
-                    <span className="block text-[14vw] md:text-[9vw] lg:text-[7.5vw] text-zinc-300"> is what we do.</span>
+                    <span className="block text-[14vw] md:text-[9vw] lg:text-[7.5vw]">AI that pays</span>
+                    <span className="block text-[14vw] md:text-[9vw] lg:text-[7.5vw] text-zinc-300"> for itself.</span>
                 </h1>
             </div>
 
             <div className="relative z-40 max-w-[1400px] mx-auto px-6 w-full">
                 <div className="grid md:grid-cols-2 gap-8 mt-10 md:mt-14 items-end">
                     <p className="max-w-xl text-zinc-200 text-sm md:text-base leading-relaxed pl-2">
-                        The business that answers first gets the job. Our AI voice agent picks up every call and web lead in seconds, day or night, and books it on your calendar.
+                        Fixed-price AI systems for service businesses. Diagnosed, designed, built and proven by the person you talk to.
                     </p>
                     <div className="hero-chrome flex md:justify-end gap-3 flex-wrap">
-                        <CornerButton href="#voice-demo">
-                            Hear it live <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                        <CornerButton href="#services">
+                            See services <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                         </CornerButton>
                         <CornerButton href={CAL_URL} filled className="text-[13px] px-9 py-5">
                             Book a call <ArrowUpRight size={15} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
@@ -255,29 +261,25 @@ const Services = () => {
         return () => ctx.revert();
     }, []);
 
-    const services = [
-        { num: '01', title: 'Voice Agents That Take Calls', desc: 'Live agents that answer, qualify, and book straight into your calendar, like the one on this page.', link: '/services/voice-agent' },
-        { num: '02', title: 'Email Triage & Workflow Automation', desc: 'Inbox classification, follow-up tracking, and automations wired into the systems you already run.' },
-        { num: '03', title: 'AI Strategy & Advisory', desc: 'A clear, execution-ready plan for where AI actually saves you money. No slideware.', link: '/services/ai-strategy' },
-    ];
+    const services = SERVICES;
 
     return (
         <section id="services" ref={ref} className="py-24 md:py-40">
             <div className="max-w-[1400px] mx-auto px-6">
                 <div className="mb-10">
-                    <SectionLabel>Bolt-Ons</SectionLabel>
+                    <SectionLabel>Services</SectionLabel>
                 </div>
                 <h2 className="svc-title text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-[-0.02em] max-w-5xl leading-[1.05] mb-8">
-                    One flagship. <span className="text-zinc-400">Modular bolt-ons.</span>
+                    Fixed-price AI systems. <span className="text-zinc-400">Built into the tools you already run.</span>
                 </h2>
                 <p className="svc-title text-zinc-300 mb-12 md:mb-20 max-w-xl text-sm">Each one ships as a working system in your stack, not a proof of concept.</p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {services.map((svc, i) => {
                         const Card = svc.link ? Link : 'div';
                         const cardProps = svc.link ? { to: svc.link } : {};
                         return (
-                            <Card key={i} {...cardProps} className="svc-card group p-8 md:p-10 bg-[#0A0A0A] border border-white/50 hover:border-amber-500 hover:bg-[#111] transition-colors block cursor-pointer">
+                            <Card key={i} {...cardProps} className={`svc-card group p-8 md:p-10 bg-[#0A0A0A] border border-white/50 hover:border-amber-500 hover:bg-[#111] transition-colors block ${svc.link ? 'cursor-pointer' : ''}`}>
                                 <div className="flex items-start gap-6">
                                     <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">{svc.num}</span>
                                     <div className="flex-1">
@@ -289,7 +291,7 @@ const Services = () => {
                                             </span>
                                         )}
                                     </div>
-                                    <ArrowUpRight size={20} className="text-zinc-400 group-hover:text-amber-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />
+                                    {svc.link && <ArrowUpRight size={20} className="text-zinc-400 group-hover:text-amber-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />}
                                 </div>
                             </Card>
                         );
@@ -343,9 +345,9 @@ const Process = () => {
             details: ['Agent development & integration', 'Testing against real workflows', 'Team training & documentation', 'Staged rollout'],
         },
         {
-            num: '04', title: 'Deploy & Improve',
-            desc: 'We launch, monitor performance, and continuously optimize.',
-            details: ['Production launch & monitoring', 'Performance dashboards', 'Continuous tuning & retraining', 'Quarterly optimization reviews'],
+            num: '04', title: 'Proof',
+            desc: 'We launch, measure against the success metrics we agreed up front, and show you the result.',
+            details: ['Production launch & monitoring', 'Results vs. agreed metrics', 'Handover & documentation', 'Ongoing tuning if you want it'],
         },
     ];
 
@@ -365,12 +367,12 @@ const Process = () => {
                 <SectionLabel>Our Process</SectionLabel>
             </div>
 
-            <div className="proc-grid max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            <div className="proc-grid max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
                 {steps.map((step, i) => (
                     <button
                         key={i}
                         onClick={() => setActiveStep(activeStep === i ? null : i)}
-                        className={`proc-step text-left w-full p-8 md:p-10 bg-[#0A0A0A] border transition-colors group ${activeStep === i ? 'border-amber-500 bg-[#111]' : 'border-white/50 hover:border-amber-500 hover:bg-[#111]'}`}
+                        className={`proc-step h-full flex flex-col text-left w-full p-8 md:p-10 bg-[#0A0A0A] border transition-colors group ${activeStep === i ? 'border-amber-500 bg-[#111]' : 'border-white/50 hover:border-amber-500 hover:bg-[#111]'}`}
                     >
                         <div className="flex items-start justify-between mb-6">
                             <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">· {step.num}</span>
@@ -396,7 +398,7 @@ const Process = () => {
 
             <div className="max-w-[1400px] mx-auto px-6 mt-16 text-center">
                 <p className="text-zinc-300 text-sm mb-6 max-w-xl mx-auto">See How These Solutions Translate Into Measurable Impact.</p>
-                <CornerButton href="#audit" filled>
+                <CornerButton href="#engagements" filled>
                     Start Your AI Journey <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                 </CornerButton>
             </div>
@@ -458,79 +460,45 @@ const Testimonials = () => {
 };
 
 // ── Voice agent pricing ──
-const FreeAudit = () => {
+const Engagements = () => {
     const ref = useRef(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.from('.price-card', {
-                scrollTrigger: { trigger: ref.current, start: 'top 65%' },
-                y: 60, opacity: 0, duration: 0.9, ease: 'power3.out'
+            gsap.fromTo('.eng-card', { y: 60, opacity: 0 }, {
+                scrollTrigger: { trigger: ref.current, start: 'top 70%' },
+                y: 0, opacity: 1, duration: 0.9, stagger: 0.12, ease: 'power3.out'
             });
         }, ref);
         return () => ctx.revert();
     }, []);
 
-    const offerItems = [
-        'Answers every call and web lead in seconds, day or night',
-        'Books qualified leads straight onto your calendar',
-    ];
-
     return (
-        <section id="audit" ref={ref} className="py-24 md:py-40 border-y border-white/15">
+        <section id="engagements" ref={ref} className="py-24 md:py-40 border-y border-white/15">
             <div className="max-w-[1400px] mx-auto px-6">
-                <div className="mb-8"><SectionLabel>The Offer</SectionLabel></div>
-                <div className="grid md:grid-cols-2 gap-8 mb-16 items-end">
+                <div className="mb-8"><SectionLabel>How We Price</SectionLabel></div>
+                <div className="grid md:grid-cols-2 gap-8 mb-12 md:mb-16 items-end">
                     <h2 className="text-4xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-[1.05]">
-                        Speed-to-lead voice agent.{' '}
-                        <span className="text-zinc-300">One price. Money-back if it doesn&apos;t catch a lead.</span>
+                        Simple, fixed-price engagements.
                     </h2>
-                    <p className="text-zinc-300 text-sm md:text-base">
-                        Talk to the live demo above, then book a call.
+                    <p className="text-zinc-300 text-sm md:text-base max-w-md">
+                        Every project is scoped and quoted after a short intro call. One number, agreed up front.
                     </p>
                 </div>
 
-                <div className="price-card p-8 md:p-12 bg-[#0A0A0A] border border-white/25 relative max-w-3xl">
-                    <div className="flex flex-col-reverse sm:flex-row sm:items-start sm:justify-between gap-4 mb-3">
-                        <h3 className="text-2xl font-bold text-white">Voice agent</h3>
-                        <div className="inline-flex self-start items-center gap-2 px-3 py-1 border border-amber-500/60 text-amber-500 text-[10px] font-bold font-ui uppercase tracking-[0.2em] shrink-0">
-                            <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
-                            Month to month
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    {FIXED_PRICE_POINTS.map((pt, i) => (
+                        <div key={pt.title} className="eng-card p-8 md:p-10 bg-[#0A0A0A] border border-white/25 hover:border-amber-500 transition-colors">
+                            <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">{String(i + 1).padStart(2, '0')}</span>
+                            <h3 className="text-2xl font-bold text-white mt-6 mb-3">{pt.title}</h3>
+                            <p className="text-zinc-300 text-sm leading-relaxed">{pt.desc}</p>
                         </div>
-                    </div>
-                    <p className="text-zinc-300 text-sm mb-8 max-w-md">
-                        For teams that lose jobs to voicemail and slow follow-up.
-                    </p>
-                    <div className="flex items-baseline gap-3 mb-4">
-                        <span className="text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight">$297/mo</span>
-                        <span className="text-zinc-400 text-xs font-ui uppercase tracking-widest">USD</span>
-                    </div>
-                    <p className="text-zinc-200 text-sm mb-3 max-w-lg">
-                        If it doesn&apos;t catch a single lead in your first month, you get your money back.
-                    </p>
-                    <p className="text-zinc-300 text-sm mb-10 max-w-lg">
-                        No lock-in contract. Cancel anytime with a month&apos;s notice.
-                    </p>
-                    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex justify-center text-center w-full sm:w-auto px-8 py-4 bg-white text-black font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:bg-amber-500 transition-colors mb-4">
-                        Book a call
-                    </a>
-                    <button type="button" onClick={() => document.querySelector('#voice-demo')?.scrollIntoView({ behavior: 'smooth' })} className="ml-0 sm:ml-3 inline-flex justify-center text-center w-full sm:w-auto px-8 py-4 border border-zinc-500 text-zinc-300 font-bold text-[11px] font-ui uppercase tracking-[0.2em] hover:border-amber-500 hover:text-white transition-colors mb-10">
-                        Or talk to the demo agent
-                    </button>
-                    <ul className="space-y-4">
-                        {offerItems.map((item, i) => (
-                            <li key={i} className="flex items-start gap-4 text-zinc-300 text-sm">
-                                <div className="w-1 h-1 bg-amber-500 mt-2.5 flex-shrink-0" />
-                                {item}
-                            </li>
-                        ))}
-                    </ul>
-                    <p className="mt-8 md:mt-10 text-zinc-300 text-sm">
-                        <Link to="/services/voice-agent" className="inline-flex items-center min-h-[44px] text-amber-500 hover:text-white transition-colors font-ui uppercase tracking-[0.15em] text-[11px] font-bold">
-                            Full voice agent page →
-                        </Link>
-                    </p>
+                    ))}
                 </div>
+
+                <CornerButton href={CAL_URL} filled>
+                    Book a call <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+                </CornerButton>
             </div>
         </section>
     );
@@ -594,9 +562,9 @@ const Team = () => {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.from('.team-card', {
+            gsap.fromTo('.team-card', { y: 60, opacity: 0 }, {
                 scrollTrigger: { trigger: ref.current, start: 'top 65%' },
-                y: 60, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out'
+                y: 0, opacity: 1, duration: 0.9, stagger: 0.12, ease: 'power3.out'
             });
         }, ref);
         return () => ctx.revert();
@@ -618,7 +586,11 @@ const Team = () => {
                 </h2>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-                    <div className="team-card group relative bg-[#0A0A0A] border border-white/20 overflow-hidden hover:border-amber-500/60 hover:-translate-y-1 transition-all duration-500">
+                    {/* GSAP animates the outer wrapper; hover transition lives on the inner card.
+                        Putting `transition-all` on the GSAP target made the reveal read opacity
+                        mid-transition under StrictMode and tween 0 → 0, hiding the photo. */}
+                    <div className="team-card h-full">
+                    <div className="group relative h-full bg-[#0A0A0A] border border-white/20 overflow-hidden hover:border-amber-500/60 hover:-translate-y-1 transition-[border-color,transform] duration-500">
                         <div className="relative aspect-[3/4] lg:aspect-auto lg:h-full overflow-hidden min-h-[420px]">
                             <img src="/Hendrik.jpg" alt="Hendrik, founder of Corefix" width={800} height={532} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out" />
                             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
@@ -627,6 +599,7 @@ const Team = () => {
                                 <p className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">Founder · scopes it, builds it, ships it</p>
                             </div>
                         </div>
+                    </div>
                     </div>
 
                     <div className="flex flex-col gap-6">
@@ -927,61 +900,6 @@ const Contact = () => {
     );
 };
 
-// ── Footer ──
-const Footer = () => (
-    <footer className="bg-[#050505] pt-16 md:pt-24 pb-10 px-6">
-        <div className="max-w-[1400px] mx-auto">
-            <div className="mb-12 md:mb-20 overflow-hidden">
-                <p className="text-[18vw] md:text-[15vw] font-black uppercase tracking-tighter text-white/[0.15] leading-none select-none" aria-hidden="true">
-                    COREFIX&reg;
-                </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-20 pb-12 border-b border-white/20">
-                <div className="md:col-span-2 max-w-md">
-                    <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 min-h-[44px] mb-4 md:mb-6 hover:text-amber-500 transition-colors">
-                        <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
-                    </a>
-                    <p className="text-zinc-300 text-sm leading-relaxed mb-8 max-w-sm">
-                        Speed to lead is what we do. AI voice agents that answer first.
-                    </p>
-                    <div className="space-y-3">
-                        <a href="mailto:hendrik@corefix.app" className="block py-2.5 text-white font-bold text-base hover:text-amber-500 transition-colors">
-                            HENDRIK@COREFIX.APP
-                        </a>
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-0 md:gap-3">
-                    <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
-                    {[['Home', '/'], ['Voice Demo', '#voice-demo'], ['About', '#team']].map(([link, href]) => (
-                        href.startsWith('/') && !href.startsWith('/#')
-                            ? <Link key={link} to={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">{link}</Link>
-                            : <a key={link} href={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">{link}</a>
-                    ))}
-                    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="text-amber-500 text-sm hover:text-white transition-colors font-ui uppercase tracking-wider py-3 md:py-2">Let&apos;s Talk</a>
-                </div>
-                <div className="flex flex-col gap-0 md:gap-3">
-                    <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
-                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">LinkedIn</a>
-                </div>
-            </div>
-
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6 text-center">
-                <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-green-500 animate-pulse" />
-                    <span className="font-ui text-[10px] text-zinc-300 tracking-[0.25em] uppercase">System Operational · {new Date().getFullYear()}</span>
-                </div>
-                <p className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()} Corefix. All rights reserved.</p>
-                <div className="flex gap-4 md:gap-6">
-                    <a href="/terms" className="inline-flex items-center min-h-[44px] px-2 text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Terms</a>
-                    <a href="/privacy" className="inline-flex items-center min-h-[44px] px-2 text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">Privacy</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-);
-
 // ── Bright Grid (hero-style, reusable) ──
 const heroLineColor = 'rgba(255,255,255,0.14)';
 const heroPlusStyle = {
@@ -1016,12 +934,12 @@ function App() {
             <Navbar />
             <main>
                 <Hero />
-                <VoiceSection />
                 <Services />
+                <VoiceSection />
                 <LazyCapabilities />
                 <Process />
                 <Testimonials />
-                <FreeAudit />
+                <Engagements />
                 <WhyUs />
                 <Team />
                 <FAQ />

@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
+import { CAL_URL, PROCESS_STEPS, YOUTUBE_URL } from './seo.js';
+
+/** How every engagement is priced. No numbers are published on the site. */
+export const FIXED_PRICE_POINTS = [
+    { title: 'No hourly billing', desc: 'One fixed price for the whole engagement. No timesheets.' },
+    { title: 'No scope creep', desc: 'Scope is written down before we start. Changes get quoted, never slipped in.' },
+    { title: 'Price before we start', desc: 'You see the number after a short intro call, before you commit to anything.' },
+];
 
 // ── Grid config ──
 export const gridLineColor = 'rgba(255,255,255,0.05)';
@@ -82,29 +90,34 @@ export const SectionLabel = ({ children }) => (
 
 const DEFAULT_FOOTER_LINKS = [
     ['Home', '/'],
-    ['Voice Agent', '/services/voice-agent'],
-    ['Voice Demo', '/#voice-demo'],
-    ['Pricing', '/#audit'],
+    ['Services', '/services'],
+    ['About', '/#team'],
     ['Contact', '/#contact'],
 ];
 
+const footerLinkCls = 'text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2';
+const FooterLink = ({ href, children }) => {
+    if (href.startsWith('/') && !href.includes('#')) return <Link to={href} className={footerLinkCls}>{children}</Link>;
+    return <a href={href} className={footerLinkCls}>{children}</a>;
+};
+
 // ── Shared Footer ──
 export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
-    <footer className="bg-[#050505] pt-24 pb-10 px-6">
+    <footer className="bg-[#050505] pt-16 md:pt-24 pb-10 px-6">
         <div className="max-w-[1400px] mx-auto">
-            <div className="mb-20 overflow-hidden">
+            <div className="mb-12 md:mb-20 overflow-hidden">
                 <p className="text-[18vw] md:text-[15vw] font-black uppercase tracking-tighter text-white/[0.15] leading-none select-none" aria-hidden="true">
                     COREFIX&reg;
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 pb-12 border-b border-white/20">
-                <div className="md:col-span-2 max-w-md">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-10 md:gap-12 mb-12 md:mb-20 pb-12 border-b border-white/20">
+                <div className="col-span-2 max-w-md">
                     <a href="/" className="font-ui font-black tracking-[0.18em] text-white text-base flex items-center gap-2 min-h-[44px] mb-4 md:mb-6 hover:text-amber-500 transition-colors">
                         <svg viewBox="0 0 32 32" className="w-5 h-5" aria-hidden="true"><path d="M16 4 L27.3 10.5 L27.3 21.5 L16 28 L4.7 21.5 L4.7 10.5 Z" fill="none" stroke="#F59E0B" strokeWidth="2"/></svg> COREFIX&reg;
                     </a>
                     <p className="text-zinc-300 text-sm leading-relaxed mb-8 max-w-sm">
-                        Speed-to-lead voice agents. Built and shipped by the person you talk to.
+                        AI that pays for itself. Fixed-price engagements, built by the person you talk to.
                     </p>
                     <a href="mailto:hendrik@corefix.app" className="block py-2.5 text-white font-bold text-base hover:text-amber-500 transition-colors">
                         HENDRIK@COREFIX.APP
@@ -113,17 +126,25 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
 
                 <div className="flex flex-col gap-0 md:gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Navigation</span>
-                    {links.map(([link, href]) => (
-                        <a key={link} href={href} className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">{link}</a>
+                    {links.map(([link, href]) => <FooterLink key={link} href={href}>{link}</FooterLink>)}
+                    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="text-amber-500 text-sm hover:text-white transition-colors font-ui uppercase tracking-wider py-3 md:py-2">Let&apos;s Talk</a>
+                </div>
+                <div className="flex flex-col gap-0 md:gap-3">
+                    <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Process</span>
+                    {PROCESS_STEPS.map((step, i) => (
+                        <a key={step} href="/#process" className={`${footerLinkCls} flex items-baseline gap-2`}>
+                            <span className="text-amber-500 text-[10px] tracking-[0.2em]">{String(i + 1).padStart(2, '0')}</span>{step}
+                        </a>
                     ))}
                 </div>
                 <div className="flex flex-col gap-0 md:gap-3">
                     <span className="text-zinc-400 text-[10px] font-ui uppercase tracking-[0.25em] mb-3">Social</span>
-                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className="text-zinc-200 text-sm hover:text-amber-500 transition-colors font-ui uppercase tracking-wider py-3 md:py-2">LinkedIn</a>
+                    <a href="https://www.linkedin.com/in/hendrikcorefix/" target="_blank" rel="noopener noreferrer" className={footerLinkCls}>LinkedIn</a>
+                    {YOUTUBE_URL && <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" className={footerLinkCls}>YouTube</a>}
                 </div>
             </div>
 
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6 text-center">
                 <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-green-500 animate-pulse" />
                     <span className="font-ui text-[10px] text-zinc-300 tracking-[0.25em] uppercase">System Operational · {new Date().getFullYear()}</span>
@@ -137,6 +158,11 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
         </div>
     </footer>
 );
+
+const NAV_LINKS = [
+    ['Services', '/services'],
+    ['About', '/#team'],
+];
 
 // ── Shared Navbar (used on service pages) ──
 export const ServiceNavbar = () => {
@@ -156,10 +182,9 @@ export const ServiceNavbar = () => {
                     COREFIX&reg;
                 </Link>
                 <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-400 uppercase tracking-[0.18em]">
-                    <Link to="/services/voice-agent" className="hover:text-white transition-colors">Voice Agent</Link>
-                    <Link to="/#process" className="hover:text-white transition-colors">Process</Link>
-                    <Link to="/#audit" className="hover:text-white transition-colors">Pricing</Link>
-                    <Link to="/#contact" className="hover:text-white transition-colors">Contact</Link>
+                    {NAV_LINKS.map(([item, href]) => (
+                        <Link key={item} to={href} className="hover:text-white transition-colors">{item}</Link>
+                    ))}
                 </div>
                 <Link to="/#contact" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
                     <span className="absolute -top-[2px] -left-[2px] w-2.5 h-2.5 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -182,7 +207,7 @@ export const ServiceNavbar = () => {
             </div>
             {menuOpen && (
                 <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/15 px-6 py-8 flex flex-col gap-6">
-                    {[['Home', '/'], ['Voice Agent', '/services/voice-agent'], ['Process', '/#process'], ['Pricing', '/#audit'], ['Contact', '/#contact']].map(([item, href]) => (
+                    {[['Home', '/'], ...NAV_LINKS].map(([item, href]) => (
                         <Link key={item} to={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</Link>
                     ))}
                     <Link to="/#contact" onClick={() => setMenuOpen(false)} className="text-amber-500 text-lg font-ui uppercase tracking-widest hover:text-white">Talk To Us</Link>

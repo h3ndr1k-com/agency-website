@@ -26,7 +26,7 @@ const FOOTER_LINKS = [
     ['Home', '/'],
     ['Voice Agent', '/services/voice-agent'],
     ['How We Price', '/services/voice-agent#pricing'],
-    ['Services', '/#services'],
+    ['Services', '/services'],
     ['Contact', '/#contact'],
 ];
 

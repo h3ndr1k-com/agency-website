@@ -547,7 +547,7 @@ const FinalCTA = () => {
                     <CornerButton to="/#contact" filled>
                         Book Strategy Call <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                     </CornerButton>
-                    <CornerButton to="/#services">
+                    <CornerButton to="/services">
                         View All Services <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                     </CornerButton>
                 </div>

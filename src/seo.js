@@ -9,6 +9,27 @@ export const PROCESS_STEPS = ['Diagnose', 'Design', 'Build', 'Proof'];
 export const HOME_DESCRIPTION =
     'AI consulting for service businesses. Fixed-price engagements: we diagnose, design, build and prove AI systems that pay for themselves.';
 
+/** Service lines, shared by the homepage and /services. */
+export const SERVICES = [
+    { num: '01', title: 'Speed-to-Lead Systems', desc: 'A voice agent that answers every call and web lead in seconds, qualifies it, and books it on your calendar.', link: '/services/voice-agent' },
+    { num: '02', title: 'Email Triage & Workflow Automation', desc: 'Inbox classification, follow-up tracking, and automations wired into the systems you already run.' },
+    { num: '03', title: 'AI Spec Review', desc: 'AI pre-production review for print, packaging and display manufacturers. Checks artwork and specs against your own standards before anything goes to press.' },
+    { num: '04', title: 'AI Strategy & Advisory', desc: 'A clear, execution-ready plan for where AI actually saves you money. No slideware.', link: '/services/ai-strategy' },
+];
+
+/** Systems already built and running. Industry only, never client names (NDA). */
+export const BUILDS = [
+    { title: 'Speed-to-Lead Lead Response', industry: 'Real estate', desc: 'New lead comes in, the agent gets a text, the lead gets a text or email with a one-tap link to an AI chat or call. Seconds, 24/7.', stack: ['n8n', 'Retell', 'Twilio'] },
+    { title: 'AI Call & Chat Transcript Routing', industry: 'Real estate', desc: 'Every AI call or chat is deduped, matched to the right agent, and emailed as a clean transcript.', stack: ['n8n', 'Retell'] },
+    { title: 'Portal Lead Intake', industry: 'Real estate', desc: 'Parses lead emails from listing portals and routes each one to the right agent automatically.', stack: ['n8n'] },
+    { title: 'Agent Onboarding', industry: 'Real estate', desc: 'One form sets a new agent up in the CRM, with routing, signature and contact preferences.', stack: ['n8n', 'Tally'] },
+    { title: 'Voice Agent with Live Booking', industry: 'Any service business', desc: 'Answers calls, qualifies, checks the real calendar and books the meeting mid-call. Try it on our homepage.', stack: ['Vapi', 'Cal.com'], link: '/#voice-demo' },
+    { title: 'AI Spec Reviewer', industry: 'Print, packaging & display', desc: 'Checks artwork and job specs against the shop\'s own standards before anything goes to press.', stack: [] },
+    { title: 'Proposal Generator', industry: 'Professional services', desc: 'Turns discovery-call notes into a scoped, ready-to-send proposal draft.', stack: [] },
+    { title: 'Finance Dashboard', industry: 'Internal ops', desc: 'Pulls transactions into one live view of cash, spend and trends.', stack: [] },
+    { title: 'Workflow Error Alerting', industry: 'Every build', desc: 'Any failed step emails the exact node, error and a link to the run, so nothing breaks silently.', stack: ['n8n'] },
+];
+
 export const HOME_FAQS = [
     {
         q: 'How do you price?',
@@ -93,6 +114,15 @@ export const ROUTES = {
         title: 'AI That Pays for Itself | Fixed-Price AI Consulting | Corefix',
         description: HOME_DESCRIPTION,
         h1: 'AI that pays for itself.',
+        ogType: 'website',
+        ogImage: OG_IMAGE,
+    },
+    '/services': {
+        path: '/services',
+        title: 'Services & What We\'ve Built | Corefix',
+        description:
+            'Fixed-price AI systems for service businesses: speed-to-lead, workflow automation, AI spec review and strategy. See the automations already running.',
+        h1: 'What we build.',
         ogType: 'website',
         ogImage: OG_IMAGE,
     },
@@ -232,6 +262,26 @@ export function jsonLdForPath(path) {
     if (path === '/404') return [];
     if (path === '/') {
         return [organizationJsonLd(), websiteJsonLd(), homeServiceJsonLd(), faqPageJsonLd(HOME_FAQS)];
+    }
+    if (path === '/services') {
+        return [
+            organizationJsonLd(),
+            {
+                '@context': 'https://schema.org',
+                '@type': 'ItemList',
+                name: 'Corefix services',
+                itemListElement: SERVICES.map((svc, i) => ({
+                    '@type': 'ListItem',
+                    position: i + 1,
+                    item: {
+                        '@type': 'Service',
+                        name: svc.title,
+                        description: svc.desc,
+                        provider: { '@type': 'Organization', name: 'Corefix', url: SITE },
+                    },
+                })),
+            },
+        ];
     }
     if (path === '/services/voice-agent') {
         const meta = ROUTES[path];

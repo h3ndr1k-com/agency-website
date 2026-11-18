@@ -21,8 +21,7 @@ const HOUR = [
 
 const FOOTER_LINKS = [
     ['Home', '/'],
-    ['Voice Demo', '/#voice-demo'],
-    ['Services', '/#services'],
+    ['Services', '/services'],
     ['Contact', '/#contact'],
 ];
 

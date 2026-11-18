@@ -90,9 +90,8 @@ export const SectionLabel = ({ children }) => (
 
 const DEFAULT_FOOTER_LINKS = [
     ['Home', '/'],
-    ['Services', '/#services'],
+    ['Services', '/services'],
     ['About', '/#team'],
-    ['Voice Demo', '/#voice-demo'],
     ['Contact', '/#contact'],
 ];
 
@@ -161,10 +160,8 @@ export const Footer = ({ links = DEFAULT_FOOTER_LINKS }) => (
 );
 
 const NAV_LINKS = [
-    ['Services', '/#services'],
+    ['Services', '/services'],
     ['About', '/#team'],
-    ['Voice Demo', '/#voice-demo'],
-    ['Contact', '/#contact'],
 ];
 
 // ── Shared Navbar (used on service pages) ──

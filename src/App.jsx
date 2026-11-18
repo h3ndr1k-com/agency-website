@@ -5,10 +5,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronRight, ArrowUpRight } from 'lucide-react';
 import VoiceSection from './VoiceSection.jsx';
 import SeoHead from './SeoHead.jsx';
-import { CAL_URL, HOME_FAQS } from './seo.js';
+import { CAL_URL, HOME_FAQS, SERVICES } from './seo.js';
 import { Footer, FIXED_PRICE_POINTS } from './shared.jsx';
 
-const HOME_NAV = [['Services', '#services'], ['About', '#team'], ['Voice Demo', '#voice-demo']];
+const HOME_NAV = [['Services', '/services'], ['About', '#team']];
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -128,7 +128,9 @@ const Navbar = () => {
                 </a>
                 <div className="hidden md:flex items-center gap-8 text-xs font-ui font-medium text-zinc-300 uppercase tracking-[0.18em]">
                     {HOME_NAV.map(([item, href]) => (
-                        <a key={item} href={href} className="hover:text-white transition-colors">{item}</a>
+                        href.startsWith('/')
+                            ? <Link key={item} to={href} className="hover:text-white transition-colors">{item}</Link>
+                            : <a key={item} href={href} className="hover:text-white transition-colors">{item}</a>
                     ))}
                 </div>
                 <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex relative items-center px-6 py-3 bg-white text-black font-semibold text-xs font-ui uppercase tracking-[0.15em] hover:bg-amber-500 transition-all duration-200 group">
@@ -153,7 +155,9 @@ const Navbar = () => {
             {menuOpen && (
                 <div className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/15 px-6 py-8 flex flex-col gap-6">
                     {HOME_NAV.map(([item, href]) => (
-                        <a key={item} href={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</a>
+                        href.startsWith('/')
+                            ? <Link key={item} to={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</Link>
+                            : <a key={item} href={href} onClick={() => setMenuOpen(false)} className="text-zinc-300 text-lg font-ui uppercase tracking-widest hover:text-white">{item}</a>
                     ))}
                     <a href={CAL_URL} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="text-amber-500 text-lg font-ui uppercase tracking-widest hover:text-white">Let&apos;s Talk</a>
                 </div>
@@ -257,12 +261,7 @@ const Services = () => {
         return () => ctx.revert();
     }, []);
 
-    const services = [
-        { num: '01', title: 'Speed-to-Lead Systems', desc: 'A voice agent that answers every call and web lead in seconds, qualifies it, and books it on your calendar. Hear it live below.', link: '/services/voice-agent' },
-        { num: '02', title: 'Email Triage & Workflow Automation', desc: 'Inbox classification, follow-up tracking, and automations wired into the systems you already run.' },
-        { num: '03', title: 'AI Spec Review', desc: 'AI pre-production review for print, packaging and display manufacturers. Checks artwork and specs against your own standards before anything goes to press.' },
-        { num: '04', title: 'AI Strategy & Advisory', desc: 'A clear, execution-ready plan for where AI actually saves you money. No slideware.', link: '/services/ai-strategy' },
-    ];
+    const services = SERVICES;
 
     return (
         <section id="services" ref={ref} className="py-24 md:py-40">
@@ -368,12 +367,12 @@ const Process = () => {
                 <SectionLabel>Our Process</SectionLabel>
             </div>
 
-            <div className="proc-grid max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            <div className="proc-grid max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
                 {steps.map((step, i) => (
                     <button
                         key={i}
                         onClick={() => setActiveStep(activeStep === i ? null : i)}
-                        className={`proc-step text-left w-full p-8 md:p-10 bg-[#0A0A0A] border transition-colors group ${activeStep === i ? 'border-amber-500 bg-[#111]' : 'border-white/50 hover:border-amber-500 hover:bg-[#111]'}`}
+                        className={`proc-step h-full flex flex-col text-left w-full p-8 md:p-10 bg-[#0A0A0A] border transition-colors group ${activeStep === i ? 'border-amber-500 bg-[#111]' : 'border-white/50 hover:border-amber-500 hover:bg-[#111]'}`}
                     >
                         <div className="flex items-start justify-between mb-6">
                             <span className="text-[10px] font-ui font-bold uppercase tracking-[0.25em] text-amber-500">· {step.num}</span>

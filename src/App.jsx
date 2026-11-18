@@ -594,9 +594,9 @@ const Team = () => {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.from('.team-card', {
+            gsap.fromTo('.team-card', { y: 60, opacity: 0 }, {
                 scrollTrigger: { trigger: ref.current, start: 'top 65%' },
-                y: 60, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out'
+                y: 0, opacity: 1, duration: 0.9, stagger: 0.12, ease: 'power3.out'
             });
         }, ref);
         return () => ctx.revert();
@@ -618,7 +618,11 @@ const Team = () => {
                 </h2>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-                    <div className="team-card group relative bg-[#0A0A0A] border border-white/20 overflow-hidden hover:border-amber-500/60 hover:-translate-y-1 transition-all duration-500">
+                    {/* GSAP animates the outer wrapper; hover transition lives on the inner card.
+                        Putting `transition-all` on the GSAP target made the reveal read opacity
+                        mid-transition under StrictMode and tween 0 → 0, hiding the photo. */}
+                    <div className="team-card h-full">
+                    <div className="group relative h-full bg-[#0A0A0A] border border-white/20 overflow-hidden hover:border-amber-500/60 hover:-translate-y-1 transition-[border-color,transform] duration-500">
                         <div className="relative aspect-[3/4] lg:aspect-auto lg:h-full overflow-hidden min-h-[420px]">
                             <img src="/Hendrik.jpg" alt="Hendrik, founder of Corefix" width={800} height={532} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out" />
                             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
@@ -627,6 +631,7 @@ const Team = () => {
                                 <p className="text-zinc-300 text-[10px] font-ui uppercase tracking-[0.2em] mt-1">Founder · scopes it, builds it, ships it</p>
                             </div>
                         </div>
+                    </div>
                     </div>
 
                     <div className="flex flex-col gap-6">

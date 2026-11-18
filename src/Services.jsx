@@ -53,7 +53,7 @@ function ServiceLines() {
     useReveal(ref, '.sl-card');
     return (
         <section ref={ref} className="pb-24 md:pb-32">
-            <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 {SERVICES.map((svc) => {
                     const inner = (
                         <div className="flex items-start gap-6 h-full">

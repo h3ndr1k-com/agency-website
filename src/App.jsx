@@ -274,7 +274,7 @@ const Services = () => {
                 </h2>
                 <p className="svc-title text-zinc-300 mb-12 md:mb-20 max-w-xl text-sm">Each one ships as a working system in your stack, not a proof of concept.</p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {services.map((svc, i) => {
                         const Card = svc.link ? Link : 'div';
                         const cardProps = svc.link ? { to: svc.link } : {};

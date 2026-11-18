@@ -13,8 +13,7 @@ export const HOME_DESCRIPTION =
 export const SERVICES = [
     { num: '01', title: 'Speed-to-Lead Systems', desc: 'A voice agent that answers every call and web lead in seconds, qualifies it, and books it on your calendar.', link: '/services/voice-agent' },
     { num: '02', title: 'Email Triage & Workflow Automation', desc: 'Inbox classification, follow-up tracking, and automations wired into the systems you already run.' },
-    { num: '03', title: 'AI Spec Review', desc: 'AI pre-production review for print, packaging and display manufacturers. Checks artwork and specs against your own standards before anything goes to press.' },
-    { num: '04', title: 'AI Strategy & Advisory', desc: 'A clear, execution-ready plan for where AI actually saves you money. No slideware.', link: '/services/ai-strategy' },
+    { num: '03', title: 'AI Strategy & Advisory', desc: 'A clear, execution-ready plan for where AI actually saves you money. No slideware.', link: '/services/ai-strategy' },
 ];
 
 /** Systems already built and running. Industry only, never client names (NDA). */
@@ -24,7 +23,6 @@ export const BUILDS = [
     { title: 'Portal Lead Intake', industry: 'Real estate', desc: 'Parses lead emails from listing portals and routes each one to the right agent automatically.', stack: ['n8n'] },
     { title: 'Agent Onboarding', industry: 'Real estate', desc: 'One form sets a new agent up in the CRM, with routing, signature and contact preferences.', stack: ['n8n', 'Tally'] },
     { title: 'Voice Agent with Live Booking', industry: 'Any service business', desc: 'Answers calls, qualifies, checks the real calendar and books the meeting mid-call. Try it on our homepage.', stack: ['Vapi', 'Cal.com'], link: '/#voice-demo' },
-    { title: 'AI Spec Reviewer', industry: 'Print, packaging & display', desc: 'Checks artwork and job specs against the shop\'s own standards before anything goes to press.', stack: [] },
     { title: 'Proposal Generator', industry: 'Professional services', desc: 'Turns discovery-call notes into a scoped, ready-to-send proposal draft.', stack: [] },
     { title: 'Finance Dashboard', industry: 'Internal ops', desc: 'Pulls transactions into one live view of cash, spend and trends.', stack: [] },
     { title: 'Workflow Error Alerting', industry: 'Every build', desc: 'Any failed step emails the exact node, error and a link to the run, so nothing breaks silently.', stack: ['n8n'] },
@@ -121,7 +119,7 @@ export const ROUTES = {
         path: '/services',
         title: 'Services & What We\'ve Built | Corefix',
         description:
-            'Fixed-price AI systems for service businesses: speed-to-lead, workflow automation, AI spec review and strategy. See the automations already running.',
+            'Fixed-price AI systems for service businesses: speed-to-lead, workflow automation and AI strategy. See the automations already running.',
         h1: 'What we build.',
         ogType: 'website',
         ogImage: OG_IMAGE,
@@ -411,7 +409,6 @@ ${navFooterLinks()}
   <ul>
     <li><a href="/services/voice-agent">Speed-to-Lead Systems</a></li>
     <li>Email Triage &amp; Workflow Automation</li>
-    <li>AI Spec Review for print, packaging and display manufacturers</li>
     <li><a href="/services/ai-strategy">AI Strategy &amp; Advisory</a></li>
   </ul>
   <h2>Our process</h2>

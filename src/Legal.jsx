@@ -115,12 +115,9 @@ export function Terms() {
             <h2 className="text-white text-xl font-bold pt-4">Bookings and paid work</h2>
             <p>
                 Calendar bookings are introductory unless otherwise stated. Paid engagements
-                (including voice-agent pilots) are governed by a separate proposal
-                or agreement. Voice-agent pricing shown on the site may change.
-            </p>
-            <p>
-                Voice-agent fair use: the US$297/mo plan includes 500 call minutes per month. Minutes
-                beyond that are billed at US$0.30 per minute.
+                (including voice-agent pilots) are fixed-price and governed by a separate proposal
+                or agreement. Voice-agent usage limits and any overage rates are set out in that
+                agreement.
             </p>
             <h2 className="text-white text-xl font-bold pt-4">Acceptable use</h2>
             <p>
